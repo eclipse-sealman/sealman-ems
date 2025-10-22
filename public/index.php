@@ -1,0 +1,20 @@
+<?php
+
+// Copyright (c) 2025 Contributors to the Eclipse Foundation.
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0
+//
+// SPDX-License-Identifier: Apache-2.0
+
+use App\Kernel;
+
+require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+return function (array $context) {
+    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+};

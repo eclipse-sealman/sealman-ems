@@ -1,0 +1,28 @@
+{#
+Copyright (c) 2025 Contributors to the Eclipse Foundation.
+
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
+
+This program and the accompanying materials are made available under the
+terms of the Apache License, Version 2.0 which is available at
+https://www.apache.org/licenses/LICENSE-2.0
+
+SPDX-License-Identifier: Apache-2.0
+#}
+
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/swagger/swagger-v1.css">
+{% endblock stylesheets %}
+
+{% block header %}
+	<div class="wrapper">
+		<div class="header">
+			<a id="logo" href="/"><img src="/swagger/logo-v1.png" alt="Logo"></a>
+			<a href="{{ path('app.swagger', { area: app.request.get('area') }) }}" target="_blank" class="btn-download">Download as YAML</a>
+		</div>
+	</div>
+{% endblock header %}

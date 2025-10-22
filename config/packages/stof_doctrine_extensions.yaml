@@ -1,0 +1,23 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# Read the documentation: https://symfony.com/doc/current/bundles/StofDoctrineExtensionsBundle/index.html
+# See the official DoctrineExtensions documentation for more details: https://github.com/doctrine-extensions/DoctrineExtensions/tree/main/doc
+stof_doctrine_extensions:
+    default_locale: en_US
+    class:
+        blameable: App\EventListener\BlameableListener
+    orm:
+        default:
+            timestampable: true
+            blameable: true
+            sortable: true
+            sluggable: true

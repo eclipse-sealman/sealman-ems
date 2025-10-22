@@ -1,0 +1,222 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+nelmio_api_doc:
+    areas:
+        default:
+            # ^/web/none does not exist (this is intended, we want to hide default area)
+            # /web/doc/default is also blocked by App\EventListener\NelmioRouteResponseListener
+            # disable_default_routes: true does not seem to work
+            path_patterns: [^/web/none]
+
+        # Areas below are hardcoded. They cannot be configured using: path_patterns, host_patterns, name_patterns, with_annotation or disable_default_routes
+        # See definitions of nelmio_api_doc.routes.AREA in services.yaml
+        # See App\Routing\NelmioRouteCollectionBuilder for more information
+        # smartemsvpnsecuritysuite area includes smartems area and vpnsecuritysuite area
+        admin:
+            documentation:
+                info:
+                    description: Administrator REST API documentation for SEALMAN
+
+        smartems:
+            documentation:
+                info:
+                    description: User with device management permissions REST API documentation for SEALMAN
+
+        vpnsecuritysuite:
+            documentation:
+                info:
+                    description: User with VPN permissions REST API documentation for SEALMAN
+
+        smartemsvpnsecuritysuite:
+            documentation:
+                info:
+                    description: User with device management and VPN permissions REST API documentation for SEALMAN
+
+    documentation:
+        info:
+            title: SEALMAN
+            description: REST API documentation for SEALMAN. Please refer to specific role REST API documentation
+            version: "%env(resolve:APP_VERSION)%"
+        components:
+            securitySchemes:
+                Bearer:
+                    description: "Fill value with: <code>Bearer {{ JWT }}</code>"
+                    type: apiKey
+                    name: authorization
+                    in: header
+
+            responses:
+                401:
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    code:
+                                        type: integer
+                                        description: Error code
+                                    message:
+                                        type: string
+                                        description: Error message
+                403:
+                    description: Forbidden
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    code:
+                                        type: integer
+                                        description: Error code
+                                    message:
+                                        type: string
+                                        description: Error message
+                409:
+                    description: Request execution error. Designed to provide additional information in the response when action could be executed only partially.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    code:
+                                        type: integer
+                                        description: Error code
+                                    message:
+                                        type: string
+                                        description: Error message
+                                    payload:
+                                        type: string
+                                        description: Additional payload. Depends on request execution error.
+                                    errors:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                message:
+                                                    type: string
+                                                    description: Message key string
+                                                severity:
+                                                    type: string
+                                                    enum: ["warning", "error"]
+                                                parameters:
+                                                    type: array
+                                                    description: Message parameters
+                                                    items:
+                                                        type: object
+                                                        properties:
+                                                            parameterName:
+                                                                type: string
+                                                                description: Parameter value
+
+        paths:
+            /web/api/authentication/login_check:
+                post:
+                    tags:
+                        - Authentication
+                    description: Authenticate a user to aquire JWT
+                    summary: Authenticate a user to aquire JWT
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    type: "object"
+                                    properties:
+                                        username:
+                                            type: string
+                                        password:
+                                            type: string
+                    responses:
+                        401:
+                            description: Invalid credentials
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            code:
+                                                type: integer
+                                                description: Error code
+                                            message:
+                                                type: string
+                                                description: Error message
+                        200:
+                            description: Authorization successful
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/AuthenticationData"
+
+            /web/api/authentication/token/refresh:
+                post:
+                    tags:
+                        - Authentication
+                    description: Refresh JWT with a valid refresh token
+                    summary: Refresh JWT with a valid refresh token
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    type: "object"
+                                    properties:
+                                        refreshToken:
+                                            type: string
+                    responses:
+                        401:
+                            description: Invalid refresh token
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            code:
+                                                type: integer
+                                                description: Error code
+                                            message:
+                                                type: string
+                                                description: Error message
+                        200:
+                            description: Refresh JWT successful
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/AuthenticationData"
+
+            /web/tus/upload:
+                post:
+                    tags:
+                        - Upload
+                    description: "This endpoint is an implementation of TUS server protocol. Please refer to official documentation for more information or implemented solution. Documentation can be found at: https://tus.io/. Please use generated file identifier (token) as a value of a file field (i.e. filepath in endpoints)"
+                    summary: This endpoint is an implementation of TUS server protocol.
+                patch:
+                    tags:
+                        - Upload
+                    description: "This endpoint is an implementation of TUS server protocol. Please refer to official documentation for more information or implemented solution. Documentation can be found at: https://tus.io/. Please use generated file identifier (token) as a value of a file field (i.e. filepath in endpoints)"
+                    summary: This endpoint is an implementation of TUS server protocol.
+                delete:
+                    tags:
+                        - Upload
+                    description: "This endpoint is an implementation of TUS server protocol. Please refer to official documentation for more information or implemented solution. Documentation can be found at: https://tus.io/. Please use generated file identifier (token) as a value of a file field (i.e. filepath in endpoints)"
+                    summary: This endpoint is an implementation of TUS server protocol.
+                head:
+                    tags:
+                        - Upload
+                    description: "This endpoint is an implementation of TUS server protocol. Please refer to official documentation for more information or implemented solution. Documentation can be found at: https://tus.io/. Please use generated file identifier (token) as a value of a file field (i.e. filepath in endpoints)"
+                    summary: This endpoint is an implementation of TUS server protocol.
+                options:
+                    tags:
+                        - Upload
+                    description: "This endpoint is an implementation of TUS server protocol. Please refer to official documentation for more information or implemented solution. Documentation can be found at: https://tus.io/. Please use generated file identifier (token) as a value of a file field (i.e. filepath in endpoints)"
+                    summary: This endpoint is an implementation of TUS server protocol.
+
+        security:
+            - Bearer: []

@@ -1,0 +1,68 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+doctrine:
+    dbal:
+        url: "%env(resolve:DATABASE_URL)%"
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        # server_version: '13'
+
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+        types:
+            datetime: Carve\ApiBundle\DBAL\Types\UTCDateTimeType
+            bigint: App\DBAL\Types\BigIntType
+    orm:
+        auto_generate_proxy_classes: true
+        # Symfony suggest to switch it to true. Switching it breaks loading fixtures in tests
+        # Additionally there is potential performance degradation
+        # https://github.com/doctrine/orm/issues/11087
+        # Recommended to wait until necessary to switch (Symfony 7.4 probably)
+        enable_lazy_ghost_objects: false
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        class_metadata_factory_name: App\ORM\Mapping\ClassMetadataFactory
+        auto_mapping: true
+        dql:
+            string_functions:
+                binary: DoctrineExtensions\Query\Mysql\Binary
+            datetime_functions:
+                dateAdd: DoctrineExtensions\Query\Mysql\DateAdd
+                dateSub: DoctrineExtensions\Query\Mysql\DateSub
+                utc_timestamp: DoctrineExtensions\Query\Mysql\UtcTimestamp
+        mappings:
+            App:
+                is_bundle: false
+                dir: "%kernel.project_dir%/src/Entity"
+                prefix: 'App\Entity'
+                alias: App
+
+when@test:
+    doctrine:
+        dbal:
+            # DAMA\DoctrineTestBundle savepoints configuration
+            connections:
+                default:
+                    # "TEST_TOKEN" is typically set by ParaTest
+                    use_savepoints: true
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool

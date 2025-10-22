@@ -1,0 +1,30 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+when@dev:
+    web_profiler_wdt:
+        resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
+        prefix: /_wdt
+
+    web_profiler_profiler:
+        resource: "@WebProfilerBundle/Resources/config/routing/profiler.xml"
+        prefix: /_profiler
+
+when@test:
+    web_profiler_wdt:
+        condition: "request.server.get('APP_DEBUG')"
+        resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
+        prefix: /_wdt
+
+    web_profiler_profiler:
+        condition: "request.server.get('APP_DEBUG')"
+        resource: "@WebProfilerBundle/Resources/config/routing/profiler.xml"
+        prefix: /_profiler

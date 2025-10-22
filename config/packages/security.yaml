@@ -1,0 +1,202 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+        aes_encoder:
+            id: 'App\Security\Hasher\AesPasswordHasher'
+        radius_encoder:
+            id: 'App\Security\Hasher\RadiusHasher'
+        sso_hasher:
+            id: 'App\Security\Hasher\SsoHasher'
+        no_password_hasher:
+            id: 'App\Security\Hasher\NoPasswordHasher'
+
+    providers:
+        entity_provider:
+            id: App\Security\UserProvider\JWTUserProvider
+        radius_provider:
+            id: App\Security\UserProvider\RadiusUserProvider
+        all_users_provider:
+            chain:
+                providers:
+                    - entity_provider
+                    - radius_provider
+        device_x509_provider:
+            id: App\Security\UserProvider\DeviceX509UserProvider
+        device_secret_provider:
+            id: App\Security\UserProvider\DeviceSecretUserProvider
+        device_user_provider:
+            id: App\Security\UserProvider\DeviceUserProvider
+        device_secret_and_user_provider:
+            chain:
+                providers:
+                    - device_user_provider
+                    - device_secret_provider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            provider: all_users_provider
+            pattern: ^/web/api/authentication/login
+            user_checker: App\Security\UserChecker
+            stateless: true
+            json_login:
+                check_path: /web/api/authentication/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        refresh:
+            provider: all_users_provider
+            pattern: ^/web/api/authentication/token/refresh
+            stateless: true
+            user_checker: App\Security\UserChecker
+            refresh_jwt:
+                check_path: /web/api/authentication/token/refresh
+
+        # This is thightly coupled with process function in src/Kernel.php
+        # It changes ttl_update configuration to false for authenticator used by this firewall
+        keep_ttl_refresh:
+            provider: all_users_provider
+            pattern: ^/web/api/authentication/token/keep-ttl-refresh
+            stateless: true
+            user_checker: App\Security\UserChecker
+            refresh_jwt:
+                check_path: /web/api/authentication/token/keep-ttl-refresh
+
+        # Communication firewall suffix has to match App\Enum\AuthenticationMethod enum to register device failed login attempts
+        communication_none:
+            request_matcher: App\Security\NoneRequestMatcher
+            provider: entity_provider
+            user_checker: App\Security\UserChecker
+            security: false
+
+        #BASIC AUTHENTICATION CREDENTIAL OPTIONS
+        communication_basic_device_user:
+            stateless: true
+            request_matcher: App\Security\HttpBasic\RequestMatcher\HttpBasicDeviceUserRequestMatcher
+            provider: device_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpBasic\Authenticator\HttpBasicDeviceUserAuthenticator
+
+        communication_basic_device_secret:
+            stateless: true
+            request_matcher: App\Security\HttpBasic\RequestMatcher\HttpBasicDeviceSecretRequestMatcher
+            provider: device_secret_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpBasic\Authenticator\HttpBasicDeviceSecretAuthenticator
+
+        communication_basic_device_secret_and_user:
+            stateless: true
+            request_matcher: App\Security\HttpBasic\RequestMatcher\HttpBasicDeviceSecretAndUserRequestMatcher
+            provider: device_secret_and_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpBasic\Authenticator\HttpBasicDeviceSecretAndUserAuthenticator
+
+        communication_basic_device_user_if_device_secret_missing:
+            stateless: true
+            request_matcher: App\Security\HttpBasic\RequestMatcher\HttpBasicDeviceUserIfDeviceSecretMissingRequestMatcher
+            provider: device_secret_and_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpBasic\Authenticator\HttpBasicDeviceUserIfDeviceSecretMissingAuthenticator
+
+        #DIGEST AUTHENTICATION CREDENTIAL OPTIONS
+        communication_digest_device_user:
+            stateless: true
+            request_matcher: App\Security\HttpDigest\RequestMatcher\HttpDigestDeviceUserRequestMatcher
+            provider: device_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpDigest\Authenticator\HttpDigestDeviceUserAuthenticator
+
+        communication_digest_device_secret:
+            stateless: true
+            request_matcher: App\Security\HttpDigest\RequestMatcher\HttpDigestDeviceSecretRequestMatcher
+            provider: device_secret_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpDigest\Authenticator\HttpDigestDeviceSecretAuthenticator
+
+        communication_digest_device_secret_and_user:
+            stateless: true
+            request_matcher: App\Security\HttpDigest\RequestMatcher\HttpDigestDeviceSecretAndUserRequestMatcher
+            provider: device_secret_and_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpDigest\Authenticator\HttpDigestDeviceSecretAndUserAuthenticator
+
+        communication_digest_device_user_if_device_secret_missing:
+            stateless: true
+            request_matcher: App\Security\HttpDigest\RequestMatcher\HttpDigestDeviceUserIfDeviceSecretMissingRequestMatcher
+            provider: device_secret_and_user_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpDigest\Authenticator\HttpDigestDeviceUserIfDeviceSecretMissingAuthenticator
+
+        # communication_jwt:
+        #     request_matcher: App\Security\JwtRequestMatcher
+        #     provider: entity_provider
+        #     user_checker: App\Security\UserChecker
+        #     custom_authenticators:
+        #         - App\Security\HttpDigestAuthenticator
+
+        communication_x509:
+            stateless: true
+            request_matcher: App\Security\X509RequestMatcher
+            provider: device_x509_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpX509Authenticator
+
+        api:
+            provider: all_users_provider
+            pattern: ^/web/api
+            stateless: true
+            user_checker: App\Security\UserChecker
+            jwt: ~
+            logout:
+                path: api_refresh_token_invalidate
+
+        tus:
+            provider: all_users_provider
+            pattern: ^/web/tus
+            stateless: true
+            user_checker: App\Security\UserChecker
+            jwt: ~
+
+    access_control:
+        - { path: ^/web/api/authentication/login, roles: PUBLIC_ACCESS }
+        - { path: ^/web/api/authentication/token/refresh-keep-ttl, roles: PUBLIC_ACCESS }
+        - { path: ^/web/api/authentication/token/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/web/api/authentication/token/extend, roles: PUBLIC_ACCESS }
+        - { path: ^/web/api/authentication/password/change/required, roles: ROLE_CHANGEPASSWORDREQUIRED }
+        - { path: ^/web/api/authentication/totp/required, roles: ROLE_TOTPREQUIRED }
+        - { path: ^/web/api/authentication/sso, roles: PUBLIC_ACCESS }
+        - { path: ^/web/api/anonymous/configuration, roles: PUBLIC_ACCESS }
+        # check/auth/admin is prefixed with /web/api/ because it has to go through security.firewall.api
+        - { path: ^/web/api/check/auth/admin, roles: ROLE_ADMIN }
+        # check/auth/firmware is prefixed with /web/api/ because it has to go through security.firewall.api
+        # only admin and smartems user can download firmwares
+        - { path: ^/web/api/check/auth/firmware, roles: [ROLE_ADMIN, ROLE_SMARTEMS] }
+        - { path: ^/web/tus/upload, roles: ROLE_UPLOAD }
+        - { path: ^/web/api, roles: [ROLE_USER] }
+        # Access to /web/doc/(default|admin|smartems|vpnsecuritysuite) is blocked based on configuration by App\EventListener\NelmioRouteResponseListener
+        - { path: ^/web/doc, roles: PUBLIC_ACCESS }
+        - { path: "^/device/check/auth/firmware", roles: PUBLIC_ACCESS }
+        - { path: "^/", roles: ROLE_DEVICE } #transfer to comm controllers

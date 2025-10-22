@@ -1,0 +1,22 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+parameters:
+  # parameter used in framework.trusted_headers
+  # framework.trusted_headers configuration field had to be separated to this file to safe update by entrypoint.sh
+  # in case of this field using "%env()%" is not possible due to bug in symfony with env arrays e.g. %env(csv:XXX)%
+  PARAMETER_TRUSTED_HEADERS: "forwarded,x-forwarded-for,x-forwarded-host,x-forwarded-proto,x-forwarded-port,x-forwarded-prefix"
+  PARAMETER_TRUSTED_HOSTS: []
+  FILESTORAGE_DIR:
+  MYSQL_SSL_CA:
+  MYSQL_SERVER_VALIDATION: false
+  MYSQL_SSL_KEY:
+  MYSQL_SSL_CERT:

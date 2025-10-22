@@ -1,0 +1,35 @@
+// Copyright (c) 2025 Contributors to the Eclipse Foundation.
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0
+//
+// SPDX-License-Identifier: Apache-2.0
+
+import React from "react";
+import { DeviceHubOutlined } from "@mui/icons-material";
+import { DetailsProvider } from "~app/contexts/Details";
+import Details from "~app/components/Crud/Details";
+import DeviceEndpointDeviceDetailsContent from "~app/components/Details/DeviceEndpointDevice/DeviceEndpointDeviceDetails";
+
+const DeviceEndpointDeviceDetails = () => {
+    return (
+        <DetailsProvider>
+            <Details
+                {...{
+                    endpointPrefix: "/deviceendpointdevice",
+                    titleProps: {
+                        title: "route.title.deviceEndpointDevice",
+                        icon: <DeviceHubOutlined />,
+                    },
+                    render: (object) => <DeviceEndpointDeviceDetailsContent {...{ deviceEndpointDevice: object }} />,
+                }}
+            />
+        </DetailsProvider>
+    );
+};
+
+export default DeviceEndpointDeviceDetails;

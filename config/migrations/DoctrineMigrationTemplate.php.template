@@ -1,0 +1,44 @@
+<?php
+
+// Copyright (c) 2025 Contributors to the Eclipse Foundation.
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0
+//
+// SPDX-License-Identifier: Apache-2.0
+
+declare(strict_types=1);
+
+namespace <namespace>;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * ! Migration file MUST **NOT** BE dependent on application code.
+ *
+ * @see devDocs/Doctrine migrations.md for more details and example queries
+ *
+ * Migration for version vTODO
+ * Migration for task TODO Functionality name
+ */
+final class <className> extends AbstractMigration
+{
+    public function preUp(Schema $schema): void
+    {
+    }
+
+    public function up(Schema $schema): void
+    {
+        // TODO this up() migration is auto-generated, please modify it to your needs and remove this comment
+<up>
+    }<override>
+
+    public function postUp(Schema $schema): void
+    {
+    }
+}

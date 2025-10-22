@@ -1,0 +1,215 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+imports:
+    # !!! CUSTOM WORKAROUND !!!
+    # parameters: ... block is separated to ../docker_parameters.yml file for safe update by entrypoint.sh
+    # this file is used if in case of configured field using "%env()%" is not possible due to way field is validated in bundle e.g. framework.trusted_hosts
+    # using "%env()%" is not possible due to bug in symfony with env arrays e.g. %env(csv:XXX)%
+    - { resource: "../docker_parameters.yml", ignore_errors: true }
+
+parameters:
+    aesPasswordEncryptionKey: "YHIDTSKMDUISLK"
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $appVersion: "%env(resolve:APP_VERSION)%"
+            $uppercaseFirmwareVersions: "%env(UPPERCASE_FIRMWARE_VERSIONS)%"
+
+            $featureScepEnabled: "%env(bool:FEATURE_SCEP_ENABLED)%"
+            $featureVpnEnabled: "%env(bool:FEATURE_VPN_ENABLED)%"
+
+            $projectDir: "%kernel.project_dir%"
+            $publicDir: "%kernel.project_dir%/public"
+            $filestorageDir: "%kernel.project_dir%/filestorage"
+            $logsDir: "%kernel.project_dir%/filestorage/logs"
+
+            $aesPasswordEncryptionKey: "%aesPasswordEncryptionKey%"
+            # Parameter name provided by Web server (NGINX) with certificate content
+            # (if exists it is confirmed by NGINX that user has matching key)
+            # Certificate itself is not validated by NGINX - to allow CA to change without configuration change
+            $httpX509CertificateParameterName: "CLIENT_SSL_CERT"
+            $httpBasicRealmName: "Secured device Area"
+            $httpDigestKey: "TheKey"
+            $httpDigestRealmName: "Router Area"
+            $httpDigestNonceValiditySeconds: 300
+            # Variable defines list of reserved route prefixes that cannot be used in DeviceType $routePrefix. Validated by App\Validator\Constraints\DeviceTypeValidator
+            $reservedRoutePrefixes:
+                - "/web"
+            int $sessionTimeout: "%env(int:SESSION_TIMEOUT)%"
+            int $accessTokenTtl: "%env(int:ACCESS_TOKEN_TTL)%"
+            string $refreshTokenParameterName: "%gesdinet_jwt_refresh_token.token_parameter_name%"
+            string $refreshTokenReturnExpirationParameterName: "%gesdinet_jwt_refresh_token.return_expiration_parameter_name%"
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: "../src/"
+        exclude:
+            - "../src/DependencyInjection/"
+            - "../src/Entity/"
+            - "../src/Kernel.php"
+
+    # Register dotenv:dump command to avoid keeping composer on the production image
+    Symfony\Component\Dotenv\Command\DotenvDumpCommand: ~
+
+    device_communication_route_provider:
+        class: App\Routing\DeviceCommunicationRouteProvider
+
+    App\Security\Hasher\AesPasswordHasher:
+        class: App\Security\Hasher\AesPasswordHasher
+        arguments:
+            - "%aesPasswordEncryptionKey%"
+
+    App\EventListener\UploadListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    App\EventListener\AuditableListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: kernel.event_listener, event: kernel.finish_request, method: flushChanges }
+            - { name: kernel.event_listener, event: console.terminate, method: flushChanges }
+
+    fos_rest.serializer.form_error_normalizer:
+        class: Carve\ApiBundle\Serializer\Normalizer\FormErrorNormalizer
+
+    fos_rest.view_response_listener:
+        class: Carve\ApiBundle\EventListener\ViewResponseListener
+
+    # Device Communication services cannot be shared (new instance will be passed)
+    App\DeviceCommunication\EmptyCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\EmptyScepCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\EmptyVpnCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\RouterCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\RouterDsaCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\RouterOneConfigCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\FlexEdgeCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\SgGatewayCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\VpnContainerClientCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\EdgeGatewayCommunication:
+        public: true
+        shared: false
+    App\DeviceCommunication\EdgeGatewayWithVpnContainerClientCommunication:
+        public: true
+        shared: false
+
+    Symfony\Component\DependencyInjection\ContainerInterface: "@service_container"
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Nelmio\ApiDocBundle\Util\ControllerReflector: "@nelmio_api_doc.controller_reflector"
+
+    nelmio_api_doc.routes.collection:
+        autowire: false
+        public: false
+        class: Symfony\Component\Routing\RouteCollection
+        factory: ["@router", "getRouteCollection"]
+
+    # Final part of name ".admin" of this service is strictly connected to existing area
+    nelmio_api_doc.routes.admin:
+        autowire: false
+        public: false
+        class: Symfony\Component\Routing\RouteCollection
+        factory: ['@App\Routing\NelmioRouteCollectionBuilder', "filter"]
+        arguments:
+            - "@nelmio_api_doc.routes.collection"
+            - "admin"
+
+    # Final part of name ".smartems" of this service is strictly connected to existing area
+    nelmio_api_doc.routes.smartems:
+        autowire: false
+        public: false
+        class: Symfony\Component\Routing\RouteCollection
+        factory: ['@App\Routing\NelmioRouteCollectionBuilder', "filter"]
+        arguments:
+            - "@nelmio_api_doc.routes.collection"
+            - "smartems"
+
+    # Final part of name ".vpnsecuritysuite" of this service is strictly connected to existing area
+    nelmio_api_doc.routes.vpnsecuritysuite:
+        autowire: false
+        public: false
+        class: Symfony\Component\Routing\RouteCollection
+        factory: ['@App\Routing\NelmioRouteCollectionBuilder', "filter"]
+        arguments:
+            - "@nelmio_api_doc.routes.collection"
+            - "vpnsecuritysuite"
+
+    # Final part of name ".smartemsvpnsecuritysuite" of this service is strictly connected to existing area
+    nelmio_api_doc.routes.smartemsvpnsecuritysuite:
+        autowire: false
+        public: false
+        class: Symfony\Component\Routing\RouteCollection
+        factory: ['@App\Routing\NelmioRouteCollectionBuilder', "filter"]
+        arguments:
+            - "@nelmio_api_doc.routes.collection"
+            - "smartemsvpnsecuritysuite"
+
+    App\EventListener\NelmioRouteResponseListener:
+        class: App\EventListener\NelmioRouteResponseListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    App\Describer\ApiDescriber:
+        class: App\Describer\ApiDescriber
+        tags: ["nelmio_api_doc.route_describer"]
+
+    App\EventSubscriber\AuthenticationSuccessSubscriber:
+        class: App\EventSubscriber\AuthenticationSuccessSubscriber
+        arguments:
+            - "@stof_doctrine_extensions.listener.blameable"
+
+    stof_doctrine_extensions.tool.actor_provider:
+        class: App\Tool\ActorProvider
+
+    # Override carve service to enable using role-based access for API doc
+    Carve\ApiBundle\Service\ApiResourceManager:
+        class: App\Service\CarveApiResourceManager
+        arguments:
+            - "@security.helper"
+            - "@property_info"
+
+when@test:
+    services:
+        _defaults:
+            # Make services public in test environment to always be able to access them
+            public: true

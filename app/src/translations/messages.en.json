@@ -1,0 +1,2993 @@
+{
+    "label": {
+        "ssoRoleVpnCertificateAutoGenerate": "Auto-generate VPN certificate for users with VPN permissions on first login",
+        "secretValueBehaviour": "Secret value behaviour",
+        "secretValueRenewAfterDays": "Secret value renew after days",
+        "renewedAt": "Last renewed at",
+        "roleVpnEndpointDevices": "Allow user to manage endpoint devices",
+        "secretValue": "Secret value",
+        "operation": "Operation",
+        "deviceTypeSecret": "Device type secret",
+        "useAsVariable": "Use secret as device variable",
+        "secretMinimumLength": "Secret minimal length",
+        "secretDigitsAmount": "Secret minimal digits amount",
+        "secretUppercaseLettersAmount": "Secret minimal upper case letters amount",
+        "secretLowercaseLettersAmount": "Secret minimal lower case letters amount",
+        "secretSpecialCharactersAmount": "Secret minimal special characters amount",
+        "manualForceRenewal": "Allow users to force device secret automatic renewal",
+        "manualEdit": "Allow users to manually edit secret value",
+        "manualEditRenewReminder": "Enable reminder for manual secret value renewal",
+        "manualEditRenewReminderAfterDays": "Reminder for manual secret value renewal in days",
+        "variableNamePrefix": "Variable name prefix",
+        "changeId": "Change ID",
+        "oldValues": "Old",
+        "newValues": "New",
+        "entityName": "Entity name",
+        "entityId": "Entity ID",
+        "microsoftOidcGenerateCertificateExpiryDays": "Certificate expiry in days",
+        "microsoftOidcGenerateCertificate": "Generate public and private key",
+        "microsoftOidcUploadedCertificatePublic": "Public key",
+        "microsoftOidcUploadedCertificatePrivate": "Private key",
+        "microsoftOidcCredential": "Credential",
+        "microsoftOidcTimeout": "Request timeout",
+        "ssoUser": "Single sign-on (SSO) user",
+        "roleName": "Role value",
+        "microsoftOidcRole": "Permission",
+        "ssoAllowCustomRedirectUrl": "Allow custom redirect URL",
+        "singleSignOn": "Single sign-on (SSO)",
+        "microsoftOidcAppId": "Application (client) ID",
+        "microsoftOidcClientSecret": "Client secret",
+        "microsoftOidcDirectoryId": "Directory (tenant) ID",
+        "microsoftOidcRoleMappings": "Role mappings",
+        "disableAdminRestApiDocumentation": "Disable REST API documentation for Administrator",
+        "disableSmartemsRestApiDocumentation": "Disable REST API documentation for user with device management permissions",
+        "disableVpnSecuritySuiteRestApiDocumentation": "Disable REST API documentation for user with VPN permissions",
+        "enabledExpireAt": "Enabled until",
+        "certificateStatus": "Certificate status",
+        "auditLogsCleanupDuration": "Audit logs cleanup duration (in days)",
+        "auditLogsCleanupSize": "Audit logs cleanup size (in megabytes)",
+        "communicationLogsCleanupDuration": "Communication logs cleanup duration (in days)",
+        "communicationLogsCleanupSize": "Communication logs cleanup size (in megabytes)",
+        "diagnoseLogsCleanupDuration": "Diagnose logs cleanup duration (in days)",
+        "diagnoseLogsCleanupSize": "Diagnose logs cleanup size (in megabytes)",
+        "configLogsCleanupDuration": "Config logs cleanup duration (in days)",
+        "configLogsCleanupSize": "Config logs cleanup size (in megabytes)",
+        "vpnLogsCleanupDuration": "VPN logs cleanup duration (in days)",
+        "vpnLogsCleanupSize": "VPN logs cleanup size (in megabytes)",
+        "deviceFailedLoginAttemptsCleanupDuration": "Device failed login attempts cleanup duration (in days)",
+        "deviceFailedLoginAttemptsCleanupSize": "Device failed login attempts cleanup size (in megabytes)",
+        "userLoginAttemptsCleanupDuration": "User login attempts cleanup duration (in days)",
+        "userLoginAttemptsCleanupSize": "User login attempts cleanup size (in megabytes)",
+        "deviceCommandsCleanupDuration": "Device commands cleanup duration (in days)",
+        "deviceCommandsCleanupSize": "Device commands cleanup size (in megabytes)",
+        "maintenanceLogsCleanupDuration": "Maintenance logs cleanup duration (in days)",
+        "maintenanceLogsCleanupSize": "Maintenance logs cleanup size (in megabytes)",
+        "importFileRowLogsCleanupDuration": "Import logs cleanup duration (in days)",
+        "importFileRowLogsCleanupSize": "Import logs cleanup size (in megabytes)",
+        "deviceLabels": "Device labels",
+        "labels": "Labels",
+        "commonNamePrefix": "Common name prefix",
+        "variablePrefix": "Variable name prefix",
+        "certificateCategory": "Certificate category",
+        "certificateEntity": "Certificate entity",
+        "radiusUser": "Radius user",
+        "radiusEnabled": "Radius enabled",
+        "radiusAuth": "Radius auth type",
+        "radiusServer": "Radius server address",
+        "radiusSecret": "Radius secret",
+        "radiusNasAddress": "Radius NAS IP address",
+        "radiusNasPort": "Radius NAS port",
+        "radiusWelotecGroupMappingEnabled": "Radius group mapping",
+        "radiusWelotecTagMappingEnabled": "Radius tag mapping",
+        "radiusWelotecGroupMappings": "Radius group mappings",
+        "radiusUserRole": "Permission",
+        "commandStatus": "Command status",
+        "commandStatusErrorCategory": "Command status error category",
+        "commandStatusErrorPid": "Command status error PID",
+        "commandStatusErrorMessage": "Command status error message",
+        "commandName": "Command name",
+        "commandTransactionId": "Command transaction ID",
+        "generateCertificate": "Generate certificate",
+        "deleteCertificate": "Delete certificate",
+        "revokeCertificate": "Revoke certificate",
+        "parseStatus": "Status",
+        "importStatus": "Status",
+        "columnName": "Column",
+        "rowKey": "Row",
+        "vpnLastConnectionAt": "Last opened connection",
+        "applyAccessTags": "Overwrite access tags",
+        "applyMasquerade": "Overwrite masquerading",
+        "applyVariables": "Overwrite variables",
+        "applyEndpointDevices": "Overwrite endpoint devices and virtual subnet size",
+        "applyLabels": "Overwrite device labels",
+        "applyDeviceDescription": "Overwrite device descriptions",
+        "userDeviceTypes": "Permitted device types",
+        "userDeviceType": "Permitted device type",
+        "hasCertificate": "Has certificate",
+        "certificateCaSubject": "Certificate CA Subject",
+        "certificateValidTo": "Certificate valid to",
+        "isCertificateExpired": "Is certificate expired",
+        "commandRetryCount": "Device commands retry count",
+        "reinstallFirmware1": "Reinstall primary firmware",
+        "reinstallFirmware2": "Reinstall secondary firmware",
+        "reinstallFirmware3": "Reinstall tertiary firmware",
+        "reinstallConfig1": "Reinstall primary config",
+        "reinstallConfig2": "Reinstall secondary config",
+        "reinstallConfig3": "Reinstall tertiary config",
+        "vpnTrafficOut": "Traffic out",
+        "vpnTrafficIn": "Traffic in",
+        "vpnConnected": "Connected to VPN",
+        "connectionAmount": "Connections amount",
+        "template": "Template",
+        "model": "Model",
+        "identifier": "Identifier",
+        "stagingTemplate": "Staging template",
+        "productionTemplate": "Production template",
+        "deviceDescription": "Device description",
+        "subnet": "Subnet",
+        "masqueradeType": "Masquerading",
+        "masquerades": "Subnets for masquerading",
+        "connectedSince": "Connected since",
+        "validTo": "valid to",
+        "target": "Target",
+        "endpointDevice": "Endpoint device",
+        "device": "Device",
+        "connection": "Connection",
+        "connectedDevicesReinstallConfig": "Would you like to reinstall this config for all connected devices?",
+        "connectedDevicesReinstallName": "Would you like to reinstall {{ name }} for all connected devices?",
+        "routerIdentifier": "Router identifier",
+        "configGeneratorPhp": "Enable PHP config generator",
+        "configGeneratorTwig": "Enable Twig config generator",
+        "content": "Content",
+        "generator": "Generator",
+        "vpnConnectionLimit": "Enable VPN connection duration limit",
+        "vpnConnectionDuration": "VPN connection duration limit",
+        "opnsenseUrl": "OPNsense URL",
+        "opnsenseApiKey": "OPNsense api key",
+        "opnsenseApiSecret": "OPNsense api secret",
+        "opnsenseTimeout": "OPNsense request timeout",
+        "devicesOpenvpnServerDescription": "Devices OpenVPN name",
+        "techniciansOpenvpnServerDescription": "Technicians OpenVPN name",
+        "devicesVpnNetworks": "Devices OpenVPN network",
+        "devicesVirtualVpnNetworks": "Devices virtual network",
+        "techniciansVpnNetworks": "Technicians OpenVPN network",
+        "devicesVpnNetworksRanges": "Devices OpenVPN available IP ranges",
+        "devicesVirtualVpnNetworksRanges": "Devices virtual available IP ranges",
+        "techniciansVpnNetworksRanges": "Technicians OpenVPN available IP ranges",
+        "devicesOvpnTemplate": "Devices OpenVPN template",
+        "techniciansOvpnTemplate": "Technicians OpenVPN template",
+        "certificateType": "Certificate type",
+        "hasCertificateType": "Enable {{ certificateType }} certificates",
+        "onDemandRevokeCertificate": "Revoke {{ certificateType }} certificate",
+        "onDemandGenerateCertificate": "Generate {{ certificateType }} certificate",
+        "pkiEnableSubjectAltName": "Enable {{ certificateType }} certificate Subject Alt Name",
+        "pkiSubjectAltNameType": "{{ certificateType }} subject Alt Name type",
+        "pkiSubjectAltNameValue": "{{ certificateType }} subject Alt Name value",
+        "pkiCertificatesAutoRenewDaysBefore": "Auto-renew device's {{ certificateType }} certificate before",
+        "pkiEnableCertificatesAutoRenew": "Enable auto-renew device's {{ certificateType }} certificate",
+        "certificateTypeConfiguration": "{{ certificateType }} certificate SCEP configuration",
+        "certificateTypes": "{{ certificateType }} certificate settings",
+        "enableDeviceVpnCertificate": "Enable Device VPN certificate",
+        "downloadEnabled": "Can user download certificate?",
+        "uploadEnabled": "Can user upload certificate?",
+        "deleteEnabled": "Can user delete certificate?",
+        "pkiEnabled": "Can user generate and revoke certificate using PKI?",
+        "enabledBehaviour": "Automatic certificate behaviour when device or user is enabled",
+        "disabledBehaviour": "Automatic certificate behaviour when device or user is disabled",
+        "pkiType": "PKI protocol type",
+        "scepUrl": "SCEP URL",
+        "scepCrlUrl": "SCEP CRL URL",
+        "scepRevocationUrl": "SCEP revocation URL",
+        "scepTimeout": "SCEP request timeout",
+        "scepRevocationBasicAuthUser": "SCEP user",
+        "scepRevocationBasicAuthPassword": "SCEP password",
+        "scepHashFunction": "SCEP hash function",
+        "scepKeyLength": "SCEP key length",
+        "scepVerifyServerSslCertificate": "Should SCEP server SSL certificate be verified?",
+        "verifyOpnsenseSslCertificate": "Should OPNsense server SSL certificate be verified?",
+        "featureName": "Feature name",
+        "updatedBy": "Updated by",
+        "createdBy": "Created by",
+        "updatedAtBy": "Updated",
+        "createdAtBy": "Created",
+        "uuid": "UUID",
+        "filename": "File name",
+        "deviceType": "Device type",
+        "sourceType": "Source",
+        "externalUrl": "External URL",
+        "version": "Version",
+        "md5": "MD5",
+        "autoRemoveBackupsAfter": "Automatically remove backups after specified number of days",
+        "diskUsageAlarm": "Disk usage alarm [%]",
+        "appVersion": "SEALMAN version",
+        "systemTime": "System-Time",
+        "cpu": "CPU-Load",
+        "ram": "RAM-Load",
+        "filesystem": "Filesystem",
+        "databaseSize": "Database size",
+        "expireAt": "Expire date",
+        "featureScep": "SCEP functionalities",
+        "featureVpn": "VPN functionalities",
+        "maintenanceSchedule": "Maintenance schedule",
+        "nextJobAt": "Next job at",
+        "dayOfMonth": "Day of month",
+        "dayOfWeek": "Day of week",
+        "hour": "Hour",
+        "minute": "Minute",
+        "filepath": "File",
+        "maintenanceEnableConfirmation": "I want to ENABLE maintenance mode",
+        "maintenanceDisableConfirmation": "I want to DISABLE maintenance mode",
+        "backupForUpdateConfirmation": "I want to create backup for update job",
+        "maintenanceId": "Maintenance ID",
+        "id": "ID",
+        "maintenance": "Maintenance job",
+        "message": "Message",
+        "logLevel": "Level",
+        "type": "Type",
+        "status": "Status",
+        "updatedAtFrom": "Updated at from",
+        "updatedAtTo": "Updated at to",
+        "updatedAt": "Updated at",
+        "restoreFilepath": "Archive to restore",
+        "backupDatabase": "Backup database",
+        "backupFilestorage": "Backup filestorage",
+        "backupPassword": "Encrypt backup with password (optional)",
+        "restoreDatabase": "Restore database",
+        "restoreFilestorage": "Restore filestorage",
+        "restorePassword": "Decrypt backup using password (optional)",
+        "endpointDevices": "Endpoint devices",
+        "virtualIpHostPart": "Virtual IP address",
+        "physicalIp": "Physical IP Address",
+        "sourceDeviceToNetwork": "Source network",
+        "destinationDeviceToNetwork": "Destination network",
+        "variableValue": "Value",
+        "variables": "Variables",
+        "accessTags": "Access tags",
+        "requestConfigData": "Request config data",
+        "requestDiagnoseData": "Request diagnose data",
+        "staging": "Staging",
+        "imsi": "IMSI",
+        "imei": "IMEI",
+        "firmwareVersion": "{{ firmware }} version",
+        "firmwareVersion1": "Primary firmware version",
+        "firmwareVersion2": "Secondary firmware version",
+        "firmwareVersion3": "Tertiary firmware version",
+        "firmware1": "Primary firmware",
+        "firmware2": "Secondary firmware",
+        "firmware3": "Tertiary firmware",
+        "config1": "Primary config",
+        "config2": "Secondary config",
+        "config3": "Tertiary config",
+        "imsi2": "IMSI2",
+        "operatorCode": "Operator code",
+        "band": "Band",
+        "cellId": "Cell ID",
+        "networkGeneration": "Network generation",
+        "rsrp": "RSRP",
+        "rsrpValue": "RSRP unified",
+        "cellularIp1": "Cellular 1 IP",
+        "cellularUptime1": "Cellular 1 uptime",
+        "cellularUptimeSeconds1": "Cellular 1 uptime",
+        "cellularUptimeSecondsExport1": "Cellular 1 uptime (in seconds)",
+        "cellularIp2": "Cellular 2 IP",
+        "cellularUptime2": "Cellular 2 uptime",
+        "cellularUptimeSeconds2": "Cellular 2 uptime",
+        "cellularUptimeSecondsExport2": "Cellular 2 uptime (in seconds)",
+        "xForwardedFor": "X-Forwarded-For",
+        "host": "Host",
+        "ipv6Prefix": "IPv6 prefix",
+        "uptime": "Uptime",
+        "uptimeSeconds": "Uptime (in seconds)",
+        "seenAt": "Last seen at",
+        "hardwareVersion": "Hardware version",
+        "endorsementKey": "Endorsement key",
+        "registrationId": "Registration ID",
+        "serialNumber": "Serial number",
+        "description": "Description",
+        "reinstallConfig": "Reinstall {{ config }}",
+        "reinstallFirmware": "Reinstall {{ firmware }}",
+        "enableConfigLogs": "Enable saving config logs communication history",
+        "enableConfigMinRsrp": "Enable minimal RSRP check before sending config",
+        "configMinRsrp": "Firmware minimal RSRP",
+        "enableFirmwareMinRsrp": "Enable minimal RSRP check before sending firmware",
+        "firmwareMinRsrp": "Config minimal RSRP",
+        "deviceCommandExpireDuration": "Device command expire duration",
+        "deviceCommandMaxRetries": "Device command maximum number of retries",
+        "hasDeviceCommands": "Enable device commands",
+        "hasRequestDiagnose": "Enable request diagnose",
+        "hasRequestConfig": "Enable request config",
+        "fieldSerialNumber": "Serial number property requirements",
+        "fieldImsi": "IMSI property requirements",
+        "fieldModel": "Model property requirements",
+        "fieldRegistrationId": "Registration ID property requirements",
+        "fieldEndorsementKey": "Endorsement key property requirements",
+        "fieldHardwareVersion": "Hardware version property requirements",
+        "config": "{{ configName }}",
+        "firmware": "{{ firmwareName }}",
+        "hasMasquerade": "Enable masquerade",
+        "hasVariables": "Enable variables",
+        "hasTemplates": "Enable templates",
+        "hasGsm": "Enable GSM",
+        "hasDeviceToNetworkConnection": "Enable device-to-network connection",
+        "hasEndpointDevices": "Enable endpoint devices",
+        "hasVpn": "Enable VPN",
+        "hasScepCertificates": "Enable SCEP certificates",
+        "hasCertificates": "Enable certificates",
+        "virtualSubnetCidr": "Devices virtual subnet size",
+        "virtualSubnet": "Devices virtual subnet",
+        "slug": "Slug",
+        "communicationProcedure": "Communication procedure",
+        "routePrefix": "Route prefix",
+        "authenticationMethod": "Authentication method",
+        "credentialsSource": "Credentials source",
+        "deviceTypeSecretCredential": "Device secret with credentials",
+        "deviceTypeCertificateTypeCredential": "Certificate type credential",
+        "hasConfig1": "Enable config 1",
+        "hasAlwaysReinstallConfig1": "Always try to reinstall config 1",
+        "hasAlwaysReinstallConfig2": "Always try to reinstall config 2",
+        "hasAlwaysReinstallConfig3": "Always try to reinstall config 3",
+        "nameConfig1": "Config 1 name",
+        "formatConfig1": "Config 1 format",
+        "hasConfig2": "Enable config 2",
+        "nameConfig2": "Config 2 name",
+        "formatConfig2": "Config 2 format",
+        "hasConfig3": "Enable config 3",
+        "nameConfig3": "Config 3 name",
+        "formatConfig3": "Config 3 format",
+        "hasFirmware1": "Enable firmware 1",
+        "nameFirmware1": "Firmware 1 name",
+        "customUrlFirmware1": "Firmware 1 custom url host",
+        "hasFirmware2": "Enable firmware 2",
+        "nameFirmware2": "Firmware 2 name",
+        "customUrlFirmware2": "Firmware 2 custom url host",
+        "hasFirmware3": "Enable firmware 3",
+        "nameFirmware3": "Firmware 3 name",
+        "customUrlFirmware3": "Firmware 3 custom url host",
+        "certificateEncoding": "Certificate encoding",
+        "enableSubjectAltName": "Enable certificate Subject Alt Name",
+        "subjectAltNameType": "Subject Alt Name type",
+        "subjectAltNameValue": "Subject Alt Name value",
+        "certificatesAutoRenewDaysBefore": "Auto-renew device's certificate before",
+        "enableCertificatesAutoRenew": "Enable auto-renew device's certificate",
+        "connectionAggregationPeriod": "Connection aggregation period",
+        "enableConnectionAggregation": "Enable device communication connection counting",
+        "deviceTypeName": "Name",
+        "certificateCommonNamePrefix": "Certificate subject prefix",
+        "deviceTypeDeviceName": "Group name",
+        "icon": "Icon",
+        "color": "Color",
+        "deviceTypeFlexEdge": "Treat this device as a part of flex edge group",
+        "deviceTypeEdgeGateway": "Treat this device as a part of edge gateway group",
+        "deviceTypeRouter": "Treat this device as a part of router group",
+        "deviceName": "Device name",
+        "tooManyFailedLoginAttempts": "Too many failed login attempts",
+        "passwordExpireDays": "Password expiry in days",
+        "passwordBlockReuseOldPasswordCount": "Block reusing old passwords",
+        "passwordMinimumLength": "Password minimum length",
+        "passwordDigitRequired": "Should password require a digit?",
+        "passwordBigSmallCharRequired": "Should password require a big and small character?",
+        "passwordSpecialCharRequired": "Should password require a special character?",
+        "totpKeyRegeneration": "TOTP regeneration interval",
+        "totpWindow": "TOTP validity period",
+        "totpTokenLength": "TOTP length",
+        "totpSecretLength": "Two-factor authentication secret length",
+        "totpAlgorithm": "Hash algorithm",
+        "failedLoginAttemptsEnabled": "Enable failed login attempts limits",
+        "failedLoginAttemptsLimit": "Failed login attempts limit",
+        "failedLoginAttemptsDisablingDuration": "Blocking duration",
+        "unknown": "N/A",
+        "user": "User",
+        "vpnIp": "VPN IP",
+        "virtualIp": "Virtual IP",
+        "createdAtFrom": "Created at from",
+        "createdAtTo": "Created at to",
+        "createdAt": "Created at",
+        "totpValid": "TOTP valid",
+        "loginValid": "Login successful",
+        "remoteHost": "Remote host",
+        "totp": "TOTP",
+        "totpEnabled": "Two-factor authentication enabled",
+        "disablePasswordExpire": "Disable password expire",
+        "certificateSubject": "Certificate subject",
+        "certificate": "Certificate",
+        "privateKey": "Private key",
+        "certificateCa": "CA",
+        "pkcs12": "PKCS12 file",
+        "deleteCa": "Delete CA",
+        "deleteKey": "Delete private key",
+        "actions": "Actions",
+        "name": "Name",
+        "firstName": "First name",
+        "username": "Username",
+        "userIdentifier": "User identifier",
+        "url": "Url",
+        "role": "Role",
+        "roleAdmin": "Administrator permissions",
+        "roleSmartems": "Device management permissions",
+        "roleVpn": "VPN permissions",
+        "isAvailable": "Available",
+        "enabled": "Enabled",
+        "password": "Password",
+        "plainPassword": "Password",
+        "plainPasswordRepeat": "Repeat password",
+        "currentPlainPassword": "Current password",
+        "newPlainPassword": "New password",
+        "newPlainPasswordRepeat": "Repeat new password"
+    },
+    "help": {
+        "exampleDeviceSecretValue": "Example value: {{ value }}",
+        "secretValueBehaviour": "Decide how secret value should behave during device communication.<br/><strong>None</strong> - Device secret value will not be generated or renewed<br/><strong>Auto-generate</strong> - Device secret value will be generated when missing<br/><strong>Auto-renew</strong> - Device secret value will be renewed after specified number of days<br/><strong>Auto-generate and auto-renew</strong> - Device secret value will be generated when missing and renewed after specified number of days",
+        "manualEditRenewReminder": "Reminder will be visible on device details screen in device secret section",
+        "ssoAllowCustomRedirectUrl": "Enable \"/web/api/authentication/sso/microsoftoidc/custom/redirect\" and \"/web/api/authentication/sso/microsoftoidc/custom/authorize\" endpoints which allows to provide custom redirect URL for Microsoft Entra ID with OpenID Connect authorization URL",
+        "microsoftOidcTimeout": "Timeout in seconds. Recommended value: 10",
+        "opnsenseTimeout": "Timeout in seconds. Recommended value: 5",
+        "scepTimeout": "Timeout in seconds. Recommended value: 5",
+        "createCredentialsSource": "Please create device type, add secret and then edit this device type to enable this option",
+        "credentialsSource": "Device authentication contains credentials shared within all devices in device type. Device secret contain credentials for specific device",
+        "deviceTypeSecretCredential": "Choose device secret that will be used as source of credentials",
+        "deviceTypeCertificateTypeCredential": "Choose certificate type that will be used as credential",
+        "useAsVariable": "Once value is assigned to device secret, device variables with most commonly used secret value encodings will be available",
+        "deviceTypeSecretAccessTags": "Allow users with device management permissions and at least one of choosen access tags to show and edit device secret value",
+        "enabledExpireAt": "User will be enabled until selected date. You can leave this field empty to have user enabled for unlimited time",
+        "hasAlwaysReinstallConfig1": "Should reinstall config 1 flag always be set to true. Please refer do communication procedure documentation",
+        "hasAlwaysReinstallConfig2": "Should reinstall config 2 flag always be set to true. Please refer do communication procedure documentation",
+        "hasAlwaysReinstallConfig3": "Should reinstall config 3 flag always be set to true. Please refer do communication procedure documentation",
+        "auditLogsCleanupDuration": "Remove audit logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "auditLogsCleanupSize": "Remove audit logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "communicationLogsCleanupDuration": "Remove communication logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "communicationLogsCleanupSize": "Remove communication logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "diagnoseLogsCleanupDuration": "Remove diagnose logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "diagnoseLogsCleanupSize": "Remove diagnose logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "configLogsCleanupDuration": "Remove config logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "configLogsCleanupSize": "Remove config logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "vpnLogsCleanupDuration": "Remove VPN logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "vpnLogsCleanupSize": "Remove VPN logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "deviceFailedLoginAttemptsCleanupDuration": "Remove device failed login attempts older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "deviceFailedLoginAttemptsCleanupSize": "Remove device failed login attempts that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "userLoginAttemptsCleanupDuration": "Remove user login attempts older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "userLoginAttemptsCleanupSize": "Remove user login attempts that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "deviceCommandsCleanupDuration": "Remove device commands older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "deviceCommandsCleanupSize": "Remove device commands that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "maintenanceLogsCleanupDuration": "Remove maintenance logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "maintenanceLogsCleanupSize": "Remove maintenance logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "importFileRowLogsCleanupDuration": "Remove import logs older then cleanup duration. Disable it by setting cleanup duration to 0",
+        "importFileRowLogsCleanupSize": "Remove import logs that exceed cleanup size. Disable it by setting cleanup size to 0",
+        "radiusEnabled": "Should Radius authentication be used",
+        "radiusWelotecTagMappingEnabled": "Should User Access Tags be based radius attribute Welotec-Tag-Name. If disabled Radius Users will have access to all devices",
+        "radiusWelotecGroupMappingEnabled": "Should User credentials be based on Radius group mapping (based on radius attribute Welotec-Group-Name). If no valid group will be provided by radius, user will get \"Invalid Credentials\" response. If disabled Radius Users will always be logged as Administrators",
+        "requiredFieldEnableToUse": "to use this functionality",
+        "fieldRequirement": "If property is not supported by choosen communication procedure, it will have no effect during device communication. However it still can be used to store information in WebUI and database",
+        "fieldRequiredByCommunicationProcedure": "This functionality is required to be enabled by choosen communication procedure",
+        "certificateTypeRequired": "This certificate type is required",
+        "deviceTypeVirtualSubnetCidr": "Default value of how many IP's from virtual subnet should be assigned to device and it's endpoint devices. Can also be specifically configured on template and device level",
+        "deviceTypeMasqueradeType": "Default value of masquerade type should be assigned to device. Can also be specifically configured on template and device level",
+        "virtualSubnetCidr": "How many IP's from virtual subnet should be assigned to device and it's endpoint devices",
+        "certificateEncoding": "How certificate variables should be encoded? Hex is generaly used, One line PEM is required by e.g. TK500",
+        "icon": "Icon is used to visually distinguish this device type in device list",
+        "color": "Color is used to visually distinguish this device type in device list",
+        "deviceTypeName": "Device type specific unique name e.g. TK800",
+        "deviceTypeDeviceName": "Device type group / general name e.g. Router for TK800",
+        "certificateCommonNamePrefix": "Value will be used as prefix for generated SSL certificate subject (common name)",
+        "routerIdentifier": "Router identifier can only be changed when there are no devices with Router or Router DSA communication procedures existing in the system.",
+        "configGeneratorPhp": "PHP generator is deprecated and will be removed in next version",
+        "vpnConnectionDuration": "Duration in format described at http://php.net/manual/en/datetime.modify.php eg. '+ 4 hours'",
+        "opnsenseUrl": "URL of OPNsense deployed on server, eg. http://<IP ADDRESS or DOMAIN>/",
+        "opnsenseApiKey": "Key of OPNsense API user",
+        "opnsenseApiSecret": "Secret of OPNsense API user",
+        "devicesOpenvpnServerDescription": "Description of OpenVPN server for devices (set in OPNsense)",
+        "techniciansOpenvpnServerDescription": "Description of OpenVPN server for technicians (set in OPNsense)",
+        "devicesVpnNetworks": "OpenVPN IP subnet for devices eg. 172.16.0.0/16",
+        "devicesVirtualVpnNetworks": "Virtual IP subnets for devices and endpoint devices eg. 10.0.0.0/14,172.25.0.0/16,192.168.2.0/24.",
+        "techniciansVpnNetworks": "OpenVPN IP subnet for technicians eg. 192.168.154.0/24",
+        "devicesVpnNetworksRanges": "OpenVPN IP range for devices eg. 172.16.0.3-172.16.0.253. Please make sure required special network addresses are out of ranges - like gateway IP, broadcast IP, etc.",
+        "devicesVirtualVpnNetworksRanges": "Virtual IP ranges for devices and endpoint devices eg. 10.0.0.2-10.0.0.100,10.0.0.180-10.0.0.200,172.25.0.2-172.25.0.253,192.168.2.0-192.168.2.255",
+        "techniciansVpnNetworksRanges": "OpenVPN IP range for technicians eg. 192.168.154.0-192.168.154.100,192.168.154.150-192.168.154.250. Please make sure required special network addresses are out of ranges - like gateway IP, broadcast IP, etc.",
+        "devicesOvpnTemplate": "Template for OpenVPN configuration for devices. Please use following variables $ca - CA public key, $certificate - device public key, $privateKey - device private key",
+        "techniciansOvpnTemplate": "Template for OpenVPN configuration for technicians.  Please use following variables $ca - CA public key, $certificate - technician public key, $privateKey - technician private key",
+        "pkiEnableCertificatesAutoRenew": "Should device's {{ certificateType }} certificate be auto-renewed when they are close to expiration?",
+        "pkiCertificatesAutoRenewDaysBefore": "How many days before certificate expiration date, device's {{ certificateType }} certificate should be auto-renewed?",
+        "enabledBehaviour": "None - no automatic behaviour, On demand - user will choose to generate certificate, Auto - system will make sure that certificate is generated (if possible)",
+        "disabledBehaviour": "None - no automatic behaviour, On demand - user will choose to revoke certificate, Auto - system will make sure that certificate is revoked (if possible)",
+        "generateCertificateAuto": "Certificate will be generated automatically",
+        "revokeCertificateAuto": "Certificate will be revoked automatically",
+        "certificateEntity": "Specifies which entity can use this certificate type",
+        "scepUrl": "SCEP server URL",
+        "scepCrlUrl": "SCEP server certificate revocation list URL",
+        "scepRevocationUrl": "SCEP revocation URL",
+        "scepRevocationBasicAuthUser": "SCEP server basic auth user",
+        "scepRevocationBasicAuthPassword": "SCEP server basic auth password",
+        "scepHashFunction": "Choose hash function used for RSA key",
+        "scepKeyLength": "Choose RSA key length",
+        "autoRemoveBackupsAfter": "Backups will be deleted after specified number of days. Set 0 to disable",
+        "deviceCommandExpireDuration": "Device commands will expire after specified duration. Example: '+30 minutes', '+4 hours', '+1 day'. For full description of duration format visit http://php.net/manual/en/datetime.modify.php",
+        "authenticationMethod": "Authentication method that device will use",
+        "communicationProcedure": "Communication procedure defines communication protocol between device and SEALMAN. Please refer to documentation for more details",
+        "routePrefix": "Communication procedure route prefix. This value will differentiate URL to which device should connect in same communication procedure",
+        "customUrlFirmware": "By default SEALMAN host is used. You can override it by providing a custom URL. Please provide it without a trailing slash ('/'). Example: https://example.com",
+        "enableSubjectAltName": "Should Subject Alt Name be added to device's SSL Certificates? After enabling or changing type or value all routers certificates will be revoked and generated when device connects",
+        "enableCertificatesAutoRenew": "Should device's certificate be auto-renewed when they are close to expiration?",
+        "certificatesAutoRenewDaysBefore": "How many days before certificate expiration date, device's certificate should be auto-renewed?",
+        "connectionAggregationPeriod": "Period of time (in hours) to use for agregation calculations e.g. how many times a device connected in this period. Values are updated every 15 minutes",
+        "passwordExpireDays": "User will be required to change password when it expires. Set 0 to disable. Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "passwordBlockReuseOldPasswordCount": "User will not be able to use number of old passwords. Set 0 to disable. Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "passwordMinimumLength": "Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "passwordDigitRequired": "Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "passwordBigSmallCharRequired": "Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "passwordSpecialCharRequired": "Does not apply to Authentication users and users logged in via Radius or single sign-on (SSO).",
+        "totpEnabled": "Enabling two-factor authentication will require the user to login again",
+        "totpTokenLength": "How long TOTP should be generated. Most common value is 6 digits",
+        "totpWindowInterval1": "{{ totpWindowLabel }} means TOTP will be valid for {{ interval }}s",
+        "totpWindowInterval3": "{{ totpWindowLabel }} means TOTP will be valid from {{ intervalStart }}s to {{ intervalFinish }}s",
+        "totpWindowInterval5": "{{ totpWindowLabel }} means TOTP will be valid from {{ intervalStart }}s to {{ intervalFinish }}s",
+        "totpWindow": "How long TOTP will be valid. Please provide a valid TOTP regeneration interval to see detailed information",
+        "totpKeyRegeneration": "How often TOTP will be regenerated in seconds. Most common value is 30 seconds",
+        "totpAlgorithm": "Which hashing algorithm should be used. Most common value is SHA-1",
+        "failedLoginAttemptsLimit": "Account will be blocked after consecutive failed login attempts exceeding this limit",
+        "failedLoginAttemptsDisablingDuration": "Account will be blocked for specified duration. Example: '+30 minutes', '+4 hours', '+1 day'. For full description of duration format visit http://php.net/manual/en/datetime.modify.php"
+    },
+    "action": {
+        "enableForceRenewal": "Enable force renew",
+        "disableForceRenewal": "Disable force renew",
+        "clear": "Clear secret value",
+        "showSecretValue": "Show secret value",
+        "showSecretVariables": "Show secret variables",
+        "showPreviousSecretValue": "Show previous secret",
+        "showUpdatedSecretValue": "Show updated secret",
+        "licenseDownloadTxt": "Download in TXT",
+        "deviceTypeSecrets": "Secrets",
+        "configs": "Configs",
+        "vpn": "VPN",
+        "show": "Show",
+        "showConfig": "Show {{ configName }}",
+        "duplicate": "Duplicate",
+        "enable": "Enable",
+        "disable": "Disable",
+        "vpnOpenConnection": "Connect",
+        "vpnOpenAllConnections": "Connect to all",
+        "vpnCloseConnection": "Close connection",
+        "vpnCloseOwnedConnection": "Close my connection",
+        "vpnCloseMultipleConnections": "Close multiple connections",
+        "copyToClipBoard": "Copy to clipboard",
+        "showUrl": "Show URL",
+        "download": "Download",
+        "downloadOvpn": "Download OpenVPN configuration",
+        "cancel": "Cancel",
+        "logs": "Logs",
+        "deviceCommand": "Device commands",
+        "communicationLog": "Communication logs",
+        "vpnLog": "VPN logs",
+        "secretLog": "Secret logs",
+        "configLog": "Config logs",
+        "diagnoseLog": "Diagnose logs",
+        "certificates": "Certificates",
+        "pkiCertificate": "{{ certificateType }} certificate",
+        "changePassword": "Change password",
+        "back": "Back",
+        "submit": "Submit",
+        "confirm": "Confirm",
+        "close": "Close",
+        "create": "Create",
+        "delete": "Delete",
+        "limitedEdit": "Edit",
+        "details": "Details",
+        "edit": "Edit",
+        "rename": "Rename",
+        "exportCsv": "Export CSV",
+        "exportExcel": "Export Excel"
+    },
+    "header": {
+        "connection": {
+            "since": "since",
+            "validTo": "valid to",
+            "deviceConnectionMissing": "Not connected to any device.",
+            "multipleVpnConnections": "Connected to more than 1 device.",
+            "ownedVpnConnection": "My connections",
+            "connectedTo": "Connected to: {{ target }}",
+            "notConnected": "Not connected to OpenVPN",
+            "youIpAddressIs": "Your IP Address is",
+            "clickToConnect": "Click to connect?",
+            "howToConnect": "How to connect?"
+        },
+        "profile": {
+            "lastLoginAt": "Logged from:",
+            "maintenance": "Maintenance",
+            "configuration": "Settings",
+            "documentation": "REST API documentation",
+            "openSourceLicense": "Open source clearance",
+            "status": "Status",
+            "openVpnConnection": "OpenVPN connection",
+            "userCertificates": "Your certificates",
+            "changePassword": "Change password",
+            "logout": "Logout"
+        },
+        "session": {
+            "expireAt": "Your session will expire in:",
+            "expireAtMobile": "Session expires in"
+        },
+        "status": {
+            "maintenanceModeEnabled": "System in under maintenance."
+        },
+        "ssoCertificate": {
+            "expireSoon": "Single sign-on (SSO) certificate is close to expiry. Please upload or generate new certificate before {{ validTo }}"
+        },
+        "diskUsage": {
+            "alert": "There is less than {{ percent }}% of disk space remaining (using {{ usage }} of {{ total }})"
+        }
+    },
+    "sidebar": {
+        "maintenaceMode": "Under maintenance",
+        "accessTag": "Access tags",
+        "label": "Labels",
+        "user": "Users",
+        "deviceAuthentication": "Devices authentication",
+        "device": "Devices",
+        "template": "Templates",
+        "vpnConnection": "Active connections",
+        "vpnPermanentConnection": "Device-to-network connections",
+        "config": "Configs",
+        "firmware": "Firmwares",
+        "logs": {
+            "expandable": "Logs",
+            "userLoginAttempt": "Login attempts",
+            "deviceFailedLoginAttempt": "Device failed login attempts",
+            "deviceCommand": "Device commands",
+            "communication": "Communication logs",
+            "config": "Config logs",
+            "diagnose": "Diagnose logs",
+            "vpn": "VPN logs",
+            "secret": "Secret logs",
+            "audit": "Audit logs"
+        },
+        "importFile": {
+            "expandable": "Import",
+            "create": "Devices",
+            "list": "History"
+        },
+        "action": {
+            "expand": "Expand sidebar",
+            "collapse": "Collapse sidebar"
+        }
+    },
+    "footer": {
+        "copyright": "Copyright © {{ year }} SEALMAN. All rights reserved."
+    },
+    "display": {
+        "expand": "Show more",
+        "collapse": "Show less"
+    },
+    "displayVariables": {
+        "variableTitle": "{{ name }}",
+        "emptyVariables": "No results"
+    },
+    "displaySecretVariables": {
+        "variableTitle": "{{ name }}",
+        "obscuredValueTooltip": "Device secret variables values are obscured due to security reasons. Use 'Show secret value' button below to see current secret value",
+        "emptyVariables": "No device secrets available for variable generation"
+    },
+    "route": {
+        "title": {
+            "openSourceLicense": "Open source clearance",
+            "deviceFailedLoginAttempt": "Device failed login attempts",
+            "userLoginAttempt": "Login attempts",
+            "accessTag": "Access tags",
+            "label": "Labels",
+            "user": "Users",
+            "deviceAuthentication": "Devices authentication",
+            "device": "Devices",
+            "deviceEndpointDevice": "Endpoint devices",
+            "template": "Templates",
+            "vpnConnection": "Active connections",
+            "ownedVpnConnection": "My connections",
+            "vpnPermanentConnection": "Device-to-network connections",
+            "config": "Configs",
+            "firmware": "Firmwares",
+            "deviceCommand": "Device commands",
+            "deviceSecret": "Device secrets",
+            "vpnLog": "VPN logs",
+            "secretLog": "Secret logs",
+            "diagnoseLog": "Diagnose logs",
+            "configLog": "Config logs",
+            "auditLogChange": "Audit logs",
+            "communicationLog": "Communication logs",
+            "maintenance": {
+                "dashboard": "Maintenance",
+                "jobs": "Jobs",
+                "logs": "Logs",
+                "backupUpload": "Upload backup",
+                "backupCreate": "Create backup job",
+                "restoreCreate": "Create restore job",
+                "backupForUpdateCreate": "Create backup for update job",
+                "maintenanceMode": "Maintenance mode",
+                "maintenanceSchedule": "Maintenance schedule"
+            },
+            "status": {
+                "serverStatus": "Server status",
+                "featureStatus": "Feature status"
+            },
+            "configuration": {
+                "dashboard": "Settings",
+                "general": "General",
+                "deviceType": "Device types",
+                "certificateType": "Certificate types",
+                "deviceTypeSecret": "Secrets",
+                "logs": "Logs",
+                "radius": "Radius",
+                "totp": "Two-factor authentication",
+                "vpn": "VPN",
+                "scep": "SCEP",
+                "documentation": "REST API documentation",
+                "sso": "Single sign-on (SSO)"
+            },
+            "importFile": "Import",
+            "profile": "Profile"
+        },
+        "subtitle": {
+            "create": "Create",
+            "createSelectedDeviceType": "Create for {{ deviceType }}",
+            "change": "Edit",
+            "changePassword": "Change password",
+            "list": "List",
+            "detailsRepresentationDeviceType": "{{ representation }} ({{ deviceType }})",
+            "detailsRepresentationDeviceTypeAndFeature": "{{ representation }} ({{ feature }} for {{ deviceType }})"
+        },
+        "hint": {
+            "createTemplateVersion": "Create staging template version",
+            "edit": "Edit",
+            "createSecret": "Edit",
+            "editRepresentation": "Edit {{ representation }}",
+            "limitedEdit": "Limited edit",
+            "details": "Details",
+            "selectDeviceType": "Select device type",
+            "selectCommunicationProcedure": "Select communication procedure",
+            "selectedCommunicationProcedure": "Communication procedure: '{{ communicationProcedure }}'",
+            "selectFeature": "Select type for {{ deviceType }}",
+            "selectedDeviceType": "{{ deviceType }}",
+            "selectedDeviceTypeAndFeature": "{{ feature }} for {{ deviceType }}"
+        }
+    },
+    "userVpnConnectionDetails": {
+        "title": "Open VPN connection",
+        "howToConnect": "How to connect",
+        "certificate": "Certificate information",
+        "technicianVpnNotAvailable": "Technician VPN certificate is not available. Please check certificate type configuration.",
+        "missingCertificate": "You do not have certificate assigned"
+    },
+    "userCertificatesDetails": {
+        "title": "Your certificates",
+        "noCertificatesAvailable": "You do not have any certificates assigned"
+    },
+    "deviceCertificatesDetails": {
+        "noCertificatesAvailable": "Device has no certificates assigned"
+    },
+    "certificatesDetails": {
+        "certificateTypeName": "{{ certificateTypeName }} certificate",
+        "certificateNotAvailable": "Certificate not assigned"
+    },
+    "configuration": {
+        "sso": {
+            "microsoftOidcCredential": {
+                "certificateUploaded": "Public and private key are already uploaded. Public key expires on {{ validTo }}. You can upload new public and private key to overwrite existing ones.",
+                "certificateGenerated": "Public and private key are already generated. Public key expires on {{ validTo }}. You can generate new public and private key to overwrite existing ones.",
+                "show": "Show public key",
+                "download": "Download public key"
+            }
+        },
+        "scep": {
+            "dialogTitle": "CRL content"
+        },
+        "vpn": {
+            "dialogTitle": "Confirmation dialog",
+            "techniciansOvpnTemplate": "Changing technicians OpenVPN template might influence users ability to connect to OpenVPN. Are you sure?",
+            "devicesOvpnTemplate": "Changing devices OpenVPN template might influence devices ability to connect to OpenVPN. Are you sure?"
+        },
+        "totp": {
+            "isTotpSecretGeneratedAlert": "Some fields are disabled because TOTP secret is generated for one or more users. Please reset secret for those users in order to modify them."
+        },
+        "deviceType": {
+            "general": "General",
+            "limitedEditInfo": "Editing capabilities are limited due to device type being used by at least one device. Please remove it from device to enable full editing capabilities.",
+            "deviceConfiguration": "Device configuration",
+            "certificates": "Certificates",
+            "functionalities": "Functionalities",
+            "fieldRequirements": "Properties requirements"
+        },
+        "documentation": {
+            "radioButton": {
+                "admin": "Open REST API documentation for Administrator",
+                "smartems": "Open REST API documentation for User with device management permissions",
+                "vpnsecuritysuite": "Open REST API documentation for User with VPN permissions"
+            }
+        }
+    },
+    "login": {
+        "title": "Log in",
+        "subtitle": "Welcome, please login to your account",
+        "action": "Log in",
+        "microsoftOidc": {
+            "title": "Log in processing",
+            "subtitle": "Please wait, you are being logged in to your account",
+            "action": "Log in using Microsoft"
+        }
+    },
+    "authenticatedNoAccess": {
+        "title": "Welcome",
+        "subtitle": "You have successfully logged in",
+        "maintenanceModeEnabled": "Maintenance mode is enabled and only administrators are allowed to access the application. Please wait until maintenance work is finished and login again or contact system administrator for more information.",
+        "noAccess": "Your account does not have access to the application. Please contact system administrator for more information.",
+        "action": "Log out"
+    },
+    "maintenance": {
+        "confirmation": {
+            "backupForUpdate": {
+                "info": "Backup for update is designed to be a part of SEALMAN update process. It will backup the database that will be used by next version of SEALMAN while initializing.",
+                "warning": "Before performing an update it is recommended to active maintenance mode."
+            },
+            "maintenanceModeEnable": {
+                "warning": "Enabling maintenance mode will reject device communication and disallow access to application for every user except administrators"
+            },
+            "maintenanceModeDisable": {
+                "info": "Disabling maintenance mode will accept device communication and allow access to application for all users"
+            }
+        }
+    },
+    "changePassword": {
+        "snackbar": {
+            "success": "Your password has been updated successfully"
+        }
+    },
+    "changePasswordRequired": {
+        "title": "Your password has expired",
+        "subtitle": "Please set a new password",
+        "snackbar": {
+            "success": "Your password has been updated successfully"
+        },
+        "action": "Confirm"
+    },
+    "totpRequired": {
+        "title": "Two-factor authentication",
+        "subtitle": "Please provide Time-based One-time Password (TOTP) to log in",
+        "action": "Log in"
+    },
+    "totpSecret": {
+        "title": "Two-factor authentication enabled",
+        "subtitle": "Two-factor authentication has been enabled for your account. From now on, SEALMAN will prompt you for Time-based One-time Password (TOTP) each time you log in.",
+        "totpApplication": "Time-based One-time Password (TOTP) can be generated by external application (like Google Authenticator). Such application will require a shared secret to generate TOTP. Secret is shown below as a plain text and as a QR Code to be easily scanned by your application.",
+        "totpSecret": "Your secret",
+        "alert": "This is the only time when your secret is shown. Please store this secret in a safe place. Contact system Administrator immediately in case secret is compromised. You can also contact system Administrator in case it is lost. You will need to log in again using TOTP.",
+        "action": "I safely stored my secret, log me out"
+    },
+    "form": {
+        "snackbar": {
+            "success": "Form submitted successfully",
+            "validationError": "Invalid data submitted. Please fix it and try again"
+        }
+    },
+    "table": {
+        "filters": {
+            "collapse": "Hide filters",
+            "expand": "Show filters",
+            "clear": "Clear",
+            "submit": "Submit"
+        },
+        "results": {
+            "empty": "No results"
+        },
+        "pagination": {
+            "firstPage": "First page",
+            "lastPage": "Last page",
+            "previousPage": "Previous page",
+            "nextPage": "Next page",
+            "rowsPerPage": "Rows per page",
+            "displayedRows": "{{ from }}-{{ to }} of {{ count }}"
+        }
+    },
+    "importFile": {
+        "alert": {
+            "information": "First row is skipped and designed to describe column names. Router import file should have following columns: Name, Serial number, IMSI, Device type, Template name, Access tags, Labels and Variables (multiple columns). Access tags and labels should be separated using comma (\",\"). Each variable is represented as a pair of columns. First column is variable name and second is variable value. You can use multiple pairs of columns to import multiple variables for one router.",
+            "note": "Please note that order of columns is important and the import is limited to 10000 rows.",
+            "download": "You can download example import devices file using button below."
+        },
+        "download": "Download example import file",
+        "start": {
+            "action": "Start import",
+            "title": "Start import",
+            "label": "Please choose what elements should be overwritten by selected templates in devices.",
+            "snackbar": "Uploaded file has been parsed. Please verify the data, adjust it and when ready begin the import process with \"Start import\" button."
+        },
+        "process": {
+            "action": "Continue",
+            "title": "Process",
+            "label": "Importing is in progress. Please do NOT close the browser"
+        },
+        "log": {
+            "dialog": {
+                "title": "Logs"
+            }
+        }
+    },
+    "auditLog": {
+        "action": {
+            "diffValues": "Show values",
+            "oldValues": "Show values",
+            "newValues": "Show values"
+        },
+        "encryptedValue": {
+            "unchanged": "(encrypted value)",
+            "old": "(old encrypted value)",
+            "new": "(new encrypted value)"
+        },
+        "dialog": {
+            "diffValues": {
+                "alert": {
+                    "onlyChanges": "Log has been created by a batch operation and includes only changed fields"
+                },
+                "contentType": {
+                    "diff": "Full difference",
+                    "changes": "Only changes",
+                    "old": "Old values",
+                    "new": "New values"
+                },
+                "action": {
+                    "copyOldValues": "Copy old values",
+                    "copyNewValues": "Copy new values"
+                }
+            }
+        }
+    },
+    "templateVersion": {
+        "action": {
+            "selectStaging": "Set as staging",
+            "selectProduction": "Set as production",
+            "detachStaging": "Detach",
+            "detachProduction": "Detach"
+        },
+        "dialog": {
+            "selectStaging": {
+                "snackbar": {
+                    "success": "Operation successful"
+                },
+                "title": "Confirmation required",
+                "label": "Are you sure you want to select template version \"{{ representation }}\" as staging?"
+            },
+            "selectProduction": {
+                "snackbar": {
+                    "success": "Operation successful"
+                },
+                "title": "Confirmation required",
+                "label": "Are you sure you want to select template version \"{{ representation }}\" as production?"
+            },
+            "detachStaging": {
+                "title": "Confirmation required",
+                "label": "Are you sure you want to detach staging template version \"{{ representation }}\"?"
+            },
+            "detachProduction": {
+                "title": "Confirmation required",
+                "label": "Are you sure you want to detach production template version \"{{ representation }}\"?"
+            }
+        }
+    },
+    "deviceDetails": {
+        "details": "Details",
+        "definedVariables": "Defined variables",
+        "predefinedVariables": "Predefined variables",
+        "deviceSecrets": "Device secrets",
+        "endpointDevices": "Endpoint devices",
+        "certificates": "Certificates",
+        "vpnLogs": "VPN logs",
+        "communicationLogs": "Communication logs",
+        "deviceCommands": "Device commands",
+        "configLogs": "Config logs",
+        "diagnoseLogs": "Diagnose logs"
+    },
+    "deviceEndpointDeviceDetails": {
+        "back": "Back to device",
+        "details": "Details",
+        "vpnLogs": "VPN logs"
+    },
+    "templateDetails": {
+        "table": {
+            "staging": "Staging versions",
+            "production": "Production versions"
+        },
+        "stagingTemplate": {
+            "title": "{{ representation }}",
+            "notSelected": "(not selected)",
+            "chip": "Staging",
+            "empty": "You can create staging version using button below"
+        },
+        "productionTemplate": {
+            "title": "{{ representation }}",
+            "notSelected": "(not selected)",
+            "chip": "Production",
+            "empty": "You can create staging version and mark it as production"
+        }
+    },
+    "passwordComplexity": {
+        "general": "Password should meet following requirements:",
+        "passwordBlockReuseOldPasswordCount_one": "You may not use your previous password",
+        "passwordBlockReuseOldPasswordCount_other": "You may not use any of your {{ count }} previous passwords",
+        "passwordMinimumLength_one": "It should have at least {{ count }} character",
+        "passwordMinimumLength_other": "It should have at least {{ count }} characters",
+        "passwordDigitRequired": "It should contain a digit",
+        "passwordBigSmallCharRequired": "It should contain big and small character",
+        "passwordSpecialCharRequired": "It should contain a special character"
+    },
+    "masqueradeRadioEnum": {
+        "default": {
+            "deviceVpnNetworksEmpty": "Default masquerading uses devices virtual network configuration which is empty and will be omitted. You can adjust it using settings screen.",
+            "techniciansVpnNetworksEmpty": "Default masquerading uses technicians virtual network configuration which is empty and will be omitted. You can adjust it using settings screen.",
+            "defaultSubnets": "Default masquerading will use following subnets: {{ subnets }}"
+        }
+    },
+    "deviceSecret": {
+        "tooltip": {
+            "renewedAt": {
+                "generate": "Secret value will be automatically generated during next device communication.",
+                "renew": "Secret value will be automatically renewed after {{ renewAt }} during device communication.",
+                "renewExpired": "Secret value will be automatically renewed during next device communication. It expired on {{ renewAt }}.",
+                "forceRenewal": "Secret value will be automatically renewed during next device communication.",
+                "manualExpired": "Secret value should be renewed manually as soon as possible."
+            }
+        },
+        "dialogDeviceSecretVariables": {
+            "title": "Show '{{ deviceSecretName }}' device secret variables"
+        },
+        "dialog": {
+            "title": "Show '{{ deviceSecretName }}' device secret value",
+            "variables": "Device secret variables",
+            "snackbar": {
+                "copyToClipboardSuccess": "Secret value has been copied to clipboard successfully"
+            }
+        }
+    },
+    "deviceTypeSecretDelete": {
+        "dialog": {
+            "label": "Are you sure you want to delete \"{{ representation }}\"? All created device secrets of this type will be IRREVERSIBLY REMOVED."
+        }
+    },
+    "secretLog": {
+        "dialogPrevious": {
+            "title": "Show secret log previous secret value",
+            "snackbar": {
+                "copyToClipboardSuccess": "Previous secret value has been copied to clipboard successfully"
+            }
+        },
+        "dialogUpdated": {
+            "title": "Show secret log updated secret value",
+            "snackbar": {
+                "copyToClipboardSuccess": "Updated secret value has been copied to clipboard successfully"
+            }
+        }
+    },
+    "dialogMonaco": {
+        "title": "Show content",
+        "snackbar": {
+            "copyToClipboardSuccess": "Content has been copied to clipboard successfully"
+        }
+    },
+    "userEdit": {
+        "usernameEditAlert": "You intend to change your own username. Please be aware that this action will require you to login again."
+    },
+    "configEdit": {
+        "dialog": {
+            "title": "Edit config"
+        }
+    },
+    "monaco": {
+        "action": {
+            "format": "Format",
+            "find": "Search"
+        }
+    },
+    "reinstall": {
+        "dialog": {
+            "title": "Connected devices"
+        },
+        "action": {
+            "showConnectedDevices": "View connected devices"
+        }
+    },
+    "featureNameFilter": {
+        "tooltip": "You can filter by a feature name i.e. \"Router firmware\", \"PySDK\""
+    },
+    "firmwareName": {
+        "tooltip": {
+            "sourceType": {
+                "upload": "Uploaded file",
+                "externalUrl": "External URL"
+            }
+        }
+    },
+    "exportCsv": {
+        "filename": "{{ title }} {{ date }}.csv"
+    },
+    "exportExcel": {
+        "filename": "{{ title }} {{ date }}.xlsx",
+        "sheetName": "{{ title }}"
+    },
+    "licenseContentShow": {
+        "action": "Display license",
+        "dialog": {
+            "title": "License"
+        }
+    },
+    "resultDuplicate": {
+        "dialog": {
+            "title": "Confirmation required",
+            "confirm": "Are you sure you want to duplicate \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Duplicate operation successful"
+        }
+    },
+    "resultVpnOpenConnection": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to open VPN connection to \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Connection opened successfully"
+        }
+    },
+    "resultVpnCloseConnection": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to close VPN connection between \"{{ user }}\" and \"{{ target }}\"?"
+        },
+        "snackbar": {
+            "success": "Connection closed successfully"
+        }
+    },
+    "resultEnableForceRenewalSecret": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to enable secret value renewal on next device communication for device secret \"{{ deviceSecretRepresentation }}\"?"
+        },
+        "snackbar": {
+            "success": "Force renewal enabled successfully"
+        }
+    },
+    "resultDisableForceRenewalSecret": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to disable secret value renewal on next device communication for device secret \"{{ deviceSecretRepresentation }}\"?"
+        },
+        "snackbar": {
+            "success": "Force renewal disabled successfully"
+        }
+    },
+    "resultVpnCloseMultipleConnections": {
+        "dialog": {
+            "title": "Close multiple connections",
+            "label": "Please select connections that you would like to close.",
+            "result": "Close VPN connection between \"{{ user }}\" and \"{{ target }}\""
+        }
+    },
+    "resultDialogMessage": {
+        "action": "Show message",
+        "dialog": {
+            "title": "Show message"
+        }
+    },
+    "resultDialogContent": {
+        "action": "Show content",
+        "dialog": {
+            "title": "Show content"
+        }
+    },
+    "resultVpnOpenAllConnections": {
+        "dialog": {
+            "title": "Open VPN connections",
+            "confirm": "Are you sure you want to open VPN connection to \"{{ representation }}\" and all its endpoint devices?"
+        }
+    },
+    "resultEnable": {
+        "dialog": {
+            "title": "Confirmation required",
+            "confirm": "Are you sure you want to enable \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Enable operation successful"
+        }
+    },
+    "resultDeviceTypeEnable": {
+        "dialog": {
+            "title": "Confirmation required",
+            "confirm": "Are you sure you want to enable device type \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Device type enabled"
+        }
+    },
+    "resultDeviceTypeDisable": {
+        "dialog": {
+            "title": "Confirmation required",
+            "confirm": "Are you sure you want to disable device type \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Device type disabled"
+        }
+    },
+    "resultDownload": {
+        "snackbar": {
+            "error": "Could not download file. Request failed with status {{ status }} and message \"{{ statusText }}\""
+        }
+    },
+    "dialogDownloading": {
+        "title": "Downloading",
+        "label": "Downloading file. Please wait..."
+    },
+    "dialogButtonRedirect": {
+        "action": "Open URL"
+    },
+    "dialogUrl": {
+        "title": "Show URL",
+        "snackbar": {
+            "copyToClipboardSuccess": "URL has been copied to clipboard successfully"
+        }
+    },
+    "deviceTypeIconRepresentation": {
+        "notAvailable": "Device type not available due to feature limitations or incorrect system configuration",
+        "disabled": "Device type disabled by administrator"
+    },
+    "selectCronSchedule": {
+        "any": "* ANY"
+    },
+    "virtualIpHostPart": {
+        "text": {
+            "tooltip": "Please provide number of endpoint device virtual address (from 1 to {{ subnetSize }})"
+        },
+        "option": "vip_{{ number }}",
+        "optionZeroDisabled": "vip_0 (used by device)",
+        "virtualSubnetIpEmpty": {
+            "optionDisabled": "vip_{{ number }} (used by {{ name }})",
+            "optionDisabledUnnamed": "vip_{{ number }} (already used)",
+            "option": "vip_{{ number }}"
+        },
+        "virtualSubnetIpPresent": {
+            "optionDisabled": "vip_{{ number }} - {{ virtualIp }} (used by {{ name }})",
+            "optionDisabledUnnamed": "vip_{{ number }} - {{ virtualIp }} (already used)",
+            "option": "vip_{{ number }} - {{ virtualIp }}"
+        }
+    },
+    "selectCronDayOfWeek": {
+        "any": "* ANY",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+    },
+    "multiselect": {
+        "loading": "Loading...",
+        "noOptions": "No results"
+    },
+    "multiselectAutocompleteApi": {
+        "loading": "Loading...",
+        "noOptions": "No results",
+        "inputValueEmpty": "Start typing to search"
+    },
+    "radio": {
+        "clear": "Clear selected"
+    },
+    "select": {
+        "loading": "Loading...",
+        "noOptions": "No results"
+    },
+    "selectAutocompleteApi": {
+        "loading": "Loading...",
+        "noOptions": "No results",
+        "inputValueEmpty": "Start typing to search"
+    },
+    "radioTrueFalse": {
+        "yes": "Yes",
+        "no": "No"
+    },
+    "templateSelectApi": {
+        "action": "Change template",
+        "title": "Change template",
+        "snackbar": {
+            "success": "Template as been successfully applied",
+            "warning": {
+                "missingStagingTemplateVersion": "Template has been changed. Could not apply selected elements due to missing staging template version",
+                "missingProductionTemplateVersion": "Template has been changed. Could not apply selected elements due to missing production template version"
+            }
+        },
+        "label": {
+            "staging": "Select a template and choose what elements should be overwritten. Staging template version will be used. You can also leave template empty to detach template from selected device.",
+            "production": "Select a template and choose what elements should be overwritten. Production template version will be used. You can also leave template empty to detach template from selected device."
+        }
+    },
+    "buttonEndpoint": {
+        "snackbar": {
+            "success": "Operation successful"
+        }
+    },
+    "textSecretValue": {
+        "snackbar": {
+            "success": "Secret value generated"
+        }
+    },
+    "dialogConfirm": {
+        "title": "Confirmation required"
+    },
+    "dialogBatchResults": {
+        "tooltip": {
+            "success": "Operation successful",
+            "successMessage": "Operation successful. {{ message }}",
+            "warning": "Operation successful",
+            "warningMessage": "Operation successful. {{ message }}",
+            "skipped": "Operation skipped",
+            "skippedMessage": "Operation skipped. {{ message }}",
+            "error": "Operation failed",
+            "errorMessage": "Operation failed. {{ message }}",
+            "errorMessage400": "Invalid data submitted",
+            "errorMessageUnexpected": "Unexpected error occured"
+        }
+    },
+    "visibleColumns": {
+        "dialog": {
+            "title": "Visible columns"
+        },
+        "label": "You can select visible columns using checkboxes. You can also drag & drop columns to change the order.",
+        "tooltip": "Adjust visible columns",
+        "search": "Search columns",
+        "noResults": "No columns found for \"{{ columnName }}\"",
+        "action": {
+            "reset": "Reset to defaults",
+            "confirm": "Confirm"
+        },
+        "snackbar": {
+            "reset": "Visible columns have been reset to default",
+            "confirm": "Visible columns have been saved"
+        }
+    },
+    "buttonCopyToClipboard": {
+        "snackbar": {
+            "success": "Copied to clipboard successfully"
+        }
+    },
+    "resultClearSecretValue": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to clear secret value of \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Secret value cleared successfully"
+        }
+    },
+    "resultDelete": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to delete \"{{ representation }}\"?"
+        },
+        "snackbar": {
+            "success": "Delete operation successful"
+        },
+        "boldLabel": {
+            "maintenanceBackup": "Backup archive will also be removed from filesystem."
+        }
+    },
+    "dialogPre": {
+        "dialog": {
+            "title": "Form"
+        },
+        "snackbar": {
+            "copyToClipboardSuccess": "Copied to clipboard successfully"
+        },
+        "contentNotPovided": "Content not provided"
+    },
+    "batch": {
+        "expandable": "Mass actions ({{ count }})",
+        "user": {
+            "disable": {
+                "action": "Disable",
+                "title": "Disable users",
+                "labelWithRevoke": "You are about to disable selected users. Would you like to revoke certificates as well?",
+                "label": "Are you sure you want to disable selected users?"
+            },
+            "enable": {
+                "action": "Enable",
+                "title": "Enable users",
+                "labelWithGenerate": "You are about to enable selected users. Would you like to generate certificates as well?",
+                "label": "Are you sure you want to enable selected users?"
+            }
+        },
+        "device": {
+            "disable": {
+                "action": "Disable",
+                "title": "Disable devices",
+                "labelWithRevoke": "You are about to disable selected devices. Would you like to revoke certificates as well?",
+                "label": "Are you sure you want to disable selected devices?"
+            },
+            "enable": {
+                "action": "Enable",
+                "title": "Enable devices",
+                "labelWithGenerate": "You are about to enable selected devices. Would you like to generate certificates as well?",
+                "label": "Are you sure you want to enable selected devices?"
+            },
+            "delete": {
+                "action": "Delete",
+                "label": "Are you sure you want to delete selected devices?"
+            },
+            "accessTagsAdd": {
+                "action": "Add access tags",
+                "title": "Add access tags",
+                "label": "Access tags will be added to selected devices."
+            },
+            "accessTagsDelete": {
+                "action": "Delete access tags",
+                "title": "Delete access tags",
+                "label": "Access tags will be deleted from selected devices."
+            },
+            "labelsAdd": {
+                "action": "Add labels",
+                "title": "Add labels",
+                "label": "Labels will be added to selected devices."
+            },
+            "labelsDelete": {
+                "action": "Delete labels",
+                "title": "Delete labels",
+                "label": "Labels will be deleted from selected devices."
+            },
+            "variableAdd": {
+                "action": "Add variable",
+                "title": "Add variable",
+                "label": "Variable will be added or overwritten in selected devices."
+            },
+            "reinstallConfig1": {
+                "action": "Reinstall primary config",
+                "title": "Reinstall primary config",
+                "flag": "Set reinstall primary config flag to",
+                "label": "Reinstall primary config flag will be updated in selected devices."
+            },
+            "reinstallConfig2": {
+                "action": "Reinstall secondary config",
+                "title": "Reinstall secondary config",
+                "flag": "Set reinstall secondary config flag to",
+                "label": "Reinstall secondary config flag will be updated in selected devices."
+            },
+            "reinstallConfig3": {
+                "action": "Reinstall tertiary config",
+                "title": "Reinstall tertiary config",
+                "flag": "Set reinstall tertiary config flag to",
+                "label": "Reinstall tertiary config flag will be updated in selected devices."
+            },
+            "reinstallFirmware1": {
+                "action": "Reinstall primary firmware",
+                "title": "Reinstall primary firmware",
+                "flag": "Set reinstall primary firmware flag to",
+                "label": "Reinstall primary firmware flag will be updated in selected devices."
+            },
+            "reinstallFirmware2": {
+                "action": "Reinstall secondary firmware",
+                "title": "Reinstall secondary firmware",
+                "flag": "Set reinstall secondary firmware flag to",
+                "label": "Reinstall secondary firmware flag will be updated in selected devices."
+            },
+            "reinstallFirmware3": {
+                "action": "Reinstall tertiary firmware",
+                "title": "Reinstall tertiary firmware",
+                "flag": "Set reinstall tertiary firmware flag to",
+                "label": "Reinstall tertiary firmware flag will be updated in selected devices."
+            },
+            "requestDiagnoseData": {
+                "action": "Request diagnose data",
+                "title": "Request diagnose data",
+                "flag": "Set request diagnose data flag to",
+                "label": "Request diagnose data flag will be updated in selected devices."
+            },
+            "requestConfigData": {
+                "action": "Request config data",
+                "title": "Request config data",
+                "flag": "Set request config data flag to",
+                "label": "Request config data flag will be updated in selected devices."
+            },
+            "variableDelete": {
+                "action": "Delete variable",
+                "title": "Delete variable",
+                "label": "Variable will be deleted from selected devices.",
+                "skipped": {
+                    "missing": "There is no variable with such name in this device"
+                }
+            },
+            "templateApply": {
+                "action": "Set template",
+                "title": "Set template",
+                "label": "Select a template and choose what elements should be overwritten. You can also leave template empty to detach template from selected devices.",
+                "warning": {
+                    "noDeviceDescriptionToApply": "Missing device description in selected template",
+                    "noVirtualSubnetCidrToApply": "Missing virutal subnet CIDR in selected template",
+                    "noMasqueradeTypeToApply": "Missing masquerade type in selected template",
+                    "noAccessTagsWereAppliedYouWouldLoseAccess": "Cannot apply access tags. You would loose access to device",
+                    "notAllAccessTagsWereApplied": "Not all access tags from selected template could be applied to device"
+                },
+                "error": {
+                    "templateNoAccess": "You do not have access for selected template",
+                    "templateVersionProductionMissing": "Missing production template version for selected template",
+                    "templateVersionMissing": "Missing staging or production template version for selected template",
+                    "deviceTypeMismatch": "Device types selected in template and in device does not match",
+                    "templateApplyEndpointDevicesLocked": "Cannot overwrite endpoint devices and virtual subnet size due to existing connection to a device or an endpoint device. Please close existing connection to proceed"
+                }
+            }
+        },
+        "importFileRow": {
+            "disable": {
+                "action": "Disable",
+                "label": "Are you sure you want to disable selected import rows?"
+            },
+            "enable": {
+                "action": "Enable",
+                "label": "Are you sure you want to enable selected import rows?"
+            },
+            "accessTagsAdd": {
+                "action": "Add access tags",
+                "title": "Add access tags",
+                "label": "Access tags will be added to selected import rows."
+            },
+            "accessTagsDelete": {
+                "action": "Delete access tags",
+                "title": "Delete access tags",
+                "label": "Access tags will be deleted from selected import rows."
+            },
+            "labelsAdd": {
+                "action": "Add labels",
+                "title": "Add labels",
+                "label": "Labels will be added to selected import rows."
+            },
+            "labelsDelete": {
+                "action": "Delete labels",
+                "title": "Delete labels",
+                "label": "Labels will be deleted from selected import rows."
+            },
+            "variableAdd": {
+                "action": "Add variable",
+                "title": "Add variable",
+                "label": "Variable will be added or overwritten in selected import rows."
+            },
+            "reinstallConfig1": {
+                "action": "Reinstall primary config",
+                "title": "Reinstall primary config",
+                "flag": "Set reinstall primary config flag to",
+                "label": "Reinstall primary config flag will be updated in selected import rows."
+            },
+            "reinstallConfig2": {
+                "action": "Reinstall secondary config",
+                "title": "Reinstall secondary config",
+                "flag": "Set reinstall secondary config flag to",
+                "label": "Reinstall secondary config flag will be updated in selected import rows."
+            },
+            "reinstallConfig3": {
+                "action": "Reinstall tertiary config",
+                "title": "Reinstall tertiary config",
+                "flag": "Set reinstall tertiary config flag to",
+                "label": "Reinstall tertiary config flag will be updated in selected import rows."
+            },
+            "variableDelete": {
+                "action": "Delete variable",
+                "title": "Delete variable",
+                "label": "Variable will be deleted from selected import rows.",
+                "skipped": {
+                    "missing": "There is no variable with such name in this import row"
+                }
+            },
+            "templateChange": {
+                "action": "Set template",
+                "title": "Set template",
+                "label": "Please select a template. You can also leave template empty to detach template from selected import rows.",
+                "error": {
+                    "deviceTypeMismatch": "Device types selected in template and in import row does not match"
+                }
+            }
+        }
+    },
+    "variablePre": {
+        "copyToClipBoard": "Copy variable value to clipboard",
+        "expand": "Expand variable value",
+        "collapse": "Collapse variable value"
+    },
+    "usernameColumn": {
+        "tooltip": {
+            "ssoUser": "Single sign-on (SSO) user {{ username }}",
+            "radiusUser": "Radius user"
+        }
+    },
+    "variablesColumn": {
+        "view": "View variable values"
+    },
+    "templateDetailsColumn": {
+        "dialog": {
+            "title": "Edit template version"
+        }
+    },
+    "certificateType": {
+        "scepCrl": {
+            "dialogTitle": "CRL content"
+        }
+    },
+    "certificate": {
+        "certificateSubject": "Certificate common name",
+        "certificateCaSubject": "Certificate CA common name",
+        "certificateExpired": "Certificate expired",
+        "certificateValid": "Certificate expires",
+        "expired": "Expired",
+        "valid": "Valid",
+        "notAvailable": "Not available"
+    },
+    "certificateUploadFiles": {
+        "action": {
+            "uploadCertFiles": "Upload separate files"
+        },
+        "dialog": {
+            "title": "Upload separate certificate files"
+        }
+    },
+    "certificateUploadPkcs12": {
+        "action": {
+            "uploadPkcs12": "Upload single file (.p12, .pfx)"
+        },
+        "dialog": {
+            "title": "Upload PKCS12 file"
+        }
+    },
+    "certificateRevoke": {
+        "action": {
+            "revokeCertificate": "Revoke certificate"
+        },
+        "snackbar": {
+            "certificateRevoked": "Certificate revoked succesfully"
+        },
+        "dialog": {
+            "title": "Revoke certificate",
+            "label": "Are you sure you want to revoke certificate?"
+        }
+    },
+    "certificateGenerate": {
+        "action": {
+            "generateCertificate": "Generate certificate"
+        },
+        "snackbar": {
+            "certificateGenerated": "Certificate generated succesfully"
+        },
+        "dialog": {
+            "title": "Generate certificate",
+            "label": "Are you sure you want to generate certificate?"
+        }
+    },
+    "certificateDownload": {
+        "action": {
+            "downloadCa": "Download CA certificate",
+            "downloadCertificate": "Download certificate",
+            "downloadKey": "Download private key",
+            "downloadPkcs12": "Download .p12"
+        }
+    },
+    "certificateDelete": {
+        "action": {
+            "deleteCertificate": "Delete certificate"
+        },
+        "snackbar": {
+            "certificateDeleted": "Certificate deleted succesfully"
+        },
+        "dialog": {
+            "title": "Delete certificate",
+            "label": "Are you sure you want to delete certificate?"
+        }
+    },
+    "userDisable": {
+        "action": "Disable",
+        "snackbar": {
+            "success": "User has been disabled successfully"
+        },
+        "dialog": {
+            "title": "Disable user",
+            "label": "Are you sure you want to disable selected user?",
+            "labelRevokeCertificate": "You are about to disable selected user. Would you like to revoke certificate as well?"
+        }
+    },
+    "userEnable": {
+        "action": "Enable",
+        "snackbar": {
+            "success": "User has been enabled successfully"
+        },
+        "dialog": {
+            "title": "Enable user",
+            "label": "Are you sure you want to enable selected user?",
+            "labelGenerateCertificate": "You are about to enable selected user. Would you like to generate certificate as well?"
+        }
+    },
+    "resetTotpSecret": {
+        "action": "Reset secret",
+        "snackbar": {
+            "success": "Two-factor authentication secret has been reset successfully"
+        },
+        "dialog": {
+            "title": "Reset secret",
+            "label": "Are you sure you want to reset two-factor authentication secret for this user? A new secret will be generated on users' next login",
+            "boldLabel": "This action is irreversible"
+        }
+    },
+    "resetLoginAttempts": {
+        "action": "Reset login attempts",
+        "snackbar": {
+            "success": "Login attempts has been reset successfully"
+        },
+        "dialog": {
+            "title": "Reset login attempts",
+            "label": "Are you sure you want to reset login attempts for this user?"
+        }
+    },
+    "enabledColumn": {
+        "yes": "Yes",
+        "no": "No",
+        "tooltip": {
+            "enabledExpired": "User was enabled until {{ enabledExpireAt }}",
+            "enabledUntil": "User is enabled until {{ enabledExpireAt }}"
+        }
+    },
+    "booleanColumn": {
+        "yes": "Yes",
+        "no": "No"
+    },
+    "endpointDevicesColumn": {
+        "representation": "{{ name }}, {{ physicalIp }} ({{ virtualIpHostPart }}) Access tags: {{ accessTags }}"
+    },
+    "createdAtByLineColumn": {
+        "both": "{{ formattedCreatedAt }} by {{ createdBy }}",
+        "onlyCreatedBy": "by {{ createdBy }}",
+        "onlyCreatedAt": "{{ formattedCreatedAt }}"
+    },
+    "updatedAtByLineColumn": {
+        "both": "{{ formattedUpdatedAt }} by {{ updatedBy }}",
+        "onlyUpdatedBy": "by {{ updatedBy }}",
+        "onlyUpdatedAt": "{{ formattedUpdatedAt }}"
+    },
+    "maintenanceNameColumn": {
+        "maintenanceSchedule": "Based on {{ name }} maintenance schedule",
+        "maintenanceScheduleDeleted": "Based on deleted maintenance schedule",
+        "backupForUpdate": "Backup for update",
+        "backup": "Backup of {{ subject }}",
+        "backupEncrypted": "Encrypted backup of {{ subject }}",
+        "restore": "Restore of {{ subject }}",
+        "restoreEncrypted": "Restore of encrypted {{ subject }}",
+        "subject": {
+            "filestorage": "filestorage",
+            "database": "database",
+            "databaseFilestorage": "database and filestorage"
+        }
+    },
+    "connectionAmountColumn": {
+        "amount_one": "{{ connectionAmount }} time from {{ from }} (~{{ period }}h ago)",
+        "amount_other": "{{ connectionAmount }} times from {{ from }} (~{{ period }}h ago)"
+    },
+    "units": {
+        "uptime": {
+            "second_one": "second",
+            "second_other": "seconds",
+            "minute_one": "minute",
+            "minute_other": "minutes",
+            "hour_one": "hour",
+            "hour_other": "hours",
+            "day_one": "day",
+            "day_other": "days"
+        },
+        "uptimePlural": {
+            "second": "seconds",
+            "minute": "minutes",
+            "hour": "hours",
+            "day": "days"
+        },
+        "uptimeShort": {
+            "second": "s",
+            "minute": "m",
+            "hour": "h",
+            "day": "d"
+        }
+    },
+    "enum": {
+        "invalid": "This is not a valid value",
+        "common": {
+            "certificateCategory": {
+                "custom": "Custom",
+                "deviceVpn": "Device VPN",
+                "technicianVpn": "Technician VPN",
+                "dps": "Azure DPS",
+                "edgeCa": "Azure Edge CA"
+            },
+            "certificateEntity": {
+                "user": "User",
+                "device": "Device"
+            },
+            "cidr": {
+                "32": "/32 - 1 address",
+                "31": "/31 - 2 addresses",
+                "30": "/30 - 4 addresses",
+                "29": "/29 - 8 addresses",
+                "28": "/28 - 16 addresses",
+                "27": "/27 - 32 addresses",
+                "26": "/26 - 64 addresses",
+                "25": "/25 - 128 addresses",
+                "24": "/24 - 256 addresses",
+                "23": "/23 - 512 addresses",
+                "22": "/22 - 1024 addresses",
+                "21": "/21 - 2048 addresses",
+                "20": "/20 - 4096 addresses",
+                "19": "/19 - 8192 addresses",
+                "18": "/18 - 16384 addresses",
+                "17": "/17 - 32768 addresses",
+                "16": "/16 - 65536 addresses",
+                "15": "/15 - 131072 addresses",
+                "14": "/14 - 262144 addresses",
+                "13": "/13 - 524288 addresses",
+                "12": "/12 - 1048576 addresses",
+                "11": "/11 - 2097152 addresses",
+                "10": "/10 - 4194304 addresses",
+                "9": "/9 - 8388608 addresses",
+                "8": "/8 - 16777216 addresses"
+            },
+            "logLevel": {
+                "debug": "Debug",
+                "info": "Info",
+                "warning": "Warning",
+                "error": "Error",
+                "critical": "Critical"
+            },
+            "feature": {
+                "1": "Feature 1",
+                "2": "Feature 2",
+                "3": "Feature 3"
+            },
+            "masqueradeType": {
+                "disabled": "Disabled",
+                "default": "Default",
+                "advanced": "Advanced"
+            },
+            "fieldRequirement": {
+                "unused": "Not used",
+                "optional": "Optional",
+                "requiredInCommunication": "Required in device communication",
+                "required": "Required in device communication and in WebUI"
+            }
+        },
+        "configuration": {
+            "routerIdentifier": {
+                "serial": "Serial",
+                "imsi": "IMSI"
+            },
+            "pkiHashAlgorithm": {
+                "SHA256": "SHA-256",
+                "SHA384": "SHA-384",
+                "SHA512": "SHA-512"
+            },
+            "pkiKeyLength": {
+                "2048": "2048",
+                "4096": "4096"
+            },
+            "pkiType": {
+                "none": "None",
+                "scep": "SCEP PKI"
+            },
+            "certificateBehavior": {
+                "none": "None",
+                "onDemand": "On demand",
+                "auto": "Auto",
+                "specific": "Specific"
+            },
+            "totpAlgorithm": {
+                "sha1": "SHA-1",
+                "sha256": "SHA-256",
+                "sha512": "SHA-512"
+            },
+            "totpWindow": {
+                "1": "1 interval",
+                "3": "3 intervals",
+                "5": "5 intervals"
+            },
+            "totpSecretLength": {
+                "16": "16 Bytes",
+                "32": "32 Bytes",
+                "64": "64 Bytes",
+                "128": "128 Bytes"
+            },
+            "radiusAuthenticationProtocol": {
+                "pap": "PAP",
+                "chap": "CHAP"
+            },
+            "radiusUserRole": {
+                "admin": "Administrator",
+                "smartems": "Device management",
+                "vpn": "VPN",
+                "smartemsVpn": "Device management and VPN"
+            },
+            "singleSignOn": {
+                "disabled": "Disabled",
+                "microsoftOidc": "Microsoft Entra ID with OpenID Connect"
+            },
+            "microsoftOidcCredential": {
+                "clientSecret": "Client secret",
+                "certificateUpload": "Certificate (upload external certificate)",
+                "certificateGenerate": "Certificate (generate certificate)"
+            },
+            "microsoftOidcRole": {
+                "admin": "Administrator",
+                "smartems": "Device management",
+                "vpn": "VPN",
+                "smartemsVpn": "Device management and VPN"
+            },
+            "secretOperation": {
+                "communicationShow": "Communication show",
+                "communicationRenew": "Communication renew",
+                "userClear": "User clear",
+                "userShow": "User show",
+                "userShowPreviousLog": "User show log previous",
+                "userShowUpdatedLog": "User show log updated",
+                "userShowCommunicationLog": "User show communication log",
+                "userShowConfigLog": "User show config log",
+                "userShowDiagnoseLog": "User show diagnose log",
+                "userEdit": "User edit",
+                "userCreate": "User create"
+            }
+        },
+        "maintenance": {
+            "status": {
+                "pending": "Pending",
+                "inProgress": "In progress",
+                "success": "Success",
+                "failed": "Failed"
+            },
+            "type": {
+                "backup": "Backup",
+                "restore": "Restore",
+                "backupForUpdate": "Backup for update"
+            }
+        },
+        "firmware": {
+            "sourceType": {
+                "upload": "Upload file",
+                "externalUrl": "Provide external url"
+            }
+        },
+        "config": {
+            "generator": {
+                "php": "PHP",
+                "twig": "Twig"
+            }
+        },
+        "deviceCommand": {
+            "commandStatus": {
+                "success": "Success",
+                "error": "Error",
+                "critical": "Critical",
+                "pending": "Pending",
+                "expired": "Expired"
+            }
+        },
+        "deviceType": {
+            "icon": {
+                "router": "Router icon",
+                "star": "Star icon",
+                "computer": "Computer icon",
+                "cellTower": "Cell tower icon",
+                "devices": "Devices icon",
+                "linkOff": "No link icon",
+                "api": "Api icon",
+                "hub": "Hub icon",
+                "settingsInputAntenna": "Antenna icon",
+                "cloudSync": "Cloud icon",
+                "deviceHub": "Device hub icon",
+                "search": "Search icon"
+            },
+            "altNameType": {
+                "DNS": "DNS",
+                "IP": "IP",
+                "email": "email",
+                "URI": "URI"
+            },
+            "certificateEncoding": {
+                "hex": "HEX",
+                "oneLinePem": "One line PEM"
+            },
+            "formatConfig": {
+                "plain": "Plain",
+                "json": "JSON"
+            },
+            "authenticationMethod": {
+                "none": "None",
+                "basic": "Basic authentication",
+                "digest": "Digest authentication",
+                "jwt": "JWT",
+                "x509": "X.509"
+            },
+            "credentialsSource": {
+                "user": "Device authentication",
+                "secret": "Device secret",
+                "both": "Device authentication or device secret",
+                "userIfSecretMissing": "Device secret, device authentication as fallback"
+            },
+            "communicationProcedure": {
+                "none": "None",
+                "noneScep": "None with SCEP",
+                "noneVpn": "None with SCEP and VPN",
+                "routerOneConfig": "Router one config",
+                "router": "Router two configs",
+                "routerDsa": "Router DSA",
+                "restApi": "REST API",
+                "edgeGateway": "Edge gateway",
+                "edgeGatewayWithVpnContainerClient": "Edge gateway with VPN Container Client",
+                "flexEdge": "Flex edge",
+                "sgGateway": "SG-gateway",
+                "vpnContainerClient": "VPN Container Client"
+            }
+        },
+        "deviceTypeSecret": {
+            "secretValueBehaviour": {
+                "none": "None",
+                "generate": "Auto-generate",
+                "renew": "Auto-renew",
+                "generateRenew": "Auto-generate and auto-renew"
+            }
+        },
+        "importFile": {
+            "status": {
+                "uploaded": "Uploaded",
+                "importing": "Importing",
+                "finished": "Finished"
+            }
+        },
+        "importFileRow": {
+            "parseStatus": {
+                "valid": "Valid",
+                "warning": "Warning",
+                "invalid": "Invalid"
+            },
+            "importStatus": {
+                "pending": "Pending",
+                "success": "Success",
+                "warning": "Warning",
+                "error": "Error"
+            }
+        },
+        "auditLogChange": {
+            "type": {
+                "create": "Create",
+                "update": "Update",
+                "delete": "Delete"
+            }
+        }
+    },
+    "uppy": {
+        "dragDrop": "Drag & drop or click here to upload a file",
+        "prettyInput": {
+            "textFileEmpty": "Click to choose a file",
+            "textFileEmptyDisabled": "No file",
+            "textFileName": "{{ fileName }}",
+            "clear": "Remove current file",
+            "button": "Click to choose a file"
+        },
+        "progress": {
+            "pause": "Pause upload",
+            "resume": "Resume upload",
+            "cancel": "Cancel upload"
+        },
+        "thumbnail": {
+            "missingImage": "No image"
+        },
+        "offlineAlert": "You are offline. Please check your connection",
+        "generalError": "Error occured during upload. Please try again"
+    },
+    "deny": {
+        "importFile": {
+            "finished": "Import file has finished importing rows"
+        },
+        "importFileRow": {
+            "deviceTypeMissing": "Device type is not selected in the import row",
+            "templatesDisabled": "Templates are disabled for device type selected in the import row",
+            "variablesDisabled": "Variables are disabled for device type selected in the import row",
+            "statusNotPending": "You can edit import file rows only when import status is pending"
+        },
+        "communicationLog": {
+            "noContent": "Content not available for that object"
+        },
+        "connection": {
+            "notAvailable": "Functionality not available for that object",
+            "connectionNotAvailable": "Closing connection is not available",
+            "accessDenied": "Access denied",
+            "vpnSecuritySuiteBlocked": "VPN functionalities are disabled",
+            "vpnSecuritySuiteInvalidConfiguration": "VPN functionalities are not configured correctly"
+        },
+        "certificate": {
+            "pkiGeneratedCertificate": "Certificate is generated using PKI and cannot be deleted, must be revoked",
+            "notPkiGeneratedCertificate": "Certificate is not generated using PKI and cannot be revoked, must be deleted",
+            "scepInvalidConfiguration": "SCEP functionalities are not configured correctly",
+            "roleNotSupported": "Technician VPN certificate type does not support device management users",
+            "hasCertificate": "Already has certificate",
+            "noCaCertificate": "CA certificate not available",
+            "noPrivateKey": "Private key not available",
+            "noCertificate": "Certificate not available",
+            "accessDenied": "Access denied"
+        },
+        "certificateType": {
+            "predefinedCertificateTypeCannotBeDeleted": "Predefined certificate type cannot be deleted",
+            "certificateTypeInUse": "Certificate type is used - certificate exists",
+            "certificateTypeInUseByDeviceType": "Certificate type is used by device type",
+            "disabled": "Certificate type disabled",
+            "vpnLicenseRequired": "VPN feature is required for this certificate type",
+            "scepLicenseRequired": "SCEP feature is required for this certificate type",
+            "invalidScepConfiguration": "Invalid SCEP configuration"
+        },
+        "device": {
+            "variablesDisabled": "Variables are disabled for device type selected in the device",
+            "config3Missing": "Tertiary config is not selected in the template version",
+            "config3Disabled": "Tertiary config is disabled for device type selected in the device",
+            "config3Always": "Tertiary config is always enabled for device type selected in the device",
+            "config2Missing": "Secondary config is not selected in the template version",
+            "config2Disabled": "Secondary config is disabled for device type selected in the device",
+            "config2Always": "Secondary config is always enabled for device type selected in the device",
+            "config1Missing": "Primary config is not selected in the template version",
+            "config1Disabled": "Primary config is disabled for device type selected in the device",
+            "config1Always": "Primary config is always enabled for device type selected in the device",
+            "templateMissing": "Template is not selected in the device",
+            "templateVersionMising": "Template version is not selected in the template selected in the device",
+            "templatesDisabled": "Templates are disabled for device type selected in the device",
+            "notAvailable": "Functionality not available for that object",
+            "noCertificate": "Certificate not available",
+            "alreadyEnabled": "Device is already enabled",
+            "alreadyDisabled": "Device is already disabled",
+            "disabledInDeviceType": "Functionality disabled in device type configuration",
+            "connectionNotAvailable": "Closing connection is not available",
+            "notConnectedToVpn": "Device not connected to VPN",
+            "userNotConnectedToVpn": "You are not connected to OpenVPN. Please refresh website to see updated information",
+            "alreadyConnected": "Connection is already opened",
+            "accessDenied": "Access denied",
+            "vpnSecuritySuiteBlocked": "VPN functionalities are disabled",
+            "vpnSecuritySuiteInvalidConfiguration": "VPN functionalities are not configured correctly",
+            "deviceTypeHasNoCommunicationCapability": "Communication functionalities are disabled for this device type",
+            "deviceTypeHasNoRequestDiagnoseCapability": "Request diagnose functionalities are disabled for this device type",
+            "deviceTypeHasNoDeviceCommandsCapability": "Device commands functionalities are disabled for this device type",
+            "deviceTypeHasNoConfigCapability": "Config functionalities are disabled for this device type",
+            "deviceTypeHasNoVpnCapability": "VPN functionalities are disabled for this device type",
+            "noVpnIp": "Vpn IP not assigned"
+        },
+        "deviceSecret": {
+            "accessDenied": "Access denied",
+            "deviceSecretExists": "Device secret already exists",
+            "deviceSecretDoesNotExist": "Device secret does not exist",
+            "showVariablesDisabledUseAsVariable": "Device secret is not configured to be used as variables"
+        },
+        "secretLog": {
+            "accessDenied": "Access denied",
+            "previousSecretValueNotAvailable": "Previous secret value not available",
+            "updatedSecretValueNotAvailable": "Updated secret value not available"
+        },
+        "deviceEndpointDevice": {
+            "accessDenied": "Access denied",
+            "noCertificate": "Certificate not available",
+            "notAvailable": "Functionality not available for that object",
+            "disabledInDeviceType": "Functionality disabled in device type configuration",
+            "connectionNotAvailable": "Closing connection is not available",
+            "notConnectedToVpn": "Device not connected to VPN",
+            "userNotConnectedToVpn": "You are not connected to OpenVPN. Please refresh website to see updated information",
+            "noPhysicalIp": "Physical IP not assigned",
+            "alreadyConnected": "Connection is already opened",
+            "vpnSecuritySuiteBlocked": "VPN functionalities are disabled",
+            "vpnSecuritySuiteInvalidConfiguration": "VPN functionalities are not configured correctly",
+            "noVpnIp": "Vpn IP not assigned"
+        },
+        "deviceTypeSecret": {
+            "usedAsCredential": "Device secret is used as device type credential"
+        },
+        "deviceType": {
+            "alreadyEnabled": "Device type is already enabled",
+            "alreadyDisabled": "Device type is already disabled",
+            "cannotEnable": "Device type cannot be enabled due to feature limitations.",
+            "limitedEdit": "Limited edit disabled. Use full edit",
+            "delete": {
+                "usedByDevice": "Device type is used by at least one device. Please remove it from device to delete",
+                "usedByTemplate": "Device type is used by at least one template. Please remove it from template to delete",
+                "usedByConfig": "Device type is used by at least one config. Please remove it from config to delete",
+                "usedByFirmware": "Device type is used by at least one firmware. Please remove it from firmware to delete",
+                "usedByDeviceTypeSecret": "Device type is used by at least one secret. Please remove secret to delete this device type"
+            },
+            "edit": {
+                "usedByDevice": "Device type is used by at least one device. Please remove it from device to enable full editing",
+                "usedByTemplate": "Device type is used by at least one template. Please remove it from template to enable full editing",
+                "usedByConfig": "Device type is used by at least one config. Please remove it from config to enable full editing",
+                "usedByFirmware": "Device type is used by at least one firmware. Please remove it from firmware to enable full editing"
+            }
+        },
+        "template": {
+            "accessDeniedTemplateNotOwned": "Access denied. You do not own this template.",
+            "accessDeniedTemplateVersionNotOwned": "Access denied. Template contains template version you didn't create.",
+            "accessDeniedDeviceOutsideAccessScope": "Access denied. Template is used by device outside your access scope.",
+            "usedByDevice": "Template is used by at least one device. Please remove it from device to delete"
+        },
+        "templateVersion": {
+            "createAccessDeniedTemplateOutsideAccessScope": "Cannot create template version. Template is used by device outside your access scope.",
+            "selectedProduction": "Template version is selected as production",
+            "selectedStaging": "Template version is selected as staging",
+            "productionEditDisabled": "Edit is disabled for production template versions",
+            "alreadySelectedStaging": "Template version is already selected as staging",
+            "selectStagingNotTypeStaging": "Only template versions with type staging can be selected as staging",
+            "alreadySelectedProduction": "Template version is already selected as production",
+            "notSelectedStagingAndNotTypeProduction": "Template version is not selected as staging or it is not type production",
+            "notSelectedStaging": "Template version is not a selected as staging",
+            "notSelectedProduction": "Template version is not a selected as production",
+            "accessDeniedDeviceOutsideAccessScope": "Access denied. Template is used by device outside your access scope.",
+            "accessDeniedNotOwned": "Access denied. You do not own this template version."
+        },
+        "user": {
+            "notAvailableForRadiusUser": "Not available for radius user",
+            "notAvailableForSsoUser": "Not available for single sign-on (SSO) user",
+            "cannotDisableYourself": "Cannot disable your own account",
+            "cannotDeleteYourself": "Cannot delete your own account",
+            "totpDisabled": "Two-factor authentication is disabled",
+            "totpSecretEmpty": "Two-factor authentication secret is not generated for this user",
+            "currentlyLoggedIn": "Please use change password functionality located in header to change your own password",
+            "tooManyFailedLoginAttemptsFalse": "User is not disabled due to too many failed login attempts",
+            "failedLoginAttemptsDisabled": "Failed login attempts functionality is disabled",
+            "failedLoginAttemptsNotAvailableForUser": "Failed login attempts functionality is not available for this user",
+            "noCertificate": "Certificate not available",
+            "notAvailable": "Functionality not available for that object",
+            "alreadyEnabled": "User already enabled",
+            "vpnSecuritySuiteBlocked": "VPN functionalities are disabled",
+            "vpnSecuritySuiteInvalidConfiguration": "VPN functionalities are not configured correctly",
+            "alreadyDisabled": "User is already disabled",
+            "certificateTypeNotApplicable": "Functionality not applicable",
+            "noVpnIp": "Vpn IP not assigned"
+        },
+        "maintenance": {
+            "onlyStatusSuccess": "You can download archive only for maintenance with success status",
+            "onlyTypeBackupOrBackupForUpdate": "You can download archive only for maintenance with type backup or backupForUpdate"
+        },
+        "firmware": {
+            "accessDeniedNotOwned": "Access denied. You do not own this firmware.",
+            "accessDeniedDeviceOutsideAccessScope": "Access denied. Firmware is used by device outside your access scope.",
+            "accessDeniedUsedByProductionTemplateVersion": "Access denied. Firmware is used by production template version.",
+            "usedByTemplate": "Firmware is used by at least one template. Please remove it from template to delete",
+            "onlySourceTypeUpload": "You can only edit firmwares with source type upload",
+            "onlySourceTypeExternalUrl": "You can only edit firmwares with source type externalUrl"
+        },
+        "config": {
+            "accessDeniedNotOwned": "Access denied. You do not own this config.",
+            "accessDeniedDeviceOutsideAccessScope": "Access denied. Config is used by device outside your access scope.",
+            "accessDeniedUsedByProductionTemplateVersion": "Access denied. Config is used by production template version.",
+            "usedByTemplate": "Config is used by at least one template. Please remove it from template to delete"
+        }
+    },
+    "validation": {
+        "tusX509": {
+            "fileMissing": "Could not find uploaded file",
+            "fileEmpty": "Uploaded file is empty",
+            "invalid": "Uploaded file does not contain a valid X.509 certificate"
+        },
+        "tusX509CheckPrivateKey": {
+            "invalid": "Private key does not correspond to X.509 certificate"
+        },
+        "tusPrivateKey": {
+            "fileMissing": "Could not find uploaded file",
+            "fileEmpty": "Uploaded file is empty",
+            "invalid": "Uploaded file does not contain a valid private key"
+        },
+        "configurationMicrosoftOidcRoleMapping": {
+            "roleNameNotUnique": "This value is already used",
+            "accessTagsNotSupported": "Access tags not supported for selected permission",
+            "oneAccessTagRequired": "Choose at least one access tag for selected permission",
+            "roleVpnEndpointDevicesNotSupported": "Managing endpoint devices not supported for selected permission"
+        },
+        "configurationRadiusWelotecGroupMapping": {
+            "groupNameNotUnique": "This value is already used",
+            "roleVpnEndpointDevicesNotSupported": "Managing endpoint devices not supported for selected permission"
+        },
+        "importFileRow": {
+            "deviceTypeMissing": "Device type is not selected in the import row",
+            "config1Always": "Primary reinstall config flag is always enabled for device type selected in the device",
+            "config2Always": "Secondary reinstall config flag is always enabled for device type selected in the device",
+            "config3Always": "Tertiary reinstall config flag is always enabled for device type selected in the device",
+            "config1Disabled": "Config for primary feature is disabled for device type selected in the import row",
+            "config2Disabled": "Config for secondary feature is disabled for device type selected in the import row",
+            "config3Disabled": "Config for tertiary feature is disabled for device type selected in the import row",
+            "templatesDisabled": "Templates are disabled for device type selected in the import row",
+            "templateDeviceTypeMismatch": "Device types selected in template and in the import row does not match"
+        },
+        "deviceTemplateApply": {
+            "templateMissingApplyInvalid": "Template has to be selected to use apply features",
+            "variablesDisabled": "Variables are disabled for device type selected in the device",
+            "masqueradeDisabled": "Masquerading is disabled for device type selected in the device",
+            "endpointDevicesDisabled": "Endpoint devices are disabled for device type selected in the device",
+            "config1Disabled": "Config for primary feature is disabled for device type selected in the template",
+            "config2Disabled": "Config for secondary feature is disabled for device type selected in the template",
+            "config3Disabled": "Config for tertiary feature is disabled for device type selected in the template",
+            "firmware1Disabled": "Firmware for primary feature is disabled for device type selected in the template",
+            "firmware2Disabled": "Firmware for secondary feature is disabled for device type selected in the template",
+            "firmware3Disabled": "Firmware for tertiary feature is disabled for device type selected in the template"
+        },
+        "variableName": {
+            "invalid": "This is not a valid PHP variable name",
+            "thisNotAllowed": "Variable named \"this\" is not allowed"
+        },
+        "masquerade": {
+            "subnetNotUnique": "This subnet already exists"
+        },
+        "variable": {
+            "variableNameUsedInPredefinedVariables": "This variable name is used by predefined variables",
+            "variableNameNotUnique": "This variable name already exists"
+        },
+        "endpointDevice": {
+            "virtualIpHostPartUsedByDevice": "Selected virtual IP address is used by connected device",
+            "invalidVirtualIpHostPart": "Virtual IP address should be a valid integer between 1 and {{ subnetSize }}",
+            "nameNotUnique": "This name already exists",
+            "physicalIpNotUnique": "This physical IP address already exists",
+            "virtualIpHostPartNotUnique": "This virtual IP address already exists",
+            "oneAccessTagRequired": "Choose at least one access tag",
+            "invalidAccessTag": "Invalid access tag",
+            "accessDenied": "Access denied",
+            "virtualIpHostPartLocked": "Virtual IP address cannot be changed due to existing connection to an endpoint device. Please close existing connection to proceed"
+        },
+        "templateVersion": {
+            "vpnDisabled": "VPN is disabled for device type selected in the template",
+            "config1Disabled": "Config for primary feature is disabled for device type selected in the template",
+            "config2Disabled": "Config for secondary feature is disabled for device type selected in the template",
+            "config3Disabled": "Config for tertiary feature is disabled for device type selected in the template",
+            "configInvalid": "Selected config is invalid",
+            "configInvalidFeature": "Selected config is intended to be used by a different feature",
+            "configInvalidDeviceType": "Selected config has different device type than the one selected in the template",
+            "firmware1Disabled": "Firmware for primary feature is disabled for device type selected in the template",
+            "firmware2Disabled": "Firmware for secondary feature is disabled for device type selected in the template",
+            "firmware3Disabled": "Firmware for tertiary feature is disabled for device type selected in the template",
+            "firmwareInvalidDeviceType": "Selected firmware has different device type than the one selected in the template",
+            "firmwareInvalid": "Selected firmware is invalid",
+            "firmwareInvalidFeature": "Selected firmware is intended to be used by a different feature",
+            "variablesDisabled": "Variables are disabled for device type selected in the template",
+            "masqueradesDisabled": "Masquerading is disabled for device type selected in the template",
+            "masqueradeTypeDisabledMasquaradesMustBeEmpty": "Masquerading is set to disabled. Specifing subnets is not possible",
+            "masqueradeTypeDefaultMasquaradesMustBeEmpty": "Masquerading is set to default. Specifing subnets is not possible",
+            "masqueradeTypeAdvancedMasquaradesAtLeastOne": "Masquerading is set to advanced. Please specify at least one subnet",
+            "oneAccessTagRequired": "Choose at least one access tag",
+            "cannotRemoveAllAccessTag": "Cannot remove all your access tags. At least one has to remain",
+            "endpointDevicesDisabled": "Endpoint devices are disabled for device type selected in the template",
+            "invalidAccessTag": "Invalid access tag"
+        },
+        "user": {
+            "disabledExpireAtNotNull": "Cannot set enabled until when user is disabled",
+            "oneAccessTagRequired": "Choose at least one access tag",
+            "oneRoleRequired": "Choose at least one permissions group",
+            "roleVpnEndpointDevicesRequiresRoleVpn": "VPN permissions are required to allow user to manage endpoint devices",
+            "cannotDisableYourself": "Cannot disable your own account",
+            "cannotDemoteYourself": "Cannot demote your own account"
+        },
+        "device": {
+            "uniqueField": "This value already exists for device type selected in the device",
+            "nameNotUnique": "This name already exists for device type selected in the device",
+            "vpnDisabled": "VPN is disabled for device type selected in the device",
+            "config1Always": "Primary reinstall config flag is always enabled for device type selected in the device",
+            "config2Always": "Secondary reinstall config flag is always enabled for device type selected in the device",
+            "config3Always": "Tertiary reinstall config flag is always enabled for device type selected in the device",
+            "config1Disabled": "Config for primary feature is disabled for device type selected in the device",
+            "config2Disabled": "Config for secondary feature is disabled for device type selected in the device",
+            "config3Disabled": "Config for tertiary feature is disabled for device type selected in the device",
+            "firmware1Disabled": "Firmware for primary feature is disabled for device type selected in the device",
+            "firmware2Disabled": "Firmware for secondary feature is disabled for device type selected in the device",
+            "firmware3Disabled": "Firmware for tertiary feature is disabled for device type selected in the device",
+            "variablesDisabled": "Variables are disabled for device type selected in the device",
+            "masqueradesDisabled": "Masquerading is disabled for device type selected in the device",
+            "masqueradeTypeDisabledMasquaradesMustBeEmpty": "Masquerading is set to disabled. Specifing subnets is not possible",
+            "masqueradeTypeDefaultMasquaradesMustBeEmpty": "Masquerading is set to default. Specifing subnets is not possible",
+            "masqueradeTypeAdvancedMasquaradesAtLeastOne": "Masquerading is set to advanced. Please specify at least one subnet",
+            "endpointDevicesDisabled": "Endpoint devices are disabled for device type selected in the device",
+            "requestDiagnoseDataDisabled": "Request diagnose data is disabled for device type selected in the device",
+            "requestConfigDataDisabled": "Request config data is disabled for device type selected in the device",
+            "templatesDisabled": "Templates are disabled for device type selected in the device",
+            "templateDeviceTypeMismatch": "Device types selected in template and in device does not match",
+            "gsmDisabled": "GSM is disabled for device type selected in the device",
+            "oneAccessTagRequired": "Choose at least one access tag",
+            "cannotRemoveAllAccessTag": "Cannot remove all your access tags. At least one has to remain",
+            "invalidAccessTag": "Invalid access tag",
+            "vpnContainerClientRegisterNameOrUuidRequired": "One of fields 'name' or 'uuid' is required",
+            "virtualSubnetCidrLocked": "Devices virtual subnet size cannot be changed due to existing connection to a device or an endpoint device. Please close existing connection to proceed",
+            "endpointDeviceLocked": "Some endpoint devices cannot be deleted due to existing connection. Please close existing connection to proceed"
+        },
+        "template": {
+            "deviceTypeTemplatesNotSupported": "Selected device type does not support templates"
+        },
+        "scepCrl": {
+            "invalidData": "Invalid URL or timeout value",
+            "failedToDownload": "Downloading CRL has failed. Please check URL."
+        },
+        "deviceType": {
+            "credentialsSourceMissing": "Credentials source is required for choosen authentication method",
+            "deviceTypeSecretCredentialMissing": "Device secret is required for choosen credentials source",
+            "deviceTypeSecretCredentialInvalid": "Device secret is invalid",
+            "deviceTypeCertificateTypeCredentialMissing": "Certificate type is required for X509 authentication",
+            "deviceTypeCertificateTypeCredentialInvalid": "Certificate type is invalid",
+            "firmwareNotUsedCannotEnableMinRsrp": "Cannot enable minimal RSRP if no firmware is used",
+            "configNotUsedCannotEnableMinRsrp": "Cannot enable minimal RSRP if no config is used",
+            "alwaysReinstallConfigNotAvailable": "Cannot enable always reinstall config if config is used",
+            "hasCertificatesNotAvailable": "Field cannot be enabled because, variables are not enabled",
+            "hasVpnNotAvailable": "Field cannot be enabled because, SCEP certificates are not enabled",
+            "hasEndpointDevicesNotAvailable": "Field cannot be enabled because, VPN functionalities are not enabled",
+            "hasMasqueradesNotAvailable": "Field cannot be enabled because, VPN functionalities are not enabled",
+            "routePrefixUsed": "Route prefix already used or created conflict. Please choose different value",
+            "routePrefixReserved": "Route prefix is reserved. Please choose different value",
+            "routePrefixStart": "Route prefix has to start with '/' or be empty",
+            "requiredField": "Field is required by choosen communication procedure. It has to be 'TRUE'",
+            "propertyRequired": "Communication procedure requires this property to be set as 'Required in device communication and in WebUI'",
+            "certificateTypeRequired": "Certificate type '{{ certificateType }}' is required",
+            "certificateInvalidCertificateEntity": "Certificate type '{{ certificateType }}' cannot be used - invalid certificate entity",
+            "certificateInvalidCertificateCategory": "Certificate type '{{ certificateType }}' cannot be used - invalid certificate category",
+            "certificateCategoryRequired": "Communication procedure requires valid certificate types",
+            "certificateCategoryNotSupported": "Communication procedure does not support this certificate type",
+            "propertyRequiredInCommunication": "Communication procedure requires this property to be set as 'Required in device communication' or 'Required in device communication and in WebUI'",
+            "unusedField": "Field is not used by choosen communication procedure. It has to be 'FALSE'"
+        },
+        "deviceTypeSecret": {
+            "createNotPossible": "Please enable manual edit or auto-generate behaviour. Current configuration will not allow you to create device secret otherwise"
+        },
+        "authentication": {
+            "invalidCredentials": "Invalid credentials",
+            "accessDeniedNoVpnSecuritySuite": "Access denied. VPN functionalities are not available, please contact administrator",
+            "accountDisabled": "Account is disabled, please contact administrator",
+            "accountDisabledTooManyFailedLoginAttempts": "Account is disabled due to too many failed login attempts, please contact administrator"
+        },
+        "certificateType": {
+            "pkiProtocolRequired": "Choose PKI protocol other than NONE to use this option",
+            "pkiProtocolRequiredByAutomaticBehavior": "Automatic behavior requires PKI protocole other than NONE",
+            "deleteRequiresUpload": "Cannot delete certificate if upload is not enabled"
+        },
+        "certificateBehavior": {
+            "generateCertificateRoleSmartemsNotSupported": "Invalid value, certificate generation is not supported for device management only user ",
+            "revokeCertificateRoleSmartemsNotSupported": "Invalid value, certificate revocation is not supported for device management only user ",
+            "generateCertificateEnabledRequired": "Invalid value, field is supported with enabled objects",
+            "revokeCertificateDisabledRequired": "Invalid value, field is supported with disabled objects",
+            "notSupportedByCertificateBehavior": "Invalid value, field is not supported in this case",
+            "pkiNotAvailable": "PKI for this certificate type is not available",
+            "vpnNotAvailable": "VPN functionalities are not available",
+            "certificateNotGenerated": "Certificate is not generated and cannot be revoked",
+            "certificateTypeNotAvailable": "Certificate type not available"
+        },
+        "certificate": {
+            "commonNameTaken": "Common name of this certificate is already assigned to different device or user",
+            "noCertificateSubject": "Invalid certificate in provided file",
+            "incorrectPassword": "Unable to decode certification file - check provided password",
+            "noCertificateProvided": "Certificate not included in file",
+            "invalidCertificate": "Provided file doesn't contain valid certificate"
+        },
+        "totp": "Invalid TOTP",
+        "generatorAtLeastOne": "Please select at least one generator (PHP or Twig)",
+        "generatorUsed": "This generator is used in existing configs. Please change existing configs to use other generator.",
+        "deviceExists": "Device with router or router DSA communication procedure exists in the system. Please remove to be able to change this field",
+        "deviceTypeRequiredWithHasImsi": "All device types with Router or Router DSA communication procedure have to require IMSI. Please edit device types to be able to change this field",
+        "password": {
+            "minimumLengthRequirementFailed": "Password should contain at least {{ passwordMinimumLength }} characters",
+            "digitMissing": "Password should contain at least one digit",
+            "smallCharMissing": "Password should contain at least one small character",
+            "bigCharMissing": "Password should contain at least one big character",
+            "specialCharMissing": "Password should contain at least one special character",
+            "recentlyUsed": "Password has been used recently. Please choose a different one"
+        },
+        "secretValue": {
+            "minimumLengthRequirementFailed": "Secret value should contain at least {{ requiredAmount }} characters",
+            "uppercaseRequirementFailed": "Secret value should contain at least {{ requiredAmount }} upper case characters",
+            "lowercaseRequirementFailed": "Secret value should contain at least {{ requiredAmount }} lower case characters",
+            "specialCharRequirementFailed": "Secret value should contain at least {{ requiredAmount }} special characters",
+            "digitRequirementFailed": "Secret value should contain at least {{ requiredAmount }} digits"
+        },
+        "secretVariablePrefix": {
+            "variablePrefixUsedInPredefinedVariables": "Variable name prefix already used in device type predefined variables",
+            "variablePrefixUsedInDeviceTypeSecret": "Variable name prefix already used in other device type secret"
+        },
+        "firmware": {
+            "nameNotUnique": "Name is not unique for selected device type",
+            "featureInvalid": "Feature is not available for selected device type"
+        },
+        "config": {
+            "nameNotUnique": "Name is not unique for selected device type",
+            "featureInvalid": "Feature is not available for selected device type",
+            "configGeneratorPhpDisabled": "PHP generator is disabled",
+            "configGeneratorTwigDisabled": "Twig generator is disabled",
+            "twigInvalid": "Twig template definition is invalid. {{ message }}"
+        },
+        "ipv4": {
+            "invalidCidr": "Invalid CIDR value '{{ cidr }}'",
+            "invalidSubnetSize": "Invalid subnet size value '{{ size }}'"
+        },
+        "backupEmpty": "You need to select at least one element for backup",
+        "restoreEmpty": "You need to select at least one element to restore",
+        "identifierMustNotBeEmpty": "Router indentifier is required",
+        "dayOfMonthZero": "Day of month should be a number from 1 to 31 or -1",
+        "email": "This is not a valid e-mail address",
+        "required": "This value is required",
+        "enum": "This is not a valid value",
+        "integerType": "This value is not a valid integer",
+        "identicalCompare": "Values should be identical",
+        "passwordIdenticalCompare": "Passwords should be identical",
+        "lengthMin": "This value is too short. It should have {{ limit }} characters or more",
+        "lengthMax": "This value is too long. It should have {{ limit }} characters or less",
+        "lessThan": "This value should be less than {{ compared_value }}",
+        "lessThanOrEqual": "This value should be less than or equal {{ compared_value }}",
+        "greaterThan": "This value should be greater than {{ compared_value }}",
+        "greaterThanOrEqual": "This value should be greater than or equal {{ compared_value }}",
+        "integer": "This value is not a valid integer",
+        "datetime": "This value is not a valid datetime value",
+        "url": "This value is not a valid url",
+        "ip": "This value is not a valid IP address",
+        "invalidIpRange": "This value is not a valid IP range e.g. 10.0.0.1-10.0.0.20,10.0.0.51-10.0.0.80",
+        "invalidCidr": "This value is not a valid CIDR e.g. 10.0.0.0/8",
+        "invalidRangeOutsideSubnet": "Range is not contained in provided subnet.",
+        "invalidRangeCannotBeRemoved": "Range '{{ range }}' cannot be removed - at least one address in that range is assigned.",
+        "invalidRangesOverlap": "Ranges cannot overlap. Range '{{ range1 }}' overlaping '{{ range2 }}'.",
+        "invalidSubnetsOverlap": "Subnets cannot overlap. Subnet '{{ subnet1 }}' overlaping '{{ subnet2 }}'.",
+        "invalidSubnetsCannotBeRemoved": "Previously configured subnet '{{ subnet }}' is used and cannot be removed. Remove devices or technicians using this subnet to allow removal.",
+        "invalidSubnet": "Value '{{ subnet }}' is not a valid CIDR subnet - IP part should be first address in subnet - e.g. 10.0.0.0/8",
+        "invalidSubnetList": "This values are not list of valid CIDR subnets separated by ',' e.g. 10.0.0.0/8,192.168.2.0/24",
+        "rangeDateTime": "This is not a valid datetime value",
+        "rangeNumber": "This is not a valid number",
+        "rangeMin": "This value should be {{ limit }} or less",
+        "rangeMax": "This value should be {{ limit }} or more",
+        "rangeNotIn": "This value should be between {{ min }} and {{ max }}",
+        "choice": "This is not a valid choice",
+        "dateModifier": "Invalid duration format",
+        "cssColor": "This value is not a valid CSS color",
+        "uniqueEntity": "This value is already used",
+        "unique": "This collection should contain only unique elements",
+        "countMin": "This collection should contain {{ limit }} element(s) or more",
+        "countMax": "This collection should contain {{ limit }} element(s) or less",
+        "countExact": "This collection should contain exactly {{ limit }} element(s)",
+        "countDivisibleBy": "The number of elements in this collection should be a multiple of {{ compared_value }}",
+        "exportExcel": {
+            "sheetName": {
+                "tooLong": "Excel sheet name cannot exceed 30 characters",
+                "invalidCharacters": "Excel sheet name cannot contain special characters"
+            }
+        },
+        "tusFileNotFound": "The file could not be found",
+        "tusFileNotReadable": "The file is not readable",
+        "tusFileMaxSize": "The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}",
+        "tusFileMimeTypes": "The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}",
+        "tusFileSimpleMimeTypesImage": "This is not a valid image file. Please upload an image file (JPG, PNG, BMP or SVG)",
+        "tusFileSimpleMimeTypesPdf": "This is not a valid PDF file",
+        "tusFileSimpleMimeTypesExcel": "This is not a valid Excel file",
+        "tusFileDisallowEmpty": "An empty file is not allowed",
+        "tusFilenameTooLongMessage": "Filename is too long",
+        "tusFileUploadIniSizeError": "The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}",
+        "tusFileUploadFormSizeError": "The file is too large",
+        "tusFileUploadPartialError": "The file was only partially uploaded",
+        "tusFileUploadNoFileError": "No file was uploaded",
+        "tusFileUploadNoTmpDirError": "No temporary folder was configured. Please contact system administrator",
+        "tusFileUploadCantWriteError": "Cannot write temporary file to disk. Please contact system administrator",
+        "tusFileUploadExtensionError": "A PHP extension caused the upload to fail. Please contact system administrator",
+        "tusFileUploadError": "The file could not be uploaded"
+    },
+    "alt": {
+        "logo": "Logo"
+    },
+    "common": {
+        "loading": "Loading..."
+    },
+    "meta": {
+        "title": "SEALMAN"
+    },
+    "warning": {
+        "templateApply": "Template application is partially finished"
+    },
+    "error": {
+        "clearCertificate": {
+            "certificateMissing": "Could not find certificate to be deleted or revoked."
+        },
+        "requestExecutionFailed": "Operation has failed",
+        "unknownError": "Unknown error",
+        "firewallInvalidResponse": "Result returned by API during adding firewall rule is not valid",
+        "firewallResultNotJson": "Result returned by API during adding firewall rule is not proper JSON format",
+        "firewallResultInvalidParameters": "Result returned by API has input errors - incorrect parameters were sent",
+        "firewallResultUnexpectedStatusCode": "Result returned by API during adding firewall rule has unexpected Status code",
+        "firewallResultMissingMd5": "Result returned by API during adding firewall rule has missing md5 identifier",
+        "firewallRuleNotFound": "Firewall rule not found in OPNsense",
+        "connectionExists": "Connection already exists.",
+        "cannotCreateConnection": "Cannot create connection",
+        "OPNsenseRequest": "Error occured during OPNsense cURL request.",
+        "connectionParseError": "An error occurred with OPNsense recevied data.",
+        "connectionError": "An error occurred with OPNsense.",
+        "certificate": {
+            "noPkcs12": "An error occurred while downloading file. No valid certificate data assigned to object.",
+            "noPrivateKey": "An error occurred while downloading file. No private key assigned to object.",
+            "noCertificate": "An error occurred while downloading file. No certificate assigned to object.",
+            "noCertificateCa": "An error occurred while downloading file. No CA certificate assigned to object."
+        },
+        "sso": {
+            "microsoftOidc": {
+                "stateNotFound": "Could not find a valid authorization state. Please try again or let us know how it happened.",
+                "accessToken": {
+                    "invalid": "Could not obtain access token. Error: {{ message }}. Please try again or let us know how it happened.",
+                    "expired": "Obtained access token is expired. Please try again or let us know how it happened.",
+                    "missingIdtoken": "Access token is missing id_token property. Please try again or let us know how it happened."
+                },
+                "idTokenInvalid": "Obtained id_token is invalid. Please try again or let us know how it happened.",
+                "userFoundWithoutSsoUser": "Username already exists in the system. Please contact system administrator."
+            }
+        },
+        "action": {
+            "homepage": "Homepage",
+            "logout": "Logout",
+            "login": "Login"
+        },
+        "title": {
+            "401": "Authorization required",
+            "404": "Page not found",
+            "403": "Insufficient credentials",
+            "500": "Error occured"
+        },
+        "body": {
+            "401": "Authorization is required to access this page.",
+            "403": "You are missing required credentials. Please try again or let us know how it happened.",
+            "404": "If you see this message after clicking on the link on our website, please let us know.",
+            "500": "Something went wrong. Please try again or let us know how it happened."
+        }
+    },
+    "log": {
+        "httpClient": {
+            "unauthorized": "{{ service }}: Request returned HTTP status code 401 (Unauthorized). Please verify credentials. Requested URL: {{ url }}",
+            "forbidden": "{{ service }}: Request returned HTTP status code 403 (Forbidden). Please verify credentials. Requested URL: {{ url }}",
+            "unexpectedStatusCode": "{{ service }}: Request returned unexpected HTTP status code {{ statusCode }}. Requested URL: {{ url }}.\nResponse:\n{{ response }}",
+            "decodingException": "{{ service }}: Request returned a response that could not be decoded to an array. Error message: \"{{ message }}\". Requested URL: {{ url }}.\nResponse:\n{{ response }}",
+            "transportException": "{{ service }}: Connection could not be established. Error message: \"{{ message }}\". Requested URL: {{ url }}"
+        },
+        "importDevice": {
+            "field": {
+                "required": "Field {{ fieldName }} is required",
+                "disabled": "Field {{ fieldName }} is not used by selected device type. It has been removed",
+                "deviceNotUnique": "Device with this {{ fieldName }} and device type already exists in the system",
+                "importFileNotUnique": "Device with this {{ fieldName }} and device type already exists in the import file"
+            },
+            "variable": {
+                "missingDeviceType": "Device type is not selected. Variables has been removed",
+                "variablesDisabled": "Variables are disabled for selected device type",
+                "missingName": "Variable is missing name and will be skipped",
+                "missingValue": "Variable is missing value and will be skipped"
+            },
+            "accessTag": {
+                "notFound": "Could not find access tag by name \"{{ name }}\""
+            },
+            "label": {
+                "notFound": "Could not find label by name \"{{ name }}\""
+            },
+            "template": {
+                "templateVersionProductionMissing": "Missing production template version for selected template",
+                "templatesDisabled": "Templates are disabled for selected device type",
+                "deviceTypeMismatch": "Device types selected in template and in device does not match",
+                "notFound": "Could not find template by name \"{{ name }}\""
+            },
+            "deviceType": {
+                "nameMissing": "Device type name missing",
+                "notFound": "Could not find device type by name \"{{ name }}\"",
+                "notAvailable": "Device type by name \"{{ name }}\" is not available due to feature limitations or system configuration",
+                "disabled": "Device type by name \"{{ name }}\" is disabled"
+            }
+        },
+        "opnSenseVpnProvider": {
+            "updateCrl": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during updating CRL for server '{{ serverDescription }}'. Invalid OPNsense response",
+                "errors": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - following errors were returned trying to update CRL '{{ serverDescription }}': {{ errors }}"
+            },
+            "getCrl": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during getting CRL list from server '{{ serverDescription }}'. Invalid OPNsense response",
+                "crlNotExisting": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - CRL for OpenVPN server '{{ serverDescription }}' was not found in OPNsense. Please create it as described in installation documentation"
+            },
+            "getVpnServer": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during listing server data for server '{{ serverDescription }}'. Invalid OPNsense response",
+                "serverMissing": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - OpenVPN server with description '{{ serverDescription }}' not found. Without correct OpenVPN server OPNsense configuration will not be prepared and connections will not be possible"
+            },
+            "deleteCsc": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense returned invalid response while trying to delete CSC for common name '{{ cscCommonName }}'",
+                "errors": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense returned following errors while trying to delete CSC for common name '{{ cscCommonName }}'. Errors: {{ errors }}",
+                "warnings": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense returned following warnings while trying to delete CSC for common name '{{ cscCommonName }}'. Warnings: {{ warnings }}"
+            },
+            "addCsc": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense returned invalid response while trying to add CSC for common name '{{ cscCommonName }}'",
+                "errors": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense returned following errors while trying to add CSC for common name '{{ cscCommonName }}'. Errors: {{ errors }}"
+            },
+            "getFirewallRules": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during getting firewall rules. Invalid OPNsense response"
+            },
+            "addFirewallRule": {
+                "statusNotOk": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - returned status different than 'OK'. Returned status: {{ status }}",
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during adding firewall rule. Invalid OPNsense response",
+                "missingMd5": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - did not return MD5 identifier for firewall rule",
+                "inputErrors": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - returned input errors during adding firewall rule. Errors:\n {{ errors }}"
+            },
+            "deleteFirewallRule": {
+                "invalidParameter": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - invalid rule configuration provided",
+                "statusNotOk": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - returned status different than 'OK'. Returned status: {{ status }}",
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - an error occurred during deleting firewall rule. Invalid OPNsense response"
+            }
+        },
+        "vpnProviders": {
+            "updateCrl": {
+                "cannotUpdateCrlNoServerDescription": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - Cannot update CRL - no OpenVPN Server Description configured",
+                "crlUpdated": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - CRL '{{ serverDescription }}' updated"
+            },
+            "deleteCsc": {
+                "deleteCscSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense CSC for common name '{{ cscCommonName }}' has been deleted",
+                "expectedCscMissing": "Expected CSC for common name '{{ cscCommonName }}' is missing for {{ deviceName }} '{{ identifier }}' ({{ name }})"
+            },
+            "closeConnection": {
+                "connectionClosed": "Technician {{ userName }} ({{ userVpnClientIp }}) has successfully closed connection to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }})",
+                "firewallRuleNotFound": "Expected firewall rule between {{ sourceIp }} and {{ destinationIp }} ('{{ ruleIdentifier }}') for {{ deviceName }} '{{ identifier }}' ({{ name }}) not found",
+                "permanentConnectionClosed": "System has successfully closed connection from {{ deviceName }} '{{ identifier }}' ({{ name }}) to network {{ destinationNetwork }}"
+            },
+            "openConnection": {
+                "connectionExists": "Connection already exists. Technician {{ userName }} and {{ deviceName }} '{{ identifier }}' ({{ name }}) are already connected.",
+                "connectionOpened": "Technician {{ userName }} ({{ userVpnClientIp }}) has successfully opened connection to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }})). Connection expires at {{ expiresAt }}",
+                "connectionOpenedUnlimited": "Technician {{ userName }} ({{ userVpnClientIp }}) has successfully opened connection to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }}). Connection does not expire",
+                "permanentConnectionOpenedUnlimited": "System has successfully opened connection from {{ deviceName }} '{{ identifier }}' ({{ name }}) to network {{ destinationNetwork }}. Connection does not expire",
+                "unexpectedFirewallRule": "Found unexpected firewall rule between {{ sourceIp }} and {{ destinationIp }} for {{ deviceName }} '{{ identifier }}' ({{ name }}). Firewall rule will be deleted",
+                "firewallRuleAdded": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - firewall rule between {{ sourceIp }} and {{ destinationIp }} has been added",
+                "firewallRuleDeleted": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - firewall rule between {{ sourceIp }} and {{ destinationIp }} has been deleted"
+            },
+            "addCscSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense CSC for common name '{{ commonName }}' with IPv4 Tunnel Network (VPN IP) = {{ tunnelNetwork }} and IPv4 Remote Network (Virtual VPN IP) = {{ remoteNetwork }} has been created",
+            "noOpenVPNServerDescription": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - Cannot get OpenVPN server index - no OpenVPN Server Description configured",
+            "noVpnIp": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - VPN IP is missing",
+            "noCertificate": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - OPNsense - VPN SSL Certificate is missing",
+            "vpnNetworkNotFound": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN network not found for VPN IP",
+            "noOpnsenseUrl": "Invalid OPNsense URL"
+        },
+        "pkiProviders": {
+            "getCrlByUrlFailed": "Could not obtain CRL. Requested URL: {{ url }}",
+            "certificateRevocationSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has been successful",
+            "certificateRevocationRequested": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation was requested for '{{ certificateSubject }}'",
+            "certificateRevocationFailedNoCertificate": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has failed. No certificate to revoke",
+            "certificateRequestSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate request for '{{ certificateSubject }}' has been successful",
+            "csrGenerationFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - CSR generation has failed",
+            "pairCheckFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - private and public key pair check has failed",
+            "certificateInvalid": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - SSL certificate is invalid",
+            "caInvalid": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - CA's public key is invalid",
+            "certificateRequested": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate was requested for '{{ certificateSubject }}'",
+            "invalidPkiConfiguration": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - Invalid PKI configuration",
+            "certificateExists": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate exists",
+            "certificateTypeNotSet": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - certificate type not set",
+            "certificateTypeNotAvailable": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - not available",
+            "scep": {
+                "missingScepUrl": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP URL",
+                "missingScepCrlUrl": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP CRL URL",
+                "missingScepRevocationUrl": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP revocation URL",
+                "missingHashFunction": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP hash function",
+                "missingKeyLength": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP key length"
+            }
+        },
+        "scepPkiProvider": {
+            "getCrl": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - invalid response while getting CRL via SCEP"
+            },
+            "revokeCertificate": {
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - invalid response while certificate revoke via SCEP",
+                "certificateRevocationFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has failed. Exception message: '{{ exceptionMessage }}'. Revocation URL: '{{ url }}'"
+            },
+            "signCsr": {
+                "extractionFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - extraction of received message has failed",
+                "verificationFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - verification of received message has failed, common name may already be used",
+                "decryptionFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - decryption of received message has failed",
+                "decodingCertificateFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - decoding of certificate has failed",
+                "certificateResponseFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate response for '{{ certificateSubject }}' has failed - not available. Request URL: '{{ url }}'",
+                "certificateRequestFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate request for '{{ certificateSubject }}' has failed. Exception message: '{{ exceptionMessage }}'. Request URL: '{{ url }}'"
+            },
+            "getCaCertificate": {
+                "caInvalid": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - CA's public key is invalid",
+                "caUnavailable": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - CA's public key failed to be downloaded from SCEP server",
+                "invalidResponse": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - invalid response while requesting CA via SCEP"
+            },
+            "request": {
+                "unauthorized": "SCEP Server returned HTTP status code 401 (Unauthorized). Please verify credentials. Requested URL: {{ url }}",
+                "forbidden": "SCEP Server returned HTTP status code 403 (Forbidden). Please verify credentials. Requested URL: {{ url }}",
+                "unexpectedStatusCode": "SCEP Server returned unexpected HTTP status code {{ statusCode }}. Requested URL: {{ url }}.\nResponse:\n{{ response }}",
+                "decodingException": "SCEP Server returned a response that could not be decoded to an array. Error message: \"{{ message }}\". Requested URL: {{ url }}.\nResponse:\n{{ response }}",
+                "transportException": "SCEP Server connection could not be established. Error message: \"{{ message }}\". Requested URL: {{ url }}"
+            },
+            "consoleCommandFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - Execution of command '{{ commandString }}' has failed. Exception message: '{{ exceptionMessage }}'"
+        },
+        "vpn": {
+            "virtualSubnetMissing": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Virtual subnet missing",
+            "virtualIpHostPartMissing": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Virtual IP host part missing",
+            "virtualIpMissing": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Virtual IP missing",
+            "virtualIpSet": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Virtual IP set to '{{ virtualIp }}'",
+            "virtualSubnetNotAvailable": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - virtual subnet (with CIDR /{{ cidr }}) couldn't be obtained. Please check VPN virtual networks configuration",
+            "virtualSubnetSet": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - virtual subnet set to '{{ virtualSubnet }}'",
+            "vpnIpNotAvailable": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN IP couldn't be obtained. Please check VPN network configuration",
+            "vpnIpMissing": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN IP missing",
+            "vpnIpSet": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN IP set to '{{ vpnIp }}'",
+            "vpnIpRemoved": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN IP removed",
+            "vpnVirtualAddressesRemoved": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - VPN Virtual addresses removed",
+            "invalidSubnetSize": "{{ size }} is invalid IPV4 subnet size",
+            "invalidSubnetCidr": "/{{ cidr }} is invalid IPV4 subnet CIDR",
+            "subnetNotAvailable": "Subnet (with CIDR /{{ cidr }}) couldn't be obtained from networks [{{ networks }}]. Please check VPN and VPN virtual networks configuration",
+            "networkNotFound": "Network not found for subnet '{{ subnet }}'. Please check VPN and VPN virtual networks configuration",
+            "vpnSubnetTypeNotFound": "VPN subnet type for network '{{ network }}' not found. Please check VPN and VPN virtual networks configuration",
+            "invalidIpV4Subnet": "Subnet '{{ subnet }}' is invalid IPv4 subnet. Please check VPN and VPN virtual networks configuration",
+            "rangeNotFound": "Range not found for subnet '{{ subnet }}'. Please check VPN and VPN virtual networks configuration",
+            "subnetFoundInPool": "Subnet '{{ subnet }}' already found in address pool while releasing. Please check VPN and VPN virtual networks configuration",
+            "subnetInsideVpnSubnet": "Subnet '{{ subnet }}' already found in address pool - will be discarded.",
+            "subnetOutsideOfAvailableRange": "Subnet '{{ subnet }}' outside of available ranges - will be discarded.",
+            "expectedCscMissing": "Expected CSC for common name '{{ commonName }}' is missing for {{ deviceName }} '{{ identifier }}' ({{ name }})",
+            "connectionCannotBeClosed": "An error occurred during connection's closing. Technician {{ userName }} ({{ userVpnClientIp }}) to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }}). Exception message: {{ exceptionMessage }}",
+            "connectionCannotBeOpened": "An error occurred during connection's opening. Technician {{ userName }} ({{ userVpnClientIp }}) to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }}). Exception message: {{ exceptionMessage }}",
+            "permanentConnectionClosed": "System has successfully closed connection from {{ deviceName }} '{{ identifier }}' ({{ name }}) to network {{ destinationIp }}",
+            "connectionClosed": "Technician {{ userName }} ({{ userVpnClientIp }}) has successfully closed connection to {{ deviceName }} '{{ identifier }}' ({{ name }}) ({{ destinationIp }})",
+            "noOpnsenseUrl": "Invalid OPNsense URL"
+        },
+        "certificateType": {
+            "notAvailable": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Certificate type '{{ certificateType }}' not available. Please check configuration"
+        },
+        "certificate": {
+            "pkcs12Uploaded": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' certificate has been uploaded using single P12 file",
+            "publicUploaded": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' public certificate has been uploaded",
+            "privateUploaded": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' private certificate has been uploaded",
+            "caUploaded": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' CA certificate has been uploaded",
+            "publicDeleted": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' public certificate has been deleted",
+            "privateDeleted": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' private certificate has been deleted",
+            "caDeleted": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' CA certificate has been deleted",
+            "deletedSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - '{{ certificateType }}' certificate (CA, public key, and private key) has been deleted"
+        },
+        "secretLog": {
+            "communicationShow": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted during device communication by user '{{ userName }}'",
+            "communicationRenew": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been renewed during device communication by user '{{ userName }}'",
+            "communicationCreate": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been created during device communication by user '{{ userName }}'",
+            "userShowPreviousLog": "Secret log previous value (ID='{{ secretLogId }}') of '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userShowUpdatedLog": "Secret log updated value (ID='{{ secretLogId }}') of '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userShowCommunicationLogContent": "Communication log content (ID='{{ logId }}') of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userShowConfigLogContent": "Config log content (ID='{{ logId }}') of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userShowDiagnoseLogContent": "Diagnose log content (ID='{{ logId }}') of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userShow": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been decrypted by user '{{ userName }}'",
+            "userCreate": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been created by user '{{ userName }}'",
+            "userClear": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been cleared by user '{{ userName }}'",
+            "userEdit": "Secret '{{ deviceTypeSecretName }}' of device {{ deviceName }} '{{ identifier }}' ({{ name }}) has been edited by user '{{ userName }}'"
+        },
+        "vpnInvalidConfigurationTemplate": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Invalid configuration template.",
+        "vpnNoVirtualIp": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - Virtual IP address not assigned.",
+        "communicationProcedureRequirementsNotSatisfied": "Communication procedure '{{ communicationProcedure }}' requirements for device type '{{ deviceType }}' are not satisfied. Please configure device type '{{ deviceType }}' correctly.",
+        "communicationProcedureRequireHasFirmware1": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable firmware1",
+        "communicationProcedureRequireHasFirmware2": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable firmware2",
+        "communicationProcedureRequireHasFirmware3": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable firmware3",
+        "communicationProcedureRequireHasConfig1": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable config1",
+        "communicationProcedureRequireHasConfig2": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable config2",
+        "communicationProcedureRequireHasConfig3": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable config3",
+        "communicationProcedureRequireHasCertificates": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable certificates",
+        "communicationProcedureRequireHasScepCertificates": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable scep certificates",
+        "communicationProcedureRequireHasVpn": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable VPN",
+        "communicationProcedureRequireHasEndpointDevices": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable endpointDevices",
+        "communicationProcedureRequireHasTemplates": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable templates",
+        "communicationProcedureRequireHasMasquerade": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable masquerade",
+        "communicationProcedureRequireHasGsm": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable GSM",
+        "configSameAsPreviousOne": "Config send by {{ deviceName }} is the same as previous one. Updating date.",
+        "configDifferentThanPreviousOne": "Config send by {{ deviceName }} is different than previous one. Saving config to database.",
+        "noConfigSent": "No config send by {{ deviceName }}.",
+        "noDiagnoseDataSent": "No diagnose data send by {{ deviceName }}.",
+        "diagnoseDataSent": "Diagnose data send by {{ deviceName }}. Saving to database.",
+        "diagnoseLogSent": "Diagnose logs send by {{ deviceName }} '{{ identifier }}' ({{ name }}) . Saving to database.",
+        "configDeviceConfigGenerated": "{{ deviceName }} device '{{ identifier }}' config has been generated succesfully.",
+        "configDeviceInvalidJson": "Generated {{ nameConfig }} is not a valid JSON format",
+        "configDeviceInvalidEmpty": "Generated {{ nameConfig }} is empty",
+        "configDeviceSystemError": "System error while generating {{ nameConfig }} for device '{{ identifier }}'",
+        "deviceTemplateMissing": "{{ deviceName }} '{{ identifier }}' does not have assigned template",
+        "deviceConfigMissing": "{{ deviceName }} '{{ identifier }}' does not have assigned {{ nameConfig }}",
+        "deviceCreate": "Creating a new {{ deviceName }}",
+        "deviceInvalidRequest": "Invalid request for {{ deviceName }}. Errors: '{{ errors }}'",
+        "deviceInvalidRequestSendingEmpty": "Invalid request for {{ deviceName }} has been processed. Sending empty response.",
+        "deviceAutoRenewCertificateFailed": "'{{ certificateType }}' certificate auto-renew failed.",
+        "deviceAutoRenewCertificate": "Starting '{{ certificateType }}' certificate auto-renew.",
+        "deviceAutoRenewCertificateSubjectAltChange": "Starting '{{ certificateType }}' certificate auto-renew. Due to SubjectAltName change.",
+        "deviceNoChange": "Sending 'no change' response",
+        "deviceNoConfigWillBeSent": "Config will not be sent.",
+        "deviceConfigGenerationFailed": "Error occured during config generation. Config will not be sent.",
+        "deviceConfigSameAsReceived": "Generated config is the same.",
+        "deviceNoConfigWillBeSentSameAsReceived": "Generated config is the same. Config will not be sent.",
+        "deviceRsrpInvalidConfig1": "Invalid RSRP. {{ nameConfig1 }} will not be sent.",
+        "deviceRsrpInvalidConfig2": "Invalid RSRP. {{ nameConfig2 }} will not be sent.",
+        "deviceRsrpInvalidConfig3": "Invalid RSRP. {{ nameConfig3 }} will not be sent.",
+        "deviceInstallConfig1NoTemplate": "Trying to send {{ nameConfig1 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallConfig2NoTemplate": "Trying to send {{ nameConfig2 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallConfig3NoTemplate": "Trying to send {{ nameConfig3 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallConfig1NoConfig": "Trying to send {{ nameConfig1 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig1 }}.",
+        "deviceInstallConfig2NoConfig": "Trying to send {{ nameConfig2 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig2 }}.",
+        "deviceInstallConfig3NoConfig": "Trying to send {{ nameConfig3 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig3 }}.",
+        "deviceReinstallingConfig1": "Decided to send {{ nameConfig1 }}.",
+        "deviceReinstallingConfig2": "Decided to send {{ nameConfig2 }}.",
+        "deviceReinstallingConfig3": "Decided to send {{ nameConfig3 }}.",
+        "deviceReinstallingConfig1NoNeed": "No need to send {{ nameConfig1 }}.",
+        "deviceReinstallingConfig2NoNeed": "No need to send {{ nameConfig2 }}.",
+        "deviceReinstallingConfig3NoNeed": "No need to send {{ nameConfig3 }}.",
+        "deviceRsrpInvalidFirmware1": "Invalid RSRP. {{ nameFirmware1 }} will not be reinstalled.",
+        "deviceRsrpInvalidFirmware2": "Invalid RSRP. {{ nameFirmware2 }} will not be reinstalled.",
+        "deviceRsrpInvalidFirmware3": "Invalid RSRP. {{ nameFirmware3 }} will not be reinstalled.",
+        "deviceInstallFirmware1NoTemplate": "Trying to reinstall {{ nameFirmware1 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallFirmware2NoTemplate": "Trying to reinstall {{ nameFirmware2 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallFirmware3NoTemplate": "Trying to reinstall {{ nameFirmware3 }} but {{ deviceName }} has no selected template.",
+        "deviceInstallFirmware1NoFirmware": "Trying to reinstall {{ nameFirmware1 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware1 }}.",
+        "deviceInstallFirmware2NoFirmware": "Trying to reinstall {{ nameFirmware2 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware2 }}.",
+        "deviceInstallFirmware3NoFirmware": "Trying to reinstall {{ nameFirmware3 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware3 }}.",
+        "deviceFirmware1NoTemplate": "Cannot check {{ nameFirmware1 }} version. {{ deviceName }} has no selected template.",
+        "deviceFirmware2NoTemplate": "Cannot check {{ nameFirmware2 }} version. {{ deviceName }} has no selected template.",
+        "deviceFirmware3NoTemplate": "Cannot check {{ nameFirmware3 }} version. {{ deviceName }} has no selected template.",
+        "deviceFirmware1NoFirmware": "Cannot check {{ nameFirmware1 }} version. Template has no selected {{ nameFirmware1 }}.",
+        "deviceFirmware2NoFirmware": "Cannot check {{ nameFirmware2 }} version. Template has no selected {{ nameFirmware2 }}.",
+        "deviceFirmware3NoFirmware": "Cannot check {{ nameFirmware3 }} version. Template has no selected {{ nameFirmware3 }}.",
+        "deviceFirmware1NeedsUpdate": "{{ nameFirmware1 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware1 }} reinstall flag to TRUE.",
+        "deviceFirmware2NeedsUpdate": "{{ nameFirmware2 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware2 }} reinstall flag to TRUE.",
+        "deviceFirmware3NeedsUpdate": "{{ nameFirmware3 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware3 }} reinstall flag to TRUE.",
+        "deviceFirmware1UpToDate": "{{ nameFirmware1 }} is up to date.",
+        "deviceFirmware2UpToDate": "{{ nameFirmware2 }} is up to date.",
+        "deviceFirmware3UpToDate": "{{ nameFirmware3 }} is up to date.",
+        "deviceReinstallingFirmware1": "{{ nameFirmware1 }} will be reinstalled.",
+        "deviceReinstallingFirmware2": "{{ nameFirmware2 }} will be reinstalled.",
+        "deviceReinstallingFirmware3": "{{ nameFirmware3 }} will be reinstalled.",
+        "deviceReinstallFirmware1AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware1 }} flag already set to true.",
+        "deviceReinstallFirmware2AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware2 }} flag already set to true.",
+        "deviceReinstallFirmware3AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware3 }} flag already set to true.",
+        "deviceReinstallFirmwareLastCommandCriticalTrue": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' last command status is 'critical'",
+        "deviceReinstallFirmware1CommandErrorMaxRetriesExceeded": "{{ deviceName }} device '{{ identifier }}' {{ nameFirmware1 }} should be reinstalled, but will not be updated due to exceeded number of retries. Current retry count is '{{ commandRetryCount }}'.",
+        "deviceReinstallFirmware2CommandErrorMaxRetriesExceeded": "{{ deviceName }} device '{{ identifier }}' {{ nameFirmware2 }} should be reinstalled, but will not be updated due to exceeded number of retries. Current retry count is '{{ commandRetryCount }}'.",
+        "deviceReinstallFirmware3CommandErrorMaxRetriesExceeded": "{{ deviceName }} device '{{ identifier }}' {{ nameFirmware3 }} should be reinstalled, but will not be updated due to exceeded number of retries. Current retry count is '{{ commandRetryCount }}'.",
+        "deviceCommandMissing": "{{ deviceName }} device '{{ identifier }}' command not found.",
+        "deviceCommandPendingExists": "Pending command with transaction ID '{{ commandTransactionId }}' exists. It will be set to 'expired'. Retry count will be increased. Current retry count is '{{ commandRetryCount }}'.",
+        "deviceCommandUpdateSuccess": "Command execution finished successfully.",
+        "deviceCommandUpdateError": "Command execution failed due to 'error' status. Reported error category '{{ errorCategory }}'.",
+        "deviceCommandUpdateCritical": "Command execution failed due to 'critical' status. Reported error category '{{ errorCategory }}'.",
+        "deviceDisabledNoConfig1": "{{ deviceName }} is disabled and its template has no {{ nameConfig1 }}.",
+        "deviceDisabledNoConfig2": "{{ deviceName }} is disabled and its template has no {{ nameConfig2 }}.",
+        "deviceDisabledNoConfig3": "{{ deviceName }} is disabled and its template has no {{ nameConfig3 }}.",
+        "deviceForceReinstallConfig1": "{{ deviceName }} forcing {{ nameConfig1 }} reinstallation.",
+        "deviceForceReinstallConfig2": "{{ deviceName }} forcing {{ nameConfig2 }} reinstallation.",
+        "deviceForceReinstallConfig3": "{{ deviceName }} forcing {{ nameConfig3 }} reinstallation.",
+        "deviceDisabledNoTemplate": "{{ deviceName }} is disabled and has no selected template.",
+        "deviceDisabled": "{{ deviceName }} device '{{ identifier }}' is disabled.",
+        "deviceNoCertificate": "{{ deviceName }} device '{{ identifier }}' - SSL certificate doesn't exists.",
+        "deviceNoVpnIpAddress": "{{ deviceName }} device '{{ identifier }}' - OpenVPN IP address not assigned.",
+        "deviceSendDiagnoseDataRequest": "{{ deviceName }} - sending diagnose data request.",
+        "deviceSendConfigDataRequest": "{{ deviceName }} - sending config data request.",
+        "deviceTypeMismatch": "{{ deviceName }} found, but expected device type does not match. Device of type {{ deviceTypeFound }} found. Expected device type {{ deviceTypeExpected }}",
+        "deviceNotFound": "{{ deviceName }} device '{{ identifier }}' tried to communicate. Device not found. Creating device.",
+        "deviceFound": "{{ deviceName }} device '{{ identifier }}' found.",
+        "flexEdgeDeviceFileUpdate": "{{ deviceName }} device '{{ identifier }}' updated file '{{ fileId }}' download status to '{{ fileStatus }}'.",
+        "flexEdgeDeviceFileUpdateNotFound": "{{ deviceName }} device '{{ identifier }}' tried to update file download status. Device not found.",
+        "flexEdgeConfigResponses": "{{ deviceName }} device '{{ identifier }}' sending update config response with fileId: '{{ fileId }}'.",
+        "flexEdgeModelNotRecognized": "{{ deviceName }} device model '{{ receivedModel }}' not recognized.",
+        "routerInvalidatedImsiChanged": "Router has been invalidated. Different router is being used for this SIM card",
+        "routerInvalidatedSerialChanged": "Router has been invalidated. This SIM card is being used in different router",
+        "routerSerialChanged": "Serial has been changed to: '{{ serial }}'",
+        "routerImeiChanged": "IMEI has been changed to: '{{ imei }}'",
+        "routerImsiChanged": "IMSI has been changed to: '{{ imsi }}'",
+        "routerImsiEmpty": "IMSI is empty. Router with Serial = {{ serial }} does not exist.",
+        "routerImsiDoesntExist": "Router with IMSI = {{ imsi }} does not exist.",
+        "routerSerialDoesntExist": "Router with Serial = {{ serial }} does not exist.",
+        "routerInvalidatedLostIdentifier": "Router has been invalidated - identifier is invalid. Router object lost ability to communicate with device",
+        "vccRegisterUuidNotFound": "{{ deviceName }} uuid: {{ identifier }} tried to register with UUID - not found.",
+        "vccConfigNotFound": "{{ deviceName }} {{ identifier }} tried to get configuration - VPN Container Client not found.",
+        "vccSendLogsNotFound": "{{ deviceName }} {{ identifier }} tried to send logs - VPN Container Client not found.",
+        "requestProcessed": "Request has been processed. Sending response.",
+        "incomingRequest": "Incoming request is valid and will be processed.",
+        "requestDebug": "Request received from '{{ deviceType }}' {{ deviceName }}.",
+        "requestIsMissing": "Request object is missing. This should not happen, please contact Welotec with details.",
+        "responseDebug": "Response sent to '{{ deviceType }}' {{ deviceName }} device '{{ identifier }}'.",
+        "noVpnSecuritySuite": "{{ deviceName }} device '{{ identifier }}' tried to get configuration. VPN functionalities are not available.",
+        "noVpnSecuritySuiteAvailable": "{{ deviceName }} device '{{ identifier }}' tried to update VPN configuration. VPN functionalities are not available.",
+        "systemUserDoesNotExist": "System user does not exist",
+        "edgeGateway": {
+            "processCommandNameUpdateFirmware": {
+                "commandErrorRetry": "Update firmware command execution failed due to 'error' status. Update firmware command will be retried. Current retry count is '{{ commandRetryCount }}'.",
+                "commandErrorRetriesExceeded": "Update firmware command execution failed due to 'error' status. Retry count exceeded. Current retry count is '{{ commandRetryCount }}'."
+            },
+            "processCommandNameUpdateConfig": {
+                "commandErrorRetry": "Update config command execution failed due to 'error' status. Update config command will be retried. Current retry count is '{{ commandRetryCount }}'.",
+                "commandErrorRetriesExceeded": "Update config command execution failed due to 'error' status. Retry count exceeded. Current retry count is '{{ commandRetryCount }}'."
+            },
+            "processCommandNameGetConfig": {
+                "commandErrorRetry": "Update config command execution failed due to 'error' status. Update config command will be retried. Current retry count is '{{ commandRetryCount }}'.",
+                "commandErrorRetriesExceeded": "Update config command execution failed due to 'error' status. Retry count exceeded. Current retry count is '{{ commandRetryCount }}'."
+            }
+        }
+    },
+    "functionality": {
+        "userObjectLabel": "User",
+        "nullObjectIdentifier": "N/A",
+        "nullObjectLabel": "Unknown",
+        "title": "abc"
+    }
+}

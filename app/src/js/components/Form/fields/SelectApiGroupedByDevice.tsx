@@ -1,0 +1,50 @@
+// Copyright (c) 2025 Contributors to the Eclipse Foundation.
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0
+//
+// SPDX-License-Identifier: Apache-2.0
+
+import React from "react";
+import { OptionsType, SelectApi, SelectApiProps } from "@arteneo/forge";
+import useSelectGroupByDevice from "~app/hooks/useSelectGroupByDevice";
+
+interface SelectApiGroupedByDeviceProps extends SelectApiProps {
+    devicePath?: string;
+}
+
+/**
+ * SelectApi requires options to include deviceType information (color, icon, representation).
+ */
+const SelectApiGroupedByDevice = ({ devicePath = "device", ...props }: SelectApiGroupedByDeviceProps) => {
+    const { getSelectedOptionLabel, renderOption, renderInput, sortOptions, groupBy } =
+        useSelectGroupByDevice(devicePath);
+
+    return (
+        <SelectApi
+            {...{
+                processResponse: (response) => {
+                    const options: OptionsType = response.data;
+                    // Options has to be sorted to avoid duplicate group headers (MUI requirement)
+                    return sortOptions(options);
+                },
+                groupBy,
+                disableTranslateGroupBy: true,
+                renderInput,
+                ...props,
+                autocompleteProps: {
+                    renderOption,
+                    getOptionLabel: getSelectedOptionLabel,
+                    ...props.autocompleteProps,
+                },
+            }}
+        />
+    );
+};
+
+export default SelectApiGroupedByDevice;
+export { SelectApiGroupedByDeviceProps };

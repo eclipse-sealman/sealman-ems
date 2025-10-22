@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "CommonJS",
+        "target": "ES6",
+        "lib": ["es6", "dom", "es2017"],
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "typeRoots": ["node_modules/@types", "src/js/definitions"],
+        "types": ["node"],
+        "paths": {
+            "~app/*": ["src/js/*"],
+            "~translations/*": ["src/translations/*"],
+            "~assets/*": ["src/assets/*"],
+            "~images/*": ["src/assets/images/*"]
+        }
+    },
+    "include": ["src"]
+}
