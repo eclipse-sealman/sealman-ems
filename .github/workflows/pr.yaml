@@ -1,0 +1,64 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: Pull request CI/CD
+
+on:
+    pull_request:
+        branches:
+            - "**"
+
+jobs:
+    detect-and-build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Detect changed images
+              id: changes
+              uses: dorny/paths-filter@v3
+              with:
+                  filters: .github/path-filters.yaml
+
+            - name: Update changed image versions
+              run: |
+                  ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+
+            - name: Build changed images (PR)
+              run: |
+                  # TODO: replace with real docker build commands
+                  build_image() {
+                    local image="$1"
+                    local changed="$2"
+                    if [ "$changed" = "true" ]; then
+                      echo "Building image ${image} with version ${GITHUB_SHA}"
+                      # example:
+                      # docker build -f docker/images/${image}/Dockerfile \
+                      #   -t your-registry/your-app-${image}:${GITHUB_SHA} .
+                    fi
+                  }
+
+                  build_image core      "${{ steps.filter.outputs.core }}"
+                  build_image composer  "${{ steps.filter.outputs.composer }}"
+                  build_image backend   "${{ steps.filter.outputs.backend }}"
+                  build_image frontend  "${{ steps.filter.outputs.frontend }}"
+                  build_image scep      "${{ steps.filter.outputs.scep }}"
+                  build_image app       "${{ steps.filter.outputs.app }}"
+                  build_image test      "${{ steps.filter.outputs.test }}"
+
+            - name: Run smoke tests (PR)
+              run: |
+                  # TODO: replace with actual smoke tests
+                  echo "Running smoke tests for PR..."
+                  # e.g.:
+                  # ./bin/smoke-tests.sh
