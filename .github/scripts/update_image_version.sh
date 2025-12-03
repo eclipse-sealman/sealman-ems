@@ -32,4 +32,4 @@ fi
 
 echo "Updating image version for '$image' to '$version'"
 imageUppercase=${image^^}
-sed -i "s/^${imageUppercase}_VERSION=.*/${imageUppercase}_VERSION=${version}/" "../../docker/images/${image}/.env"
+sed -i "s/^${imageUppercase}_VERSION=.*/${imageUppercase}_VERSION=${version}/" "docker/images/${image}/.env"
