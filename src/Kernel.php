@@ -32,7 +32,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
     public function process(ContainerBuilder $container): void
     {
-        // This is thightly coupled with "security.firewalls.keep_ttl_refresh" definition in config/packages/security.yaml
+        // This is tightly coupled with "security.firewalls.keep_ttl_refresh" definition in config/packages/security.yaml
         // It changes ttl_update configuration to false for this authenticator
         $refreshTokenAuthenticator = $container->getDefinition('security.authenticator.refresh_jwt.keep_ttl_refresh');
 
