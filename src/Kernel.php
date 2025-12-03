@@ -13,8 +13,6 @@
 
 declare(strict_types=1);
 
-// TODO Trigger
-
 namespace App;
 
 use App\DependencyInjection\DoctrineSslExtension;
