@@ -41,6 +41,8 @@ jobs:
               run: |
                   touch testfile.txt
                   echo "Test" >> testfile.txt
+                  git config user.name sealman-github-actions
+                  git config user.email sealman-github-actions@github.com
                   git add testfile.txt
                   git commit -m "Test commit from GitHub Actions"
                   git push
