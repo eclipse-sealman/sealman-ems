@@ -1,6 +1,6 @@
 {
     "label": {
-        "ssoRoleVpnCertificateAutoGenerate": "Auto-generate VPN certificate for users with VPN permissions on first login",
+        "ssoRoleVpnCertificateAutoGenerate": "Trigger Auto-generate VPN certificate for users with VPN permissions on first login",
         "secretValueBehaviour": "Secret value behaviour",
         "secretValueRenewAfterDays": "Secret value renew after days",
         "renewedAt": "Last renewed at",
