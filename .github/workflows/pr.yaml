@@ -67,7 +67,9 @@ jobs:
 
             - name: Build test image
               run: |
+                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "true"
                   ./.github/scripts/build_docker_image.sh "composer" "true"
+                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "true"
                   ./.github/scripts/build_docker_image.sh "test" "true"
 
             - name: Run smoke tests
