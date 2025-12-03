@@ -46,3 +46,4 @@ backend: &backend
     - 'public/import_devices_example_file.xlsx'
     - 'public/swagger'
     - 'private'
+    - '!(private/**)'
