@@ -49,17 +49,17 @@ backend: &backend
     - "bin/console"
     - "bin/maintenance.sh"
     - "config/**"
-    - "!(config/jwt)/**"
     - "migrations/**"
     - "src/**"
     - "templates/**"
+    - "var/log/**"
+    - "var/cache/**"
 
 # docker/images/composer/frontend.Dockerfile.dockerignore
 frontend: &frontend
     - "docker/images/frontend/frontend.Dockerfile"
     - "docker/images/frontend/frontend.Dockerfile.dockerignore"
     - "app/**"
-    - "!app/node_modules/**"
     - "docker/images/frontend/assets/**"
 
 # docker/images/composer/app.Dockerfile.dockerignore
