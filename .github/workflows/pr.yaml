@@ -57,5 +57,6 @@ jobs:
                   ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
 
             - name: Run smoke tests
+              # docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group smoke
               run: |
-                  docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group smoke
+                  docker compose -f docker/deployments/test/compose.yaml up

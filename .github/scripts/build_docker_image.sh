@@ -19,9 +19,8 @@ if [[ ! " ${knownImages[*]} " =~ [[:space:]]${image}[[:space:]] ]]; then
 fi
 
 if [ "$build" != "true" ]; then
-    echo "Image for '$image' will not be build"
     exit 0
 fi
 
 echo "Building image for '$image'"
-make help
+make "$image-build"

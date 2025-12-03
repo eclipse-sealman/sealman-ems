@@ -26,7 +26,6 @@ if [ -z "$version" ]; then
 fi
 
 if [ "$changed" != "true" ]; then
-    echo "Image version for '$image' will not be changed"
     exit 0
 fi
 
