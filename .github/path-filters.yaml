@@ -49,7 +49,7 @@ backend: &backend
     - "bin/console"
     - "bin/maintenance.sh"
     - "config/**"
-    # - "!config/jwt/**"
+    - "!(config/jwt)/**"
     - "migrations/**"
     - "src/**"
     - "templates/**"
