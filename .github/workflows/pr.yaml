@@ -33,32 +33,29 @@ jobs:
               run: |
                   ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
                   ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "true"
 
-            - name: Build changed images (PR)
+            - name: Build changed images
               run: |
-                  # TODO: replace with real docker build commands
-                  build_image() {
-                    local image="$1"
-                    local changed="$2"
-                    if [ "$changed" = "true" ]; then
-                      echo "Building image ${image} with version ${GITHUB_SHA}"
-                      # example:
-                      # docker build -f docker/images/${image}/Dockerfile \
-                      #   -t your-registry/your-app-${image}:${GITHUB_SHA} .
-                    fi
-                  }
+                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
 
-                  build_image core      "${{ steps.filter.outputs.core }}"
-                  build_image composer  "${{ steps.filter.outputs.composer }}"
-                  build_image backend   "${{ steps.filter.outputs.backend }}"
-                  build_image frontend  "${{ steps.filter.outputs.frontend }}"
-                  build_image scep      "${{ steps.filter.outputs.scep }}"
-                  build_image app       "${{ steps.filter.outputs.app }}"
-                  build_image test      "${{ steps.filter.outputs.test }}"
-
-            - name: Run smoke tests (PR)
+            - name: Run smoke tests
               run: |
-                  # TODO: replace with actual smoke tests
-                  echo "Running smoke tests for PR..."
-                  # e.g.:
-                  # ./bin/smoke-tests.sh
+                  docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group smoke
