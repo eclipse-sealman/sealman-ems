@@ -19,21 +19,30 @@ if [ -z "$version" ] || [ -z "$previousVersion" ]; then
     exit 1
 fi
 
+echo "version=$version"
 echo "version=$version" >> $GITHUB_OUTPUT
+echo "previousVersion=$previousVersion"
 echo "previousVersion=$previousVersion" >> $GITHUB_OUTPUT
 
 if [ "$changed" != "true" ]; then
+    echo "isRelease=false"
     echo "isRelease=false" >> $GITHUB_OUTPUT
+    echo "isProductionRelease=false"
     echo "isProductionRelease=false" >> $GITHUB_OUTPUT
+    echo "changesBase=$GITHUB_SHA"
     echo "changesBase=$GITHUB_SHA" >> $GITHUB_OUTPUT
 else
+    echo "isRelease=true"
     echo "isRelease=true" >> $GITHUB_OUTPUT
 
     if [[ "$version" == *"-rc"* ]]; then
+        echo "isProductionRelease=false"
         echo "isProductionRelease=false" >> $GITHUB_OUTPUT
     else
+        echo "isProductionRelease=true"
         echo "isProductionRelease=true" >> $GITHUB_OUTPUT
     fi
 
+    echo "changesBase=$previousVersion"
     echo "changesBase=$previousVersion" >> $GITHUB_OUTPUT
 fi

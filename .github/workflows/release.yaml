@@ -29,6 +29,7 @@ jobs:
               id: version
               uses: dorny/paths-filter@v3
               with:
+                  base: "${{ github.ref }}"
                   filters: |
                       version:
                           - ".github/metadata/PREVIOUS_VERSION"
