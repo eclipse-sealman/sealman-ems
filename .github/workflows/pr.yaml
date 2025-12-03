@@ -75,6 +75,6 @@ jobs:
                   echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
                   echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
                   echo "APPLICATION_VERSION=${GITHUB_SHA}" >> docker/deployments/test/.env
-                  docker compose -f docker/deployments/production/compose.yaml up -d
+                  docker compose -f docker/deployments/test/compose.yaml up -d
                   docker/deployments/test/wait-until-ready.sh
-                  docker compose -f docker/deployments/production/compose.yaml exec application php bin/phpunit --group smoke
+                  docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group smoke
