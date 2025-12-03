@@ -67,6 +67,7 @@ jobs:
 
             - name: Build test image
               run: |
+                  ./.github/scripts/build_docker_image.sh "composer" "true"
                   ./.github/scripts/build_docker_image.sh "test" "true"
 
             - name: Run smoke tests
