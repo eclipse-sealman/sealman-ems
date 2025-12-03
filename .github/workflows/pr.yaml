@@ -19,6 +19,9 @@ on:
 jobs:
     detect-and-build:
         runs-on: ubuntu-latest
+        permissions:
+            # Allow docker pull, docker push of docker images to GHCR
+            packages: read
         # permissions:
         #     # Allow git commit, git push
         #     contents: write
