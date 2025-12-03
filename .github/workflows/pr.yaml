@@ -17,65 +17,50 @@ on:
             - "**"
 
 jobs:
-    detect-and-build:
+    pull-request-ci-cd:
         runs-on: ubuntu-latest
-        permissions:
-            # Allow docker pull, docker push of docker images to GHCR
-            packages: read
-        # permissions:
-        #     # Allow git commit, git push
-        #     contents: write
-        #     # Allow docker pull, docker push of docker images to GHCR
-        #     packages: write
         steps:
             - name: Checkout
               uses: actions/checkout@v6
+
+            - name: Detect changed images
+              id: changes
+              uses: dorny/paths-filter@v3
               with:
-                  ref: ${{ github.head_ref }}
-                  fetch-depth: 0
+                  filters: .github/path-filters.yaml
 
-            # - name: Detect changed images
-            #   id: changes
-            #   uses: dorny/paths-filter@v3
-            #   with:
-            #       filters: .github/path-filters.yaml
-
-            # - name: Update changed image versions
-            #   run: |
-            #       ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
-            #       ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
-            #       ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
-            #       ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
-            #       ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
-            #       ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
-
-            # # # TODO Parallelize builds when possible (i.e. frontend and backend can run as separate steps)
-            # - name: Build changed images
-            #   run: |
-            #       ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-            #       ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-            #       ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-            #       ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-            #       ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-            #       ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
-            #       ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
-
-            # - name: Login to GHCR
-            #   uses: docker/login-action@v3
-            #   with:
-            #       registry: ghcr.io
-            #       username: ${{ github.repository_owner }}
-            #       password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Build test image
+            - name: Update changed image versions
+              if: steps.changes.outputs.app == 'true'
               run: |
-                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "true"
-                  ./.github/scripts/build_docker_image.sh "composer" "true"
-                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "true"
-                  ./.github/scripts/build_docker_image.sh "test" "true"
+                  ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              if: steps.changes.outputs.app == 'true'
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build changed images
+              if: steps.changes.outputs.app == 'true'
+              run: |
+                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
 
             - name: Run smoke tests
+              if: steps.changes.outputs.app == 'true'
               run: |
                   echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
                   echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
