@@ -19,76 +19,52 @@ on:
 jobs:
     detect-and-build:
         runs-on: ubuntu-latest
-        permissions:
-          contents: write
-          # packages: write
+        # permissions:
+        #     # Allow git commit, git push
+        #     contents: write
+        #     # Allow docker pull, docker push of docker images to GHCR
+        #     packages: write
         steps:
             - name: Checkout
               uses: actions/checkout@v6
               with:
-                ref: ${{ github.head_ref }}
-                fetch-depth: 0
+                  ref: ${{ github.head_ref }}
+                  fetch-depth: 0
 
-            # - name: Login to GHCR
-            #   uses: docker/login-action@v3
-            #   with:
-            #     registry: ghcr.io
-            #     username: ${{ github.repository_owner }}
-            #     password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Detect changed images
+              id: changes
+              uses: dorny/paths-filter@v3
+              with:
+                  filters: .github/path-filters.yaml
 
-            # - name: Test GHCR
-            #   run: |
-            #       docker pull ghcr.io/eclipse-sealman/sealman-ems:0.1.0
-            #       docker tag ghcr.io/eclipse-sealman/sealman-ems:0.1.0 ghcr.io/eclipse-sealman/sealman-ems:0.1.0-rc1
-            #       docker push ghcr.io/eclipse-sealman/sealman-ems:0.1.0-rc1
-            - name: Test git commit push
+            - name: Update changed image versions
               run: |
-                  touch testfile.txt
-                  echo "Test" >> testfile.txt
-                  git config user.name sealman-github-actions
-                  git config user.email sealman-github-actions@github.com
-                  git add testfile.txt
-                  git commit -m "Test commit from GitHub Actions"
-                  git push origin ${{ github.head_ref }}
+                  ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
 
-            
+            - name: Build changed images
+              run: |
+                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
 
-            # - name: Detect changed images
-            #   id: changes
-            #   uses: dorny/paths-filter@v3
-            #   with:
-            #       filters: .github/path-filters.yaml
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-            # - name: Update changed image versions
-            #   run: |
-            #       ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
-            #       ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
-            #       ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
-            #       ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
-            #       ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
-            #       ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
-            #       ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.core }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.scep }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.backend }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.frontend }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.composer }}"
-            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
-            #       ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "true"
-
-            # - name: Build changed images
-            #   run: |
-            #       ./.github/scripts/build_docker_image.sh "core" "true"
-              # run: |
-              #     ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-              #     ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-              #     ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-              #     ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-              #     ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-              #     ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
-              #     ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
-
-              # docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group smoke
+            # docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group smoke
             # - name: Run smoke tests
             #   run: |
             #       docker compose -f docker/deployments/test/compose.yaml up
