@@ -19,6 +19,8 @@ on:
 jobs:
     detect-and-build:
         runs-on: ubuntu-latest
+        permissions:
+          packages: read
         steps:
             - name: Checkout
               uses: actions/checkout@v6
