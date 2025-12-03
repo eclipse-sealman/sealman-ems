@@ -31,8 +31,8 @@ jobs:
               with:
                   filters: |
                       version:
-                          - ".github/workflows/PREVIOUS_VERSION"
-                          - ".github/workflows/VERSION"
+                          - ".github/metadata/PREVIOUS_VERSION"
+                          - ".github/metadata/VERSION"
 
             - name: Detect release metadata
               id: release
