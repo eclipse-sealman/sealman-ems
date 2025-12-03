@@ -47,6 +47,7 @@ jobs:
                   ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
                   ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ steps.changes.outputs.app }}"
 
+            # TODO Parallelize builds when possible (i.e. frontend and backend can run as separate steps)
             - name: Build changed images
               run: |
                   ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"

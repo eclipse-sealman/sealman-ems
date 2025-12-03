@@ -15,61 +15,61 @@
 
 # docker/images/core/core.Dockerfile.dockerignore
 core: &core
-    - "docker/images/core/core.Dockerfile"
-    - "docker/images/core/core.Dockerfile.dockerignore"
-    - "docker/images/core/assets/*"
+    - 'docker/images/core/core.Dockerfile'
+    - 'docker/images/core/core.Dockerfile.dockerignore'
+    - 'docker/images/core/assets/**'
 
 # docker/images/composer/composer.Dockerfile.dockerignore
 composer: &composer
-    - "docker/images/composer/composer.Dockerfile"
-    - "docker/images/composer/composer.Dockerfile.dockerignore"
+    - 'docker/images/composer/composer.Dockerfile'
+    - 'docker/images/composer/composer.Dockerfile.dockerignore'
 
 # docker/images/composer/scep.Dockerfile.dockerignore
 scep: &scep
-    - "docker/images/scep/scep.Dockerfile"
-    - "docker/images/scep/scep.Dockerfile.dockerignore"
-    - "docker/images/scep/assets/*"
+    - 'docker/images/scep/scep.Dockerfile'
+    - 'docker/images/scep/scep.Dockerfile.dockerignore'
+    - 'docker/images/scep/assets/**'
 
 # docker/images/composer/backend.Dockerfile.dockerignore
 # Depends on core and composer
 backend: &backend
     - *core
     - *composer
-    - "docker/images/backend/backend.Dockerfile"
-    - "docker/images/backend/backend.Dockerfile.dockerignore"
-    - "docker_parameters.yml"
-    - "composer.json"
-    - "composer.lock"
-    - "symfony.lock"
+    - 'docker/images/backend/backend.Dockerfile'
+    - 'docker/images/backend/backend.Dockerfile.dockerignore'
+    - 'docker_parameters.yml'
+    - 'composer.json'
+    - 'composer.lock'
+    - 'symfony.lock'
 
-    - "public/index.php"
-    - "public/favicon.ico"
-    - "public/import_devices_example_file.xlsx"
-    - "public/swagger"
+    - 'public/index.php'
+    - 'public/favicon.ico'
+    - 'public/import_devices_example_file.xlsx'
+    - 'public/swagger'
 
-    - "private"
-    - "!private/*"
+    - 'private'
+    - '!private/**'
 
-    - "app/src/translations"
-    - "bin/console"
-    - "bin/maintenance.sh"
-    - "config"
-    - "!config/jwt/*"
-    - "migrations"
-    - "src"
-    - "templates"
-    - "var/log"
-    - "!var/log/*"
-    - "var/cache"
-    - "!var/cache/*"
+    - 'app/src/translations'
+    - 'bin/console'
+    - 'bin/maintenance.sh'
+    - 'config'
+    - '!config/jwt/**'
+    - 'migrations'
+    - 'src'
+    - 'templates'
+    - 'var/log'
+    - '!var/log/**'
+    - 'var/cache'
+    - '!var/cache/**'
 
 # docker/images/composer/frontend.Dockerfile.dockerignore
 frontend: &frontend
-    - "docker/images/frontend/frontend.Dockerfile"
-    - "docker/images/frontend/frontend.Dockerfile.dockerignore"
-    - "app/*"
-    - "!app/node_modules"
-    - "docker/images/frontend/assets/*"
+    - 'docker/images/frontend/frontend.Dockerfile'
+    - 'docker/images/frontend/frontend.Dockerfile.dockerignore'
+    - 'app/**'
+    - '!app/node_modules'
+    - 'docker/images/frontend/assets/**'
 
 # docker/images/composer/app.Dockerfile.dockerignore
 # Depends on backend, frontend and scep
@@ -77,7 +77,7 @@ app: &app
     - *backend
     - *frontend
     - *scep
-    - "docker/images/app/app.Dockerfile"
-    - "docker/images/app/app.Dockerfile.dockerignore"
-    - "docker/images/app/assets/*"
-    - "docker/images/app/entrypoint.sh"
+    - 'docker/images/app/app.Dockerfile'
+    - 'docker/images/app/app.Dockerfile.dockerignore'
+    - 'docker/images/app/assets/**'
+    - 'docker/images/app/entrypoint.sh'
