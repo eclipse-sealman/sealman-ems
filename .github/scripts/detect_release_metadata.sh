@@ -29,8 +29,12 @@ if [ "$changed" != "true" ]; then
     echo "isRelease=false" >> $GITHUB_OUTPUT
     echo "isProductionRelease=false"
     echo "isProductionRelease=false" >> $GITHUB_OUTPUT
-    echo "changesBase="
-    echo "changesBase=" >> $GITHUB_OUTPUT
+    # TODO Need previous commit somehow
+    # echo "changesBase=$GITHUB_SHA"
+    # TODO Need previous commit somehow
+    # echo "changesBase=$GITHUB_SHA" >> $GITHUB_OUTPUT
+    echo "changesBase=$GITHUB_REF_NAME"
+    echo "changesBase=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 else
     echo "isRelease=true"
     echo "isRelease=true" >> $GITHUB_OUTPUT
