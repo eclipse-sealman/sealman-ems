@@ -8,7 +8,7 @@
 # - previousVersion: The previous released version
 # - isRelease: "true" if this is a release, "false" otherwise
 # - isProductionRelease: "true" if this is a production release, "false" otherwise
-# - changesBase: The git SHA or previous version to use as base for change detection
+# - changesBase: The git SHA (previous commit) or previous version to use as base for change detection
 
 changed="${1}"
 version=$(cat .github/metadata/VERSION)
@@ -29,10 +29,6 @@ if [ "$changed" != "true" ]; then
     echo "isRelease=false" >> $GITHUB_OUTPUT
     echo "isProductionRelease=false"
     echo "isProductionRelease=false" >> $GITHUB_OUTPUT
-    # TODO Need previous commit somehow
-    # echo "changesBase=$GITHUB_SHA"
-    # TODO Need previous commit somehow
-    # echo "changesBase=$GITHUB_SHA" >> $GITHUB_OUTPUT
     echo "changesBase=$GITHUB_REF_NAME"
     echo "changesBase=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 else
