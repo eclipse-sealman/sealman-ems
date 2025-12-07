@@ -49,7 +49,7 @@ jobs:
 
     no-release:
         needs: changes
-        if: needs.changes.outputs.release.outputs.release == 'no'
+        if: needs.changes.outputs.release == 'no'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -97,7 +97,7 @@ jobs:
 
     release-candidate:
         needs: changes
-        if: needs.changes.outputs.release.outputs.release == 'rc'
+        if: needs.changes.outputs.release == 'rc'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -105,7 +105,7 @@ jobs:
 
     production-release:
         needs: changes
-        if: needs.changes.outputs.release.outputs.release == 'production'
+        if: needs.changes.outputs.release == 'production'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
