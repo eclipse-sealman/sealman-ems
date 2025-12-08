@@ -71,49 +71,49 @@ jobs:
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build "core" image
+            - name: Image "core" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.core == 'true'
               with:
                   name: "core"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "composer" image
+            - name: Image "composer" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.composer == 'true'
               with:
                   name: "composer"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "scep" image
+            - name: Image "scep" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.scep == 'true'
               with:
                   name: "scep"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "cobackendmposer" image
+            - name: Image "backend" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.backend == 'true'
               with:
                   name: "backend"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "frontend" image
+            - name: Image "frontend" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.frontend == 'true'
               with:
                   name: "frontend"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "app" image
+            - name: Image "app" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.app == 'true'
               with:
                   name: "app"
                   version: "${GITHUB_SHA}"
 
-            - name: Build "test" image
+            - name: Image "test" - update version and build
               uses: ./.github/actions/image-build
               if: needs.changes.outputs.app == 'true'
               with:
@@ -145,43 +145,43 @@ jobs:
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build "core" image
+            - name: Image "core" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "core"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "composer" image
+            - name: Image "composer" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "composer"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "scep" image
+            - name: Image "scep" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "scep"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "cobackendmposer" image
+            - name: Image "backend" - add tag to existing image, update version and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "backend"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "frontend" image
+            - name: Image "frontend" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "frontend"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "app" image
+            - name: Image "app" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "app"
                   version: "${{ needs.changes.outputs.version }}"
 
-            - name: Build "test" image
+            - name: Image "test" - update version, build, push and git add
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "test"
@@ -193,11 +193,11 @@ jobs:
                   version: "${{ needs.changes.outputs.version }}"
                   group: "full"
 
-            - name: Git commit, tag and push
-              run: |
-                  git commit -m "Release version ${{ needs.changes.outputs.version }}"
-                  git tag "v${{ needs.changes.outputs.version }}"
-                  git push origin ${{ github.head_ref }}
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Production release v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
 
     release-rc:
         needs: changes
@@ -217,114 +217,174 @@ jobs:
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Docker "core" image - update version, build, push, git add
+            - name: Image "core" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
               if: needs.changes.outputs.core == 'true'
-              run: |
-                  sed -i "s/^CORE_VERSION=.*/CORE_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/core/.env"
-                  make core-build
-                  make core-push
-                  git add docker/images/core/.env
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "composer" image - update version, build, push, git add
+            - name: Image "composer" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
               if: needs.changes.outputs.composer == 'true'
-              run: |
-                  sed -i "s/^COMPOSER_VERSION=.*/COMPOSER_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/composer/.env"
-                  make composer-build
-                  make composer-push
-                  git add docker/images/composer/.env
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "scep" image - update version, build, push, git add
+            - name: Image "scep" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
               if: needs.changes.outputs.scep == 'true'
-              run: |
-                  sed -i "s/^SCEP_VERSION=.*/SCEP_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/scep/.env"
-                  make scep-build
-                  make scep-push
-                  git add docker/images/scep/.env
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "backend" image - update version, build, push, git add
+            - name: Image "backend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
               if: needs.changes.outputs.backend == 'true'
-              run: |
-                  sed -i "s/^BACKEND_VERSION=.*/BACKEND_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/backend/.env"
-                  make backend-build
-                  make backend-push
-                  git add docker/images/backend/.env
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "frontend" image - update version, build, push, git add
+            - name: Image "frontend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
               if: needs.changes.outputs.frontend == 'true'
-              run: |
-                  sed -i "s/^FRONTEND_VERSION=.*/FRONTEND_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/frontend/.env"
-                  make frontend-build
-                  make frontend-push
-                  git add docker/images/frontend/.env
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "app" image - update version, build, push, git add
-              if: needs.changes.outputs.app == 'true'
-              run: |
-                  sed -i "s/^APP_VERSION=.*/APP_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/app/.env"
-                  make app-build
-                  make app-push
-                  git add docker/images/app/.env
+            - name: Image "app" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "app"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Docker "test" image - update version, build, push, git add
-              if: needs.changes.outputs.app == 'true'
-              run: |
-                  sed -i "s/^TEST_VERSION=.*/TEST_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/test/.env"
-                  make test-build
-                  make test-push
-                  git add docker/images/test/.env
+            - name: Image "test" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Git commit
-              if: needs.changes.outputs.app == 'true'
-              run: |
-                  sed -i "s/^TEST_VERSION=.*/TEST_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/test/.env"
-                  make test-build
-                  make test-push
-                  git add docker/images/test/.env
+            # For RC first commit, tag and push then run full tests to have the image for testing ASAP
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Release candidate v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            - name: Run full tests
-              run: |
-                  echo "APPLICATION_VERSION=${{ needs.changes.outputs.version }}" >> docker/deployments/test/.env
-                  docker compose -f docker/deployments/test/compose.yaml up -d
-                  docker/deployments/test/wait-until-ready.sh
-                  docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group full
-                  docker compose -f docker/deployments/test/compose.yaml down
+            - name: PHPUnit full tests
+              uses: ./.github/actions/phpunit
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+                  group: "full"
 
     release-production:
         needs: changes
         if: needs.changes.outputs.release == 'production'
         permissions:
+            contents: write
             packages: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Update changed image versions
-              run: |
-                  ./.github/scripts/update_image_version.sh "core" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.core }}"
-                  ./.github/scripts/update_image_version.sh "composer" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.composer }}"
-                  ./.github/scripts/update_image_version.sh "scep" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.scep }}"
-                  ./.github/scripts/update_image_version.sh "backend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.backend }}"
-                  ./.github/scripts/update_image_version.sh "frontend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.frontend }}"
-                  ./.github/scripts/update_image_version.sh "app" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
-                  ./.github/scripts/update_image_version.sh "test" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build changed images
-              run: |
-                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
-                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
+            - name: Image "core" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.core == 'true'
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
 
-            # TODO Push or retag images, also update and commit .env files in docker images
-            - name: Push updated images
-              run: |
-                  ./.github/scripts/push_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-                  ./.github/scripts/push_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-                  ./.github/scripts/push_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-                  ./.github/scripts/push_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-                  ./.github/scripts/push_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-                  ./.github/scripts/push_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+            - name: Image "core" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.core == 'false'
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.composer == 'true'
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.composer == 'false'
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.scep == 'true'
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.scep == 'false'
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.backend == 'true'
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.backend == 'false'
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.frontend == 'true'
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.frontend == 'false'
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "app" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "app"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "test" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: PHPUnit full tests
+              uses: ./.github/actions/phpunit
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+                  group: "full"
+
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Production release v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
