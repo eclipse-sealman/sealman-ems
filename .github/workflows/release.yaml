@@ -71,49 +71,57 @@ jobs:
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - uses: ./.github/actions/image-build
+            - name: Build "core" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.core == 'true'
               with:
                   name: "core"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "composer" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.composer == 'true'
               with:
                   name: "composer"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "scep" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.scep == 'true'
               with:
                   name: "scep"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "cobackendmposer" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.backend == 'true'
               with:
                   name: "backend"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "frontend" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.frontend == 'true'
               with:
                   name: "frontend"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "app" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.app == 'true'
               with:
                   name: "app"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/image-build
+            - name: Build "test" image
+              uses: ./.github/actions/image-build
               if: needs.changes.outputs.app == 'true'
               with:
                   name: "test"
                   version: "${GITHUB_SHA}"
 
-            - uses: ./.github/actions/phpunit
+            - name: PHPUnit smoke tests
+              uses: ./.github/actions/phpunit
               if: needs.changes.outputs.app == 'true'
               with:
                   version: "${GITHUB_SHA}"

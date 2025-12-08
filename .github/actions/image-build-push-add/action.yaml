@@ -15,7 +15,8 @@ runs:
         - name: Image "${{ inputs.name }}" - Update version
           shell: bash
           run: |
-              sed -i "s/^${${{ inputs.name }}^^}_VERSION=.*/${${{ inputs.name }}^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
+              IMAGE="${{ inputs.name }}"
+              sed -i "s/^${IMAGE^^}_VERSION=.*/${IMAGE^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
 
         - name: Image "${{ inputs.name }}" - Build
           shell: bash
