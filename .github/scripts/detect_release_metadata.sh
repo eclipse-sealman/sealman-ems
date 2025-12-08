@@ -37,6 +37,7 @@ else
         echo "release=production" >> $GITHUB_OUTPUT
     fi
 
-    echo "changesBase=$previousVersion"
-    echo "changesBase=$previousVersion" >> $GITHUB_OUTPUT
+    # Prefix with 'v' as we are tagging versions prefixed with 'v'
+    echo "changesBase=v$previousVersion"
+    echo "changesBase=v$previousVersion" >> $GITHUB_OUTPUT
 fi

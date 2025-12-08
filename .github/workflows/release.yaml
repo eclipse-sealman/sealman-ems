@@ -160,6 +160,33 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Test production
+            # TODO Temporary full build
+            - name: Update changed image versions
               run: |
-                  echo "Production"
+                  ./.github/scripts/update_image_version.sh "core" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "composer" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "scep" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "backend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "frontend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "app" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "test" "${{ needs.changes.outputs.version }}" "true"
+
+            - name: Build changed images
+              run: |
+                  ./.github/scripts/build_docker_image.sh "core" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ needs.changes.outputs.version }}" "true"
+
+            - name: Push updated images
+              run: |
+                  ./.github/scripts/push_docker_image.sh "core" "true"
+                  ./.github/scripts/push_docker_image.sh "composer" "true"
+                  ./.github/scripts/push_docker_image.sh "scep" "true"
+                  ./.github/scripts/push_docker_image.sh "backend" "true"
+                  ./.github/scripts/push_docker_image.sh "frontend" "true"
+                  ./.github/scripts/push_docker_image.sh "app" "true"
+  
