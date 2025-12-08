@@ -13,18 +13,22 @@ runs:
     using: "composite"
     steps:
         - name: Image "${{ inputs.name }}" - Update version
+          shell: bash
           run: |
               sed -i "s/^${${{ inputs.name }}^^}_VERSION=.*/${${{ inputs.name }}^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
 
         - name: Image "${{ inputs.name }}" - Build
+          shell: bash
           run: |
               make ${{ inputs.name }}-build
 
         - name: Image "${{ inputs.name }}" - Push
+          shell: bash
           run: |
               make ${{ inputs.name }}-push
 
         - name: Image "${{ inputs.name }}" - Git add
+          shell: bash
           run: |
               git add docker/images/${{ inputs.name }}/.env
 
