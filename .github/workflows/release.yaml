@@ -64,7 +64,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - uses: ./.github/actions/image-build
+            - uses: ./.github/actions/image-build.yaml
               with:
                   name: "core"
                   version: "${GITHUB_SHA}"

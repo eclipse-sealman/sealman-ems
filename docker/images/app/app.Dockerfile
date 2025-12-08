@@ -49,5 +49,3 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 ENV APP_VERSION=$APP_VERSION
 WORKDIR /var/www/application
 EXPOSE 80 443 18443
-
-# TODO Trigger
