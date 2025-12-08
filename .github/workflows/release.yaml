@@ -22,6 +22,7 @@ jobs:
     changes:
         runs-on: ubuntu-latest
         outputs:
+            version: ${{ steps.release.outputs.version }}
             release: ${{ steps.release.outputs.release }}
             core: ${{ steps.changes.outputs.core }}
             composer: ${{ steps.changes.outputs.composer }}
@@ -111,9 +112,50 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Test RC
+            - name: Update changed image versions
               run: |
-                  echo "RC"
+                  ./.github/scripts/update_image_version.sh "core" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.core }}"
+                  ./.github/scripts/update_image_version.sh "composer" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.composer }}"
+                  ./.github/scripts/update_image_version.sh "scep" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.scep }}"
+                  ./.github/scripts/update_image_version.sh "backend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.backend }}"
+                  ./.github/scripts/update_image_version.sh "frontend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.frontend }}"
+                  ./.github/scripts/update_image_version.sh "app" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
+                  ./.github/scripts/update_image_version.sh "test" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build changed images
+              run: |
+                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
+
+            - name: Push updated images
+              run: |
+                  ./.github/scripts/push_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
+                  ./.github/scripts/push_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
+                  ./.github/scripts/push_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
+                  ./.github/scripts/push_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
+                  ./.github/scripts/push_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
+                  ./.github/scripts/push_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  ./.github/scripts/push_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
+
+            - name: Run full tests
+              run: |
+                  echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
+                  echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
+                  docker compose -f docker/deployments/test/compose.yaml up -d
+                  docker/deployments/test/wait-until-ready.sh
+                  docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group full
 
     production-release:
         needs: changes
