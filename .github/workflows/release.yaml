@@ -64,46 +64,57 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Update changed image versions
-              run: |
-                  ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ needs.changes.outputs.core }}"
-                  ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ needs.changes.outputs.composer }}"
-                  ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ needs.changes.outputs.scep }}"
-                  ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ needs.changes.outputs.backend }}"
-                  ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ needs.changes.outputs.frontend }}"
-                  ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ needs.changes.outputs.app }}"
-                  ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ needs.changes.outputs.app }}"
-
-            - name: Login to GHCR
-              uses: docker/login-action@v3
+            - uses: ./.github/actions/image-build
               with:
-                  registry: ghcr.io
-                  username: ${{ github.repository_owner }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+                  name: "core"
+                  version: "${GITHUB_SHA}"
 
-            - name: Build changed images
-              run: |
-                  ./.github/scripts/build_docker_image.sh "core" "${{ needs.changes.outputs.core }}"
-                  ./.github/scripts/build_docker_image.sh "composer" "${{ needs.changes.outputs.composer }}"
-                  ./.github/scripts/build_docker_image.sh "scep" "${{ needs.changes.outputs.scep }}"
-                  ./.github/scripts/build_docker_image.sh "backend" "${{ needs.changes.outputs.backend }}"
-                  ./.github/scripts/build_docker_image.sh "frontend" "${{ needs.changes.outputs.frontend }}"
-                  ./.github/scripts/build_docker_image.sh "app" "${{ needs.changes.outputs.app }}"
-                  ./.github/scripts/build_docker_image.sh "test" "${{ needs.changes.outputs.app }}"
+            # - uses: ./.github/actions/image-build-push-add
+            #   with:
+            #       name: "core"
+            #       version: "${GITHUB_SHA}"
 
-            - name: Run smoke tests
-              run: |
-                  echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
-                  echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
-                  echo "APPLICATION_VERSION=${GITHUB_SHA}" >> docker/deployments/test/.env
-                  docker compose -f docker/deployments/test/compose.yaml up -d
-                  docker/deployments/test/wait-until-ready.sh
-                  docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group smoke
+            # - name: Update changed image versions
+            #   run: |
+            #       ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ needs.changes.outputs.core }}"
+            #       ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ needs.changes.outputs.composer }}"
+            #       ./.github/scripts/update_image_version.sh "scep" "${GITHUB_SHA}" "${{ needs.changes.outputs.scep }}"
+            #       ./.github/scripts/update_image_version.sh "backend" "${GITHUB_SHA}" "${{ needs.changes.outputs.backend }}"
+            #       ./.github/scripts/update_image_version.sh "frontend" "${GITHUB_SHA}" "${{ needs.changes.outputs.frontend }}"
+            #       ./.github/scripts/update_image_version.sh "app" "${GITHUB_SHA}" "${{ needs.changes.outputs.app }}"
+            #       ./.github/scripts/update_image_version.sh "test" "${GITHUB_SHA}" "${{ needs.changes.outputs.app }}"
+
+            # - name: Login to GHCR
+            #   uses: docker/login-action@v3
+            #   with:
+            #       registry: ghcr.io
+            #       username: ${{ github.repository_owner }}
+            #       password: ${{ secrets.GITHUB_TOKEN }}
+
+            # - name: Build changed images
+            #   run: |
+            #       ./.github/scripts/build_docker_image.sh "core" "${{ needs.changes.outputs.core }}"
+            #       ./.github/scripts/build_docker_image.sh "composer" "${{ needs.changes.outputs.composer }}"
+            #       ./.github/scripts/build_docker_image.sh "scep" "${{ needs.changes.outputs.scep }}"
+            #       ./.github/scripts/build_docker_image.sh "backend" "${{ needs.changes.outputs.backend }}"
+            #       ./.github/scripts/build_docker_image.sh "frontend" "${{ needs.changes.outputs.frontend }}"
+            #       ./.github/scripts/build_docker_image.sh "app" "${{ needs.changes.outputs.app }}"
+            #       ./.github/scripts/build_docker_image.sh "test" "${{ needs.changes.outputs.app }}"
+
+            # - name: Run smoke tests
+            #   run: |
+            #       echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
+            #       echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
+            #       echo "APPLICATION_VERSION=${GITHUB_SHA}" >> docker/deployments/test/.env
+            #       docker compose -f docker/deployments/test/compose.yaml up -d
+            #       docker/deployments/test/wait-until-ready.sh
+            #       docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group smoke
 
     release-initial:
         needs: changes
         if: needs.changes.outputs.release == 'initial'
         permissions:
+            contents: write
             packages: write
         runs-on: ubuntu-latest
         steps:
@@ -145,27 +156,28 @@ jobs:
                   ./.github/scripts/push_docker_image.sh "backend" "true"
                   ./.github/scripts/push_docker_image.sh "frontend" "true"
                   ./.github/scripts/push_docker_image.sh "app" "true"
+
+            # - name: Test git commit push
+            #   run: |
+            #       touch testfile.txt
+            #       echo "Test" >> testfile.txt
+            #       git config user.name sealman-github-actions
+            #       git config user.email sealman-github-actions@github.com
+            #       git add testfile.txt
+            #       git commit -m "Test commit from GitHub Actions"
+            #       git push origin ${{ github.head_ref }}
             # TODO also update and commit .env files in docker images
 
     release-rc:
         needs: changes
         if: needs.changes.outputs.release == 'rc'
         permissions:
+            contents: write
             packages: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v6
-
-            - name: Update changed image versions
-              run: |
-                  ./.github/scripts/update_image_version.sh "core" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.core }}"
-                  ./.github/scripts/update_image_version.sh "composer" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.composer }}"
-                  ./.github/scripts/update_image_version.sh "scep" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.scep }}"
-                  ./.github/scripts/update_image_version.sh "backend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.backend }}"
-                  ./.github/scripts/update_image_version.sh "frontend" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.frontend }}"
-                  ./.github/scripts/update_image_version.sh "app" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
-                  ./.github/scripts/update_image_version.sh "test" "${{ needs.changes.outputs.version }}" "${{ needs.changes.outputs.app }}"
 
             - name: Login to GHCR
               uses: docker/login-action@v3
@@ -174,32 +186,77 @@ jobs:
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build changed images
+            - name: Docker "core" image - update version, build, push, git add
+              if: needs.changes.outputs.core == 'true'
               run: |
-                  ./.github/scripts/build_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-                  ./.github/scripts/build_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-                  ./.github/scripts/build_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-                  ./.github/scripts/build_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-                  ./.github/scripts/build_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-                  ./.github/scripts/build_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
-                  ./.github/scripts/build_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
+                  sed -i "s/^CORE_VERSION=.*/CORE_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/core/.env"
+                  make core-build
+                  make core-push
+                  git add docker/images/core/.env
 
-            - name: Push updated images
+            - name: Docker "composer" image - update version, build, push, git add
+              if: needs.changes.outputs.composer == 'true'
               run: |
-                  ./.github/scripts/push_docker_image.sh "core" "${{ steps.changes.outputs.core }}"
-                  ./.github/scripts/push_docker_image.sh "composer" "${{ steps.changes.outputs.composer }}"
-                  ./.github/scripts/push_docker_image.sh "scep" "${{ steps.changes.outputs.scep }}"
-                  ./.github/scripts/push_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
-                  ./.github/scripts/push_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
-                  ./.github/scripts/push_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
+                  sed -i "s/^COMPOSER_VERSION=.*/COMPOSER_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/composer/.env"
+                  make composer-build
+                  make composer-push
+                  git add docker/images/composer/.env
+
+            - name: Docker "scep" image - update version, build, push, git add
+              if: needs.changes.outputs.scep == 'true'
+              run: |
+                  sed -i "s/^SCEP_VERSION=.*/SCEP_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/scep/.env"
+                  make scep-build
+                  make scep-push
+                  git add docker/images/scep/.env
+
+            - name: Docker "backend" image - update version, build, push, git add
+              if: needs.changes.outputs.backend == 'true'
+              run: |
+                  sed -i "s/^BACKEND_VERSION=.*/BACKEND_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/backend/.env"
+                  make backend-build
+                  make backend-push
+                  git add docker/images/backend/.env
+
+            - name: Docker "frontend" image - update version, build, push, git add
+              if: needs.changes.outputs.frontend == 'true'
+              run: |
+                  sed -i "s/^FRONTEND_VERSION=.*/FRONTEND_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/frontend/.env"
+                  make frontend-build
+                  make frontend-push
+                  git add docker/images/frontend/.env
+
+            - name: Docker "app" image - update version, build, push, git add
+              if: needs.changes.outputs.app == 'true'
+              run: |
+                  sed -i "s/^APP_VERSION=.*/APP_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/app/.env"
+                  make app-build
+                  make app-push
+                  git add docker/images/app/.env
+
+            - name: Docker "test" image - update version, build, push, git add
+              if: needs.changes.outputs.app == 'true'
+              run: |
+                  sed -i "s/^TEST_VERSION=.*/TEST_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/test/.env"
+                  make test-build
+                  make test-push
+                  git add docker/images/test/.env
+
+            - name: Git commit
+              if: needs.changes.outputs.app == 'true'
+              run: |
+                  sed -i "s/^TEST_VERSION=.*/TEST_VERSION=${{ needs.changes.outputs.version }}/" "docker/images/test/.env"
+                  make test-build
+                  make test-push
+                  git add docker/images/test/.env
 
             - name: Run full tests
               run: |
-                  echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
-                  echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
+                  echo "APPLICATION_VERSION=${{ needs.changes.outputs.version }}" >> docker/deployments/test/.env
                   docker compose -f docker/deployments/test/compose.yaml up -d
                   docker/deployments/test/wait-until-ready.sh
                   docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group full
+                  docker compose -f docker/deployments/test/compose.yaml down
 
     release-production:
         needs: changes

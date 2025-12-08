@@ -1,0 +1,25 @@
+name: "Update image version and build"
+description: "Update image version and build"
+
+inputs:
+    name:
+        description: "Image name (lowercase)"
+        required: true
+    version:
+        description: "Image version"
+        required: true
+
+runs:
+    using: "composite"
+    steps:
+        - name: Image "${{ inputs.name }}" - Update version
+          run: |
+              sed -i "s/^${${{ inputs.name }}^^}_VERSION=.*/${${{ inputs.name }}^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
+
+        - name: Image "${{ inputs.name }}" - Build
+          run: |
+              make ${{ inputs.name }}-build
+
+branding:
+    color: "blue"
+    icon: "package"
