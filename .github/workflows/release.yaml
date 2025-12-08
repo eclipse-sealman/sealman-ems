@@ -58,14 +58,13 @@ jobs:
 
     no-release:
         needs: changes
-        if: needs.changes.outputs.release == 'no'
+        if: needs.changes.outputs.release == 'no' && needs.changes.outputs.app == 'true'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v6
 
             - name: Update changed image versions
-              if: needs.changes.outputs.app == 'true'
               run: |
                   ./.github/scripts/update_image_version.sh "core" "${GITHUB_SHA}" "${{ needs.changes.outputs.core }}"
                   ./.github/scripts/update_image_version.sh "composer" "${GITHUB_SHA}" "${{ needs.changes.outputs.composer }}"
@@ -77,14 +76,12 @@ jobs:
 
             - name: Login to GHCR
               uses: docker/login-action@v3
-              if: needs.changes.outputs.app == 'true'
               with:
                   registry: ghcr.io
                   username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Build changed images
-              if: needs.changes.outputs.app == 'true'
               run: |
                   ./.github/scripts/build_docker_image.sh "core" "${{ needs.changes.outputs.core }}"
                   ./.github/scripts/build_docker_image.sh "composer" "${{ needs.changes.outputs.composer }}"
@@ -95,7 +92,6 @@ jobs:
                   ./.github/scripts/build_docker_image.sh "test" "${{ needs.changes.outputs.app }}"
 
             - name: Run smoke tests
-              if: steps.changes.outputs.app == 'true'
               run: |
                   echo "APPLICATION_ENV=test" >> docker/deployments/test/.env
                   echo "APPLICATION_PHP_MEMORY_LIMIT=\"-1\"" >> docker/deployments/test/.env
@@ -147,7 +143,6 @@ jobs:
                   ./.github/scripts/push_docker_image.sh "backend" "${{ steps.changes.outputs.backend }}"
                   ./.github/scripts/push_docker_image.sh "frontend" "${{ steps.changes.outputs.frontend }}"
                   ./.github/scripts/push_docker_image.sh "app" "${{ steps.changes.outputs.app }}"
-                  ./.github/scripts/push_docker_image.sh "test" "${{ steps.changes.outputs.app }}"
 
             - name: Run full tests
               run: |
