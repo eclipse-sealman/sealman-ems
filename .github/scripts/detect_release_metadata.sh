@@ -6,8 +6,8 @@
 # Prepares the following outputs:
 # - version: The current version
 # - previousVersion: The previous released version (empty when release = "initial")
-# - release: "no", "rc", "production" or "initial" (without a PREVIOUS_VERSION)
-# - changesBase: The git SHA to use as base for change detection. Previous commit when release = "no" or "initial", or previous version (tag) for release = "rc" or "production"
+# - release: "none", "rc", "production" or "initial" (without a PREVIOUS_VERSION)
+# - changesBase: The git SHA to use as base for change detection. Previous commit when release = "none" or "initial", or previous version (tag) for release = "rc" or "production"
 
 changed="${1}"
 version=$(cat .github/metadata/VERSION)
@@ -24,8 +24,8 @@ echo "previousVersion=$previousVersion"
 echo "previousVersion=$previousVersion" >> $GITHUB_OUTPUT
 
 if [ "$changed" != "true" ]; then
-    echo "release=no"
-    echo "release=no" >> $GITHUB_OUTPUT
+    echo "release=none"
+    echo "release=none" >> $GITHUB_OUTPUT
     echo "changesBase=$GITHUB_REF_NAME"
     echo "changesBase=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
 elif  [ -z "$previousVersion" ]; then
@@ -42,7 +42,7 @@ else
         echo "release=production" >> $GITHUB_OUTPUT
     fi
 
-    # Prefix with 'v' as we are tagging versions prefixed with 'v'
+    # Prefix with 'v' as tags are prefixed with 'v'
     echo "changesBase=v$previousVersion"
     echo "changesBase=v$previousVersion" >> $GITHUB_OUTPUT
 fi

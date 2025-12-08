@@ -21,7 +21,3 @@ runs:
           shell: bash
           run: |
               make ${{ inputs.name }}-build
-
-branding:
-    color: "blue"
-    icon: "package"
