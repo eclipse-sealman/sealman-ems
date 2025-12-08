@@ -103,6 +103,8 @@ jobs:
     release-initial:
         needs: changes
         if: needs.changes.outputs.release == 'initial'
+        permissions:
+            packages: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -148,6 +150,8 @@ jobs:
     release-rc:
         needs: changes
         if: needs.changes.outputs.release == 'rc'
+        permissions:
+            packages: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -200,6 +204,8 @@ jobs:
     release-production:
         needs: changes
         if: needs.changes.outputs.release == 'production'
+        permissions:
+            packages: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
