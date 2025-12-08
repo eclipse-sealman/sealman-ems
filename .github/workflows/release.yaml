@@ -56,7 +56,7 @@ jobs:
                   base: ${{ steps.release.outputs.changesBase }}
                   filters: .github/path-filters.yaml
 
-    no-release:
+    release-no:
         needs: changes
         if: needs.changes.outputs.release == 'no' && needs.changes.outputs.app == 'true'
         runs-on: ubuntu-latest
@@ -100,7 +100,46 @@ jobs:
                   docker/deployments/test/wait-until-ready.sh
                   docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group smoke
 
-    release-candidate:
+    release-initial:
+        needs: changes
+        if: needs.changes.outputs.release == 'initial'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Update changed image versions
+              run: |
+                  ./.github/scripts/update_image_version.sh "core" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "composer" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "scep" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "backend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "frontend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "app" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/update_image_version.sh "test" "${{ needs.changes.outputs.version }}" "true"
+
+            - name: Build changed images
+              run: |
+                  ./.github/scripts/build_docker_image.sh "core" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "composer" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "scep" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "backend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "frontend" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "app" "${{ needs.changes.outputs.version }}" "true"
+                  ./.github/scripts/build_docker_image.sh "test" "${{ needs.changes.outputs.version }}" "true"
+
+            - name: Push updated images
+              run: |
+                  ./.github/scripts/push_docker_image.sh "core" "true"
+                  ./.github/scripts/push_docker_image.sh "composer" "true"
+                  ./.github/scripts/push_docker_image.sh "scep" "true"
+                  ./.github/scripts/push_docker_image.sh "backend" "true"
+                  ./.github/scripts/push_docker_image.sh "frontend" "true"
+                  ./.github/scripts/push_docker_image.sh "app" "true"
+            # TODO also update and commit .env files in docker images
+
+
+    release-rc:
         needs: changes
         if: needs.changes.outputs.release == 'rc'
         runs-on: ubuntu-latest
@@ -152,7 +191,7 @@ jobs:
                   docker/deployments/test/wait-until-ready.sh
                   docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group full
 
-    production-release:
+    release-production:
         needs: changes
         if: needs.changes.outputs.release == 'production'
         runs-on: ubuntu-latest
@@ -189,4 +228,3 @@ jobs:
                   ./.github/scripts/push_docker_image.sh "backend" "true"
                   ./.github/scripts/push_docker_image.sh "frontend" "true"
                   ./.github/scripts/push_docker_image.sh "app" "true"
-  
