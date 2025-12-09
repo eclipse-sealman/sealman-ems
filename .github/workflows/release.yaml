@@ -1,0 +1,402 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: Release CI/CD
+
+on:
+    push:
+        branches:
+            - "release/*"
+
+jobs:
+    changes:
+        runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.release.outputs.version }}
+            release: ${{ steps.release.outputs.release }}
+            core: ${{ steps.changes.outputs.core }}
+            composer: ${{ steps.changes.outputs.composer }}
+            scep: ${{ steps.changes.outputs.scep }}
+            backend: ${{ steps.changes.outputs.backend }}
+            frontend: ${{ steps.changes.outputs.frontend }}
+            app: ${{ steps.changes.outputs.app }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Detect changed version
+              id: version
+              uses: dorny/paths-filter@v3
+              with:
+                  base: "${{ github.ref }}"
+                  filters: |
+                      version:
+                          - ".github/metadata/PREVIOUS_VERSION"
+                          - ".github/metadata/VERSION"
+
+            - name: Detect release metadata
+              id: release
+              run: |
+                  ./.github/scripts/detect_release_metadata.sh "${{ steps.version.outputs.version }}"
+
+            - name: Detect changed images
+              id: changes
+              uses: dorny/paths-filter@v3
+              with:
+                  base: ${{ steps.release.outputs.changesBase }}
+                  filters: .github/path-filters.yaml
+
+    release-none:
+        needs: changes
+        if: needs.changes.outputs.release == 'none' && needs.changes.outputs.app == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image "core" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.core == 'true'
+              with:
+                  name: "core"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "composer" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.composer == 'true'
+              with:
+                  name: "composer"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "scep" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.scep == 'true'
+              with:
+                  name: "scep"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "backend" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.backend == 'true'
+              with:
+                  name: "backend"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "frontend" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.frontend == 'true'
+              with:
+                  name: "frontend"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "app" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.app == 'true'
+              with:
+                  name: "app"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "test" - update version and build
+              uses: ./.github/actions/image-build
+              if: needs.changes.outputs.app == 'true'
+              with:
+                  name: "test"
+                  version: "${GITHUB_SHA}"
+
+            - name: PHPUnit smoke tests
+              uses: ./.github/actions/phpunit
+              if: needs.changes.outputs.app == 'true'
+              with:
+                  version: "${GITHUB_SHA}"
+                  group: "smoke"
+
+    release-rc:
+        needs: changes
+        if: needs.changes.outputs.release == 'rc'
+        permissions:
+            contents: write
+            packages: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image "core" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.core == 'true'
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.composer == 'true'
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.scep == 'true'
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.backend == 'true'
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.frontend == 'true'
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "app" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "app"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "test" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Release candidate v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: PHPUnit full tests
+              uses: ./.github/actions/phpunit
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+                  group: "full"
+
+    release-production:
+        needs: changes
+        if: needs.changes.outputs.release == 'production'
+        permissions:
+            contents: write
+            packages: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image "core" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.core == 'true'
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "core" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.core == 'false'
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.composer == 'true'
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.composer == 'false'
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.scep == 'true'
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.scep == 'false'
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.backend == 'true'
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.backend == 'false'
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              if: needs.changes.outputs.frontend == 'true'
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-tag
+              if: needs.changes.outputs.frontend == 'false'
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "app" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "app"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "test" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Production release v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: PHPUnit full tests
+              uses: ./.github/actions/phpunit
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+                  group: "full"
+
+    release-initial:
+        needs: changes
+        if: needs.changes.outputs.release == 'initial'
+        permissions:
+            contents: write
+            packages: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image "core" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "core"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "composer" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "composer"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "scep" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "scep"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "backend" - add tag to existing image, update version and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "backend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "frontend" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "frontend"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "app" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "app"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Image "test" - update version, build, push and git add
+              uses: ./.github/actions/image-build-push-add
+              with:
+                  name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Git commit, tag and push changes to git
+              uses: ./.github/actions/commit-tag-push
+              with:
+                  message: "Production release v${{ needs.changes.outputs.version }}"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: PHPUnit full tests
+              uses: ./.github/actions/phpunit
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+                  group: "full"

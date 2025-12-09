@@ -1,0 +1,74 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# This is used by actions using dorny/paths-filter@v3 (https://github.com/dorny/paths-filter)
+# Defines path filters for detecting changes in specific docker images (including dependency in images)
+# ALWAYS keep in sync with *.Dockerfile.dockerignore files
+
+# docker/images/core/core.Dockerfile.dockerignore
+core: &core
+    - "docker/images/core/core.Dockerfile"
+    - "docker/images/core/core.Dockerfile.dockerignore"
+    - "docker/images/core/assets/**"
+
+# docker/images/composer/composer.Dockerfile.dockerignore
+composer: &composer
+    - "docker/images/composer/composer.Dockerfile"
+    - "docker/images/composer/composer.Dockerfile.dockerignore"
+
+# docker/images/composer/scep.Dockerfile.dockerignore
+scep: &scep
+    - "docker/images/scep/scep.Dockerfile"
+    - "docker/images/scep/scep.Dockerfile.dockerignore"
+    - "docker/images/scep/assets/**"
+
+# docker/images/composer/backend.Dockerfile.dockerignore
+# Depends on core and composer
+backend: &backend
+    - *core
+    - *composer
+    - "docker/images/backend/backend.Dockerfile"
+    - "docker/images/backend/backend.Dockerfile.dockerignore"
+    - "docker_parameters.yml"
+    - "composer.json"
+    - "composer.lock"
+    - "symfony.lock"
+    - "public/index.php"
+    - "public/favicon.ico"
+    - "public/import_devices_example_file.xlsx"
+    - "public/swagger/**"
+    - "app/src/translations/**"
+    - "bin/console"
+    - "bin/maintenance.sh"
+    - "config/**"
+    - "migrations/**"
+    - "src/**"
+    - "templates/**"
+    - "var/log/**"
+    - "var/cache/**"
+
+# docker/images/composer/frontend.Dockerfile.dockerignore
+frontend: &frontend
+    - "docker/images/frontend/frontend.Dockerfile"
+    - "docker/images/frontend/frontend.Dockerfile.dockerignore"
+    - "app/**"
+    - "docker/images/frontend/assets/**"
+
+# docker/images/composer/app.Dockerfile.dockerignore
+# Depends on backend, frontend and scep
+app: &app
+    - *backend
+    - *frontend
+    - *scep
+    - "docker/images/app/app.Dockerfile"
+    - "docker/images/app/app.Dockerfile.dockerignore"
+    - "docker/images/app/assets/**"
+    - "docker/images/app/entrypoint.sh"

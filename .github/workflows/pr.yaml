@@ -1,0 +1,93 @@
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: Pull request CI/CD
+
+on:
+    pull_request:
+        branches:
+            - "**"
+
+jobs:
+    pull-request-ci-cd:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Detect changed images
+              id: changes
+              uses: dorny/paths-filter@v3
+              with:
+                  filters: .github/path-filters.yaml
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Image "core" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.core == 'true'
+              with:
+                  name: "core"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "composer" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.composer == 'true'
+              with:
+                  name: "composer"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "scep" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.scep == 'true'
+              with:
+                  name: "scep"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "backend" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.backend == 'true'
+              with:
+                  name: "backend"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "frontend" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.frontend == 'true'
+              with:
+                  name: "frontend"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "app" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.app == 'true'
+              with:
+                  name: "app"
+                  version: "${GITHUB_SHA}"
+
+            - name: Image "test" - update version and build
+              uses: ./.github/actions/image-build
+              if: steps.changes.outputs.app == 'true'
+              with:
+                  name: "test"
+                  version: "${GITHUB_SHA}"
+
+            - name: PHPUnit smoke tests
+              uses: ./.github/actions/phpunit
+              if: steps.changes.outputs.app == 'true'
+              with:
+                  version: "${GITHUB_SHA}"
+                  group: "smoke"

@@ -9,6 +9,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+# ALWAYS keep in sync with .github/path-filters.yml
 # By default ignore everything
 *
 # Allow necessary files

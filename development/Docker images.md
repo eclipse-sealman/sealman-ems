@@ -1,6 +1,6 @@
 # Docker images
 
-Docker images are divided into `core`, `backend`, `frontend` and `app` to achieve quick and slim builds. The `app` image is the one that should be deployed and published when ready.
+Docker images are divided to achieve quick and slim builds. The `app` image is the one that should be deployed and published when ready.
 
 Images are divided in following way:
 
@@ -12,26 +12,28 @@ Images are divided in following way:
 -   `app` image is build on top of `backend`. It uses `frontend` and `scep` image to copy compiled frontend application and scep binary. It configures and sets up used packages like `nginx`, `crontab` and `supervisor`. It is also responsible for database initialization or migration and Symfony initialization (i.e. generating JWT and secret keys).
 -   `test` image is build on top of `app`. It includes source files needed for running tests (i.e. `tests/` folder)
 
-Docker images are divided using seperate folders in `dockers/images/`.
+Docker images are divided using separate folders in `dockers/images/`.
 
 Dockerfiles are prefixed with name of image (i.e. `frontend.Dockerfile`) to allow specific dockerignore file (i.e. `frontend.Dockerfile.dockerignore`) being taken into account. We cannot use one shared dockerignore file due to different requirements from each of our images. Additionally well defined dockerignore file allows to achieve a slim build (lower number of layers).
 
-## Image versioning
+## Image hierarchy and versioning
 
-We are using seperate versioning for each image to achieve quick builds and avoid unnecessary builds.
+We are using separate versioning for each image to achieve quick builds and avoid unnecessary builds.
 
-Please remember that some images depend on each other which means you will need to increment version for all of depending images. Guide below:
+Please remember that some images depend on each other which means you will need to increment version for all of depending images.
 
--   Incrementing version of `core` image should also increment version of `backend` and `app`
--   Incrementing version of `composer` image should also increment version of `backend` and `app`
--   Incrementing version of `backend` image should also increment version of `app`
--   Incrementing version of `frontend` image should also increment version of `app`
--   Incrementing version of `scep` image should also increment version of `app`
--   Incrementing version of `app` image should also increment version of `test`
+```
+composer -> |
+            |
+core -> backend -> app -> test
+                   |
+       frontend -> |
+           scep -> |
+```
 
-Please keep in mind that `app` image version **WILL** be used as application version. This means it will be compared by `entrypoint.sh` to decide whether a migration should be performed and will be presented in WebUI. Please follow recommendations from `Versioning lifecycle` section.
+Please keep in mind that `app` image version **WILL** be used as application version. This means it will be compared by `entrypoint.sh` to decide whether a migration should be performed and will be presented in WebUI.
 
-Versioning of images other then `app` is just for internal development and automation purposes. They can be versioned separately from each other.
+Versioning of images other then `app` is just for internal development and automation purposes.
 
 ## Filestorage volume
 
@@ -59,7 +61,7 @@ We are handling following application logs:
 -   php-fpm (WWW) logs are stored in `filestorage` volume in `/logs/php-fpm` directory
 -   php (CLI) logs are stored in `filestorage` volume in `/logs/php` directory
 
-Note! supervisor is reponsible for running `nginx` and `php-fpm` and it redirects their STDOUT to `/dev/stdout` and STDERR to `/dev/stderr`. When `nginx` and `php-fpm` redirects anything to STDOUT or STDERR it goes through supervisor. This means `nginx` and `php-fpm` are responsible for logging to `filestorage`.
+Note! supervisor is responsible for running `nginx` and `php-fpm` and it redirects their STDOUT to `/dev/stdout` and STDERR to `/dev/stderr`. When `nginx` and `php-fpm` redirects anything to STDOUT or STDERR it goes through supervisor. This means `nginx` and `php-fpm` are responsible for logging to `filestorage`.
 
 ## Building and publishing images
 
@@ -71,4 +73,4 @@ Each of docker images uses it's own `.env` file (i.e. `app` uses `docker/images/
 
 ## Production `compose.yaml` and `.env`
 
-Those files are located in `docker/deployments/production/` folder and their purpose is to hold default `compose.yaml` file and variables to be used further by clients while deploying the application.
+Those files are located in `docker/deployments/production/` folder and their purpose is to hold default `compose.yaml` file and variables to be used by clients while deploying the application.

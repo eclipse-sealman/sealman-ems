@@ -1,0 +1,24 @@
+name: "Commit, tag and push changes to git"
+description: "Commit, tag and push changes to git"
+
+inputs:
+    message:
+        description: "Commit message"
+        required: true
+    version:
+        description: "Version"
+        required: true
+
+runs:
+    using: "composite"
+    steps:
+        - name: Commit, tag and push changes to git
+          shell: bash
+          run: |
+              # TODO Fix user identity (this one does not pass Eclipse pipeline)
+              git config user.name sealman-github-actions
+              git config user.email sealman-github-actions@github.com
+              git commit -m "${{ inputs.message }}"
+              git tag "v${{ inputs.version }}"
+              git push origin ${{ github.head_ref }}
+              git push origin ${{ github.head_ref }} tag "v${{ inputs.version }}"
