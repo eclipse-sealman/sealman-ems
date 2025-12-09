@@ -24,6 +24,8 @@ scep <selfSign.crt> <selfSign.key> <ca.public.key.pem> <csr> <outPEM file>
  
 */
 
+// TODO Trigger rebuild
+
 #include <openssl/pem.h>
 #include <openssl/pkcs7.h>
 #include <openssl/err.h>
