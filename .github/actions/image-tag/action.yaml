@@ -1,0 +1,38 @@
+name: "Add tag to an existing image, update image version and git add"
+description: "Add a tag to an existing image, update image version and git add. Existing image will be pulled, tagged and pushed."
+
+inputs:
+    name:
+        description: "Image name (lowercase)"
+        required: true
+    version:
+        description: "Image version"
+        required: true
+
+runs:
+    using: "composite"
+    steps:
+        - name: Image "${{ inputs.name }}" - Pull, tag and push
+          shell: bash
+          run: |
+              source "docker/images/${{ inputs.name }}/.env"
+              IMAGE="${{ inputs.name }}"
+              IMAGE_UPPERCASE="${IMAGE^^}"
+
+              REGISTRY_IMAGE_VAR="${IMAGE_UPPERCASE}_REGISTRY_IMAGE"
+              VERSION_VAR="${IMAGE_UPPERCASE}_VERSION"
+
+              docker pull "${!REGISTRY_IMAGE_VAR}:${!VERSION_VAR}"
+              docker tag "${!REGISTRY_IMAGE_VAR}:${!VERSION_VAR}" "${!REGISTRY_IMAGE_VAR}:${{ inputs.version }}"
+              docker push "${!REGISTRY_IMAGE_VAR}:${{ inputs.version }}"
+
+        - name: Image "${{ inputs.name }}" - Update version
+          shell: bash
+          run: |
+              IMAGE="${{ inputs.name }}"
+              sed -i "s/^${IMAGE^^}_VERSION=.*/${IMAGE^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
+
+        - name: Image "${{ inputs.name }}" - Git add
+          shell: bash
+          run: |
+              git add docker/images/${{ inputs.name }}/.env
