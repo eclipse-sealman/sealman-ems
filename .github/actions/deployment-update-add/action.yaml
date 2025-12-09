@@ -1,0 +1,17 @@
+name: "Update deployment version (production and test) and git add"
+description: "Update deployment version (production and test) and git add"
+
+inputs:
+    version:
+        description: "Image version"
+        required: true
+
+runs:
+    using: "composite"
+    steps:
+        - name: Update deployment version and git add
+          shell: bash
+          run: |
+              sed -i "s/^APPLICATION_VERSION=.*/APPLICATION_VERSION=${{ inputs.version }}/" "docker/deployments/production/.env"
+              sed -i "s/^APPLICATION_VERSION=.*/APPLICATION_VERSION=${{ inputs.version }}/" "docker/deployments/test/.env"
+              git add "docker/deployments/production/.env" "docker/deployments/test/.env"

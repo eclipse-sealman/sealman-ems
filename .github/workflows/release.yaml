@@ -193,6 +193,11 @@ jobs:
                   version: "${{ needs.changes.outputs.version }}"
                   group: "full"
 
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
+
             - name: Git commit, tag and push changes to git
               uses: ./.github/actions/commit-tag-push
               with:
@@ -262,6 +267,11 @@ jobs:
               uses: ./.github/actions/image-build-push-add
               with:
                   name: "test"
+                  version: "${{ needs.changes.outputs.version }}"
+
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
                   version: "${{ needs.changes.outputs.version }}"
 
             # For RC first commit, tag and push then run full tests to have the image for testing ASAP
@@ -382,6 +392,11 @@ jobs:
               with:
                   version: "${{ needs.changes.outputs.version }}"
                   group: "full"
+
+            - name: Update deployment versions and git add
+              uses: ./.github/actions/deployment-update-add
+              with:
+                  version: "${{ needs.changes.outputs.version }}"
 
             - name: Git commit, tag and push changes to git
               uses: ./.github/actions/commit-tag-push
