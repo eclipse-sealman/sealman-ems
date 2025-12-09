@@ -102,9 +102,10 @@ class HttpClient
                 throw new HttpClientException('log.httpClient.unexpectedStatusCode', ['service' => $this->service, 'url' => $url, 'response' => '' !== $content ?: '(empty response)', 'statusCode' => $statusCode]);
             }
 
-            if (true === $toArray || (null === $toArray && true === $this->toArray)) {
-                return $response->toArray(false);
-            }
+            // TODO Commented out to verify failed tests on CI
+            // if (true === $toArray || (null === $toArray && true === $this->toArray)) {
+            //     return $response->toArray(false);
+            // }
 
             return $response->getContent(false);
         } catch (DecodingExceptionInterface $exception) {
