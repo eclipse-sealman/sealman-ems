@@ -40,6 +40,8 @@ applyAuthenticationInterceptor(axios);
 applyAxiosBaseUrl(axios, process.env.API_URL_PREFIX);
 
 const App = () => {
+    // TODO Trigger frontend change
+
     return (
         <LocalizationProvider
             dateAdapter={AdapterDateFns}

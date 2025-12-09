@@ -38,56 +38,56 @@ jobs:
 
             - name: Image "core" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.core == 'true'
+              if: steps.changes.outputs.core == 'true'
               with:
                   name: "core"
                   version: "${GITHUB_SHA}"
 
             - name: Image "composer" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.composer == 'true'
+              if: steps.changes.outputs.composer == 'true'
               with:
                   name: "composer"
                   version: "${GITHUB_SHA}"
 
             - name: Image "scep" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.scep == 'true'
+              if: steps.changes.outputs.scep == 'true'
               with:
                   name: "scep"
                   version: "${GITHUB_SHA}"
 
             - name: Image "backend" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.backend == 'true'
+              if: steps.changes.outputs.backend == 'true'
               with:
                   name: "backend"
                   version: "${GITHUB_SHA}"
 
             - name: Image "frontend" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.frontend == 'true'
+              if: steps.changes.outputs.frontend == 'true'
               with:
                   name: "frontend"
                   version: "${GITHUB_SHA}"
 
             - name: Image "app" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.app == 'true'
+              if: steps.changes.outputs.app == 'true'
               with:
                   name: "app"
                   version: "${GITHUB_SHA}"
 
             - name: Image "test" - update version and build
               uses: ./.github/actions/image-build
-              if: needs.changes.outputs.app == 'true'
+              if: steps.changes.outputs.app == 'true'
               with:
                   name: "test"
                   version: "${GITHUB_SHA}"
 
             - name: PHPUnit smoke tests
               uses: ./.github/actions/phpunit
-              if: needs.changes.outputs.app == 'true'
+              if: steps.changes.outputs.app == 'true'
               with:
                   version: "${GITHUB_SHA}"
                   group: "smoke"
