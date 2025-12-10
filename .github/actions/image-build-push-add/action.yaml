@@ -12,11 +12,34 @@ inputs:
 runs:
     using: "composite"
     steps:
+        - name: Image "${{ inputs.name }}" - Verify existing image
+          shell: bash
+          id: exists
+          continue-on-error: true
+          run: |
+              source "docker/images/${{ inputs.name }}/.env"
+              IMAGE="${{ inputs.name }}"
+              IMAGE_UPPERCASE="${IMAGE^^}"
+
+              REGISTRY_IMAGE_VAR="${IMAGE_UPPERCASE}_REGISTRY_IMAGE"
+              VERSION_VAR="${IMAGE_UPPERCASE}_VERSION"
+
+              docker manifest inspect "${!REGISTRY_IMAGE_VAR}:${{ inputs.version }}" >/dev/null 2>&1
+
+        - name: Image "${{ inputs.name }}" - Image exists, abort
+          if: steps.exists.outcome == 'success'
+          shell: bash
+          run: |
+              echo "Image '${{ inputs.name }}' version '${{ inputs.version }}' already exists. Aborting."
+              exit 1
+
         - name: Image "${{ inputs.name }}" - Update version
           shell: bash
           run: |
               IMAGE="${{ inputs.name }}"
-              sed -i "s/^${IMAGE^^}_VERSION=.*/${IMAGE^^}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
+              IMAGE_UPPERCASE="${IMAGE^^}"
+
+              sed -i "s/^${IMAGE_UPPERCASE}_VERSION=.*/${IMAGE_UPPERCASE}_VERSION=${{ inputs.version }}/" "docker/images/${{ inputs.name }}/.env"
 
         - name: Image "${{ inputs.name }}" - Build
           shell: bash
