@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Gedmo\Sluggable\Util\Urlizer;
+use App\Tool\Urlizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;

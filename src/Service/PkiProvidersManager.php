@@ -36,9 +36,9 @@ use App\Service\Helper\SymfonyDirTrait;
 use App\Service\Helper\VpnLogManagerTrait;
 use App\Service\Helper\VpnManagerTrait;
 use App\Service\Trait\CertificateTypeHelperTrait;
+use App\Tool\Urlizer;
 use Carve\ApiBundle\Exception\RequestExecutionException;
 use Carve\ApiBundle\Helper\Arr;
-use Gedmo\Sluggable\Util\Urlizer;
 use Symfony\Component\Filesystem\Filesystem;
 
 class PkiProvidersManager
