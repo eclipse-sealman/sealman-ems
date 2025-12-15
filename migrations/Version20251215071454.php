@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace <namespace>;
+namespace DoctrineMigrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
@@ -23,24 +23,14 @@ use Doctrine\Migrations\AbstractMigration;
  *
  * @see development/Doctrine migrations.md for more details and example queries
  *
- * Migration from version TODO
- * Migration for issue #TODO_ISSUE_NUMBER Issue title
+ * Migration from version 0.1.0
+ * Migration for issue #13 Migration produces an error due to lack of migrations
  */
-final class <className> extends AbstractMigration
+final class Version20251215071454 extends AbstractMigration
 {
-    public function preUp(Schema $schema): void
-    {
-        // TODO this preUp() migration is auto-generated, modify it to your needs and remove this comment. When not used, remove the this function
-    }
-
     public function up(Schema $schema): void
     {
-        // TODO this up() migration is auto-generated, modify it to your needs and remove this comment
-<up>
-    }<override>
-
-    public function postUp(Schema $schema): void
-    {
-        // TODO this postUp() migration is auto-generated, modify it to your needs and remove this comment. When not used, remove the this function
+        // Fake SQL to avoid migration reporting an error
+        $this->addSql('SELECT 1');
     }
 }
