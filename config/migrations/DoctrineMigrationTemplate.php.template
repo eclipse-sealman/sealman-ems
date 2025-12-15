@@ -21,24 +21,26 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * ! Migration file MUST **NOT** BE dependent on application code.
  *
- * @see devDocs/Doctrine migrations.md for more details and example queries
+ * @see development/Doctrine migrations.md for more details and example queries
  *
- * Migration for version vTODO
- * Migration for task TODO Functionality name
+ * Migration from version TODO
+ * Migration for issue #TODO_ISSUE_NUMBER Issue title
  */
 final class <className> extends AbstractMigration
 {
     public function preUp(Schema $schema): void
     {
+        // TODO this preUp() migration is auto-generated, modify it to your needs and remove this comment. When not used, remove the this function
     }
 
     public function up(Schema $schema): void
     {
-        // TODO this up() migration is auto-generated, please modify it to your needs and remove this comment
+        // TODO this up() migration is auto-generated, modify it to your needs and remove this comment
 <up>
     }<override>
 
     public function postUp(Schema $schema): void
     {
+        // TODO this postUp() migration is auto-generated, modify it to your needs and remove this comment. When not used, remove the this function
     }
 }
