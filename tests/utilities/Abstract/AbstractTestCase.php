@@ -22,6 +22,7 @@ use Tests\Utilities\Abstract\Trait\AssertionsTrait;
 use Tests\Utilities\Abstract\Trait\AuthenticationTrait;
 use Tests\Utilities\Abstract\Trait\DataMixerTrait;
 use Tests\Utilities\Abstract\Trait\HttpClientProxyTrait;
+use Tests\Utilities\Abstract\Trait\MockFeatureTrait;
 use Tests\Utilities\Abstract\Trait\RequestProxyTrait;
 use Tests\Utilities\Abstract\Trait\ServiceProxyTrait;
 use Tests\Utilities\ApiClient\ApiClient;
@@ -50,6 +51,7 @@ abstract class AbstractTestCase extends WebTestCase
     use HttpClientProxyTrait;
     use RequestProxyTrait;
     use ServiceProxyTrait;
+    use MockFeatureTrait;
 
     public const SMOKE = 'SMOKE';
 

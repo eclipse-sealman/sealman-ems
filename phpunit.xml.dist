@@ -36,6 +36,9 @@
         <testsuite name="WebApi:Endpoint">
             <directory>tests/suites/WebApi/Endpoint</directory>
         </testsuite>
+        <testsuite name="WebApi:Documentation">
+            <directory>tests/suites/WebApi/Documentation</directory>
+        </testsuite>
     </testsuites>
 
     <extensions>
