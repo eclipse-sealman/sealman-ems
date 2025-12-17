@@ -22,6 +22,10 @@
     </php>
 
     <testsuites>
+        <!-- Feature testsuites -->
+        <testsuite name="Feature:AuditLog">
+            <directory>tests/suites/Feature/AuditLog</directory>
+        </testsuite>
         <!-- Scenario testsuites -->
         <testsuite name="Scenario:WebApi">
             <directory>tests/suites/Scenario/WebApi</directory>
