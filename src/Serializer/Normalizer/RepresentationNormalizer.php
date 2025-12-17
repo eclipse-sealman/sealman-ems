@@ -30,6 +30,10 @@ class RepresentationNormalizer implements NormalizerInterface
      */
     public function normalize($object, $format = null, array $context = [])
     {
+        if (null === $object) {
+            return null;
+        }
+
         $result = [];
 
         if (method_exists($object, 'getId')) {
