@@ -16,12 +16,10 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserDeviceSecretCredentialsFixtures extends Fixture implements FixtureGroupInterface
+class UserDeviceSecretCredentialsFixtures extends AbstractFixtureGroupProd
 {
     /**
      * @var UserPasswordHasherInterface
@@ -44,10 +42,5 @@ class UserDeviceSecretCredentialsFixtures extends Fixture implements FixtureGrou
         $manager->persist($deviceSecretCredential);
 
         $manager->flush();
-    }
-
-    public static function getGroups(): array
-    {
-        return ['prod', 'user:initialize', 'test'];
     }
 }
