@@ -22,8 +22,19 @@
     </php>
 
     <testsuites>
-        <testsuite name="HttpClient">
-            <directory>tests/HttpClient</directory>
+        <!-- Scenario testsuites -->
+        <testsuite name="Scenario:WebApi">
+            <directory>tests/suites/Scenario/WebApi</directory>
+        </testsuite>
+
+        <!-- Unit testsuites -->
+        <testsuite name="Unit:HttpClient">
+            <directory>tests/suites/Unit/HttpClient</directory>
+        </testsuite>
+       
+        <!-- WebApi testsuites -->
+        <testsuite name="WebApi:Endpoint">
+            <directory>tests/suites/WebApi/Endpoint</directory>
         </testsuite>
     </testsuites>
 

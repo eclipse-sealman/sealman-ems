@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace tests\HttpClient;
+namespace Tests\Suites\Unit\HttpClient;
 
 use App\HttpClient\HttpClient;
 use App\HttpClient\HttpClientException;
