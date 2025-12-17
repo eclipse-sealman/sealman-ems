@@ -20,6 +20,7 @@ use App\Entity\DeviceType;
 use App\Enum\CertificateEntity;
 use App\Service\PkiProviderFactory;
 use App\Service\VpnProviderFactory;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\DataFixtures as TestFixtures;
 use Tests\Utilities\Abstract\AbstractTestCase;
@@ -64,6 +65,7 @@ use Tests\Utilities\Mock\VpnProvider\MockVpnProvider;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[AllowMockObjectsWithoutExpectations]
 class Scenario3Test extends AbstractTestCase
 {
     public static function getFixtureGroups(): array
