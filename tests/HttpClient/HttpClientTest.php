@@ -17,15 +17,14 @@ namespace tests\HttpClient;
 
 use App\HttpClient\HttpClient;
 use App\HttpClient\HttpClientException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-/**
- * @group smoke
- * @group full
- */
+#[Group('full')]
+#[Group('smoke')]
 class HttpClientTest extends TestCase
 {
     public function testMockResponses()

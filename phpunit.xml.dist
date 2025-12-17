@@ -3,23 +3,22 @@
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
-         convertDeprecationsToExceptions="false"
+         controlGarbageCollector="true"
+         numberOfTestsBeforeGarbageCollection="100"
+         displayDetailsOnPhpunitDeprecations="true"
+         displayDetailsOnTestsThatTriggerDeprecations="false"
+         failOnPhpunitDeprecation="true"
+         failOnRisky="true"
+         failOnWarning="true" 
          testdox="true"
 >
     <php>
-        <ini name="display_errors" value="1" />
-        <!-- E_ALL & ~E_DEPRECATED & ~E_STRICT. Development use only. Silence deprecations. Do not commit line below uncommented -->
-        <!-- <ini name="error_reporting" value="22527" /> -->
+        <ini name="display_errors" value="On" />
+        <ini name="display_startup_errors" value="On" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
-        <!-- Development use only. Silence deprecations. Do not commit line below uncommented -->
-        <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" /> -->
     </php>
 
     <testsuites>
@@ -28,19 +27,9 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </coverage>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
-
     <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
-    </extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+    </extensions> 
     <!-- Run `composer require symfony/panther` before enabling this extension -->
     <!--
     <extensions>
