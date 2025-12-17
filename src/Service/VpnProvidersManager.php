@@ -28,11 +28,11 @@ use App\Provider\Model\VpnConnectedClientsCollection;
 use App\Provider\Model\VpnCscConfiguration;
 use App\Provider\OpnSenseVpnProvider;
 use App\Service\Helper\ConfigurationManagerTrait;
-use App\Service\Helper\HttpClientTrait;
 use App\Service\Helper\SystemUserTrait;
 use App\Service\Helper\VpnAddressManagerTrait;
 use App\Service\Helper\VpnLogManagerTrait;
 use App\Service\Helper\VpnManagerTrait;
+use App\Service\Helper\VpnProviderFactoryTrait;
 use App\Service\Trait\CertificateTypeHelperTrait;
 
 // For now manager only handles OpnSenseVpnProvider - since there is no configuration differentiation no switches are implemented
@@ -43,8 +43,8 @@ class VpnProvidersManager
     use VpnAddressManagerTrait;
     use VpnLogManagerTrait;
     use VpnManagerTrait;
-    use HttpClientTrait;
     use SystemUserTrait;
+    use VpnProviderFactoryTrait;
 
     public function getVpnConnectedClients(): VpnConnectedClientsCollection
     {
@@ -662,20 +662,6 @@ class VpnProvidersManager
 
     protected function getVpnProvider(): VpnProviderInterface
     {
-        $configuration = $this->getConfiguration();
-        $url = $configuration->getOpnsenseUrl();
-
-        if (!$configuration->getOpnsenseUrl()) {
-            throw new LogsException($this->vpnLogManager->createLogError('log.vpnProviders.noOpnsenseUrl'));
-        }
-
-        return new OpnSenseVpnProvider(
-            $this->httpClient,
-            $url,
-            $configuration->getOpnsenseTimeout(),
-            $configuration->getVerifyOpnsenseSslCertificate(),
-            $configuration->getOpnsenseApiKey(),
-            $configuration->getOpnsenseApiSecret(),
-        );
+        return $this->vpnProviderFactory->getProvider();
     }
 }
