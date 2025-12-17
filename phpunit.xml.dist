@@ -32,8 +32,29 @@
         </testsuite>
 
         <!-- Unit testsuites -->
+        <testsuite name="Unit:ClassMetadataFactory">
+            <directory>tests/suites/Unit/ClassMetadataFactory</directory>
+        </testsuite>
+        <testsuite name="Unit:DeviceSecret">
+            <directory>tests/suites/Unit/DeviceSecret</directory>
+        </testsuite>
+        <testsuite name="Unit:EnvProcessing">
+            <directory>tests/suites/Unit/EnvProcessing</directory>
+        </testsuite>
         <testsuite name="Unit:HttpClient">
             <directory>tests/suites/Unit/HttpClient</directory>
+        </testsuite>
+        <testsuite name="Unit:MicrosoftOidcManager">
+            <directory>tests/suites/Unit/MicrosoftOidcManager</directory>
+        </testsuite>
+        <testsuite name="Unit:SerializableJson">
+            <directory>tests/suites/Unit/SerializableJson</directory>
+        </testsuite>
+        <testsuite name="Unit:Serializer">
+            <directory>tests/suites/Unit/Serializer</directory>
+        </testsuite>
+        <testsuite name="Unit:VpnAddressManager">
+            <directory>tests/suites/Unit/VpnAddressManager</directory>
         </testsuite>
        
         <!-- WebApi testsuites -->
