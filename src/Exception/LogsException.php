@@ -24,7 +24,7 @@ use Carve\ApiBundle\Exception\RequestExecutionException;
 
 class LogsException extends RequestExecutionException
 {
-    public function __construct(LogModel|LogsCollection|LogsCollectorInterface|null $log = null, ?string $message = '', \Throwable $previous = null, int $code = 0, array $headers = [])
+    public function __construct(LogModel|LogsCollection|LogsCollectorInterface|null $log = null, ?string $message = '', ?\Throwable $previous = null, int $code = 0, array $headers = [])
     {
         parent::__construct(null, [], null, $message, $previous, $code, $headers);
 

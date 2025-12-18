@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ankitpokhrel/tus-php": "^2.2",
@@ -45,11 +45,10 @@
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^8.1",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^12.4",
         "symfony/browser-kit": "6.4.*",
         "symfony/css-selector": "6.4.*",
         "symfony/debug-bundle": "6.4.*",
-        "symfony/phpunit-bridge": "^6.1",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"
     },
@@ -72,13 +71,18 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Tests\\DataFixtures\\": "tests/fixtures/",
+            "Tests\\Utilities\\": "tests/utilities/"
         }
     },
     "replace": {
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-iconv": "*",
-        "symfony/polyfill-php72": "*"
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*"
     },
     "scripts": {
         "auto-scripts": {

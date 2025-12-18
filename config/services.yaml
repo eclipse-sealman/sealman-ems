@@ -210,6 +210,10 @@ services:
 
 when@test:
     services:
+        Tests\DataFixtures\:
+            resource: "../tests/fixtures"
+            tags: ["doctrine.fixture.orm"]
+            autowire: true
         _defaults:
             # Make services public in test environment to always be able to access them
             public: true

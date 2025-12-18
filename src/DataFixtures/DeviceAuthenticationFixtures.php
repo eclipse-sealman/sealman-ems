@@ -19,13 +19,11 @@ use App\Entity\DeviceType;
 use App\Entity\User;
 use App\Entity\UserDeviceType;
 use App\Enum\UserRole;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class DeviceAuthenticationFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class DeviceAuthenticationFixtures extends AbstractFixtureGroupProd implements DependentFixtureInterface
 {
     /**
      * @var UserPasswordHasherInterface
@@ -72,10 +70,5 @@ class DeviceAuthenticationFixtures extends Fixture implements DependentFixtureIn
             UserFixtures::class,
             DeviceTypeFixtures::class,
         ];
-    }
-
-    public static function getGroups(): array
-    {
-        return ['prod', 'deviceAuthentication:initialize'];
     }
 }

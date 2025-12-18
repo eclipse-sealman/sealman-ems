@@ -25,12 +25,10 @@ use App\Enum\ConfigFormat;
 use App\Enum\CredentialsSource;
 use App\Enum\DeviceTypeIcon;
 use App\Enum\FieldRequirement;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class DeviceTypeFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFixtureInterface
 {
     public const DEVICETYPE_ROUTERTK800_REFERENCE = 'deviceType:router:tk800';
     public const DEVICETYPE_EDGEGATEWAY_REFERENCE = 'deviceType:edgeGateway';
@@ -454,10 +452,5 @@ class DeviceTypeFixtures extends Fixture implements DependentFixtureInterface, F
         return [
             CertificateTypeFixtures::class,
         ];
-    }
-
-    public static function getGroups(): array
-    {
-        return ['prod', 'deviceType:initialize', 'test'];
     }
 }

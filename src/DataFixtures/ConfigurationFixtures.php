@@ -17,13 +17,11 @@ namespace App\DataFixtures;
 
 use App\Entity\Configuration;
 use App\Service\Helper\VpnAddressManagerTrait;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Uid\Uuid;
 
-class ConfigurationFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
+class ConfigurationFixtures extends AbstractFixtureGroupProd implements DependentFixtureInterface
 {
     use VpnAddressManagerTrait;
 
@@ -49,10 +47,5 @@ class ConfigurationFixtures extends Fixture implements DependentFixtureInterface
         return [
             CertificateTypeFixtures::class,
         ];
-    }
-
-    public static function getGroups(): array
-    {
-        return ['prod', 'configuration:initialize', 'test'];
     }
 }

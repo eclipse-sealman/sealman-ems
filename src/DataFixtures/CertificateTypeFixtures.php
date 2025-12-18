@@ -20,11 +20,9 @@ use App\Enum\CertificateBehavior;
 use App\Enum\CertificateCategory;
 use App\Enum\CertificateEntity;
 use App\Enum\PkiType;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class CertificateTypeFixtures extends Fixture implements FixtureGroupInterface
+class CertificateTypeFixtures extends AbstractFixtureGroupProd
 {
     public const DEVICE_VPN_CERTIFICATE_TYPE = 'deviceVpnCertificateType';
     public const TECHNICIAN_VPN_CERTIFICATE_TYPE = 'technicianVpnCertificateType';
@@ -107,10 +105,5 @@ class CertificateTypeFixtures extends Fixture implements FixtureGroupInterface
         $this->addReference(self::TECHNICIAN_VPN_CERTIFICATE_TYPE, $technicianVpnCertificateType);
         $this->addReference(self::DPS_CERTIFICATE_TYPE, $dpsCertificateType);
         $this->addReference(self::EDGE_CA_CERTIFICATE_TYPE, $edgeCaCertificateType);
-    }
-
-    public static function getGroups(): array
-    {
-        return ['prod', 'configuration:initialize', 'test'];
     }
 }

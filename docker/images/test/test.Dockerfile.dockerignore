@@ -13,6 +13,5 @@
 *
 # Allow necessary files
 !.env.test
-!bin/phpunit
 !phpunit.xml.dist
 !tests/

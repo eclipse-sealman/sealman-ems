@@ -3,44 +3,81 @@
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
-         convertDeprecationsToExceptions="false"
+         controlGarbageCollector="true"
+         numberOfTestsBeforeGarbageCollection="100"
+         displayDetailsOnPhpunitDeprecations="true"
+         displayDetailsOnTestsThatTriggerDeprecations="false"
+         failOnPhpunitDeprecation="true"
+         failOnRisky="true"
+         failOnWarning="true" 
          testdox="true"
 >
     <php>
-        <ini name="display_errors" value="1" />
-        <!-- E_ALL & ~E_DEPRECATED & ~E_STRICT. Development use only. Silence deprecations. Do not commit line below uncommented -->
-        <!-- <ini name="error_reporting" value="22527" /> -->
+        <ini name="display_errors" value="On" />
+        <ini name="display_startup_errors" value="On" />
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
-        <!-- Development use only. Silence deprecations. Do not commit line below uncommented -->
-        <!-- <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" /> -->
     </php>
 
     <testsuites>
-        <testsuite name="HttpClient">
-            <directory>tests/HttpClient</directory>
+        <!-- Feature testsuites -->
+        <testsuite name="Feature:AuditLog">
+            <directory>tests/suites/Feature/AuditLog</directory>
+        </testsuite>
+        
+        <!-- Scenario testsuites -->
+        <testsuite name="Scenario:WebApi">
+            <directory>tests/suites/Scenario/WebApi</directory>
+        </testsuite>
+
+        <!-- Unit testsuites -->
+        <testsuite name="Unit:ClassMetadataFactory">
+            <directory>tests/suites/Unit/ClassMetadataFactory</directory>
+        </testsuite>
+        <testsuite name="Unit:DeviceSecret">
+            <directory>tests/suites/Unit/DeviceSecret</directory>
+        </testsuite>
+        <testsuite name="Unit:EnvProcessing">
+            <directory>tests/suites/Unit/EnvProcessing</directory>
+        </testsuite>
+        <testsuite name="Unit:HttpClient">
+            <directory>tests/suites/Unit/HttpClient</directory>
+        </testsuite>
+        <testsuite name="Unit:MicrosoftOidcManager">
+            <directory>tests/suites/Unit/MicrosoftOidcManager</directory>
+        </testsuite>
+        <testsuite name="Unit:SerializableJson">
+            <directory>tests/suites/Unit/SerializableJson</directory>
+        </testsuite>
+        <testsuite name="Unit:Serializer">
+            <directory>tests/suites/Unit/Serializer</directory>
+        </testsuite>
+        <testsuite name="Unit:VpnAddressManager">
+            <directory>tests/suites/Unit/VpnAddressManager</directory>
+        </testsuite>
+       
+        <!-- WebApi testsuites -->
+        <testsuite name="WebApi:Endpoint">
+            <directory>tests/suites/WebApi/Endpoint</directory>
+        </testsuite>
+        <testsuite name="WebApi:UserAccess">
+            <directory>tests/suites/WebApi/UserAccess</directory>
+        </testsuite>
+        <testsuite name="WebApi:Documentation">
+            <directory>tests/suites/WebApi/Documentation</directory>
+        </testsuite>
+
+        <!-- Has to be last to allow other tests be loaded before -->
+        <testsuite name="Smoke">
+            <directory>tests/suites/Smoke</directory>
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">src</directory>
-        </include>
-    </coverage>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
-
     <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
-    </extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+    </extensions> 
     <!-- Run `composer require symfony/panther` before enabling this extension -->
     <!--
     <extensions>

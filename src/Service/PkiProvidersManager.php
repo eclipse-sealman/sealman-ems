@@ -30,8 +30,8 @@ use App\Service\Helper\CertificateManagerTrait;
 use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\EncryptionManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
-use App\Service\Helper\FileManagerTrait;
 use App\Service\Helper\HttpClientTrait;
+use App\Service\Helper\PkiProviderFactoryTrait;
 use App\Service\Helper\SymfonyDirTrait;
 use App\Service\Helper\VpnLogManagerTrait;
 use App\Service\Helper\VpnManagerTrait;
@@ -48,11 +48,11 @@ class PkiProvidersManager
     use CertificateTypeHelperTrait;
     use EntityManagerTrait;
     use EncryptionManagerTrait;
-    use FileManagerTrait;
     use SymfonyDirTrait;
     use VpnLogManagerTrait;
     use VpnManagerTrait;
     use HttpClientTrait;
+    use PkiProviderFactoryTrait;
 
     public function generateCertificate(Certificate $certificate): void
     {
@@ -302,18 +302,6 @@ class PkiProvidersManager
         return $certificateSubject;
     }
 
-    protected function getCertificateRequestDir(): string
-    {
-        $path = $this->projectDir.'/private/certificate_request/';
-
-        $fs = new Filesystem();
-        if (!$fs->exists($path)) {
-            $fs->mkdir($path);
-        }
-
-        return $path;
-    }
-
     protected function getHashAlgorithm(Certificate $certificate): PkiHashAlgorithm
     {
         $certificateType = $certificate->getCertificateType();
@@ -359,47 +347,6 @@ class PkiProvidersManager
     // Using Certificate as parameter instead of CertificateType for better logs
     protected function getPkiProvider(Certificate $certificate): PkiProviderInterface
     {
-        $certificateType = $certificate->getCertificateType();
-        if (!$certificateType) {
-            throw new LogsException($this->vpnLogManager->createLogCritical('log.pkiProviders.certificateTypeNotSet', certificate: $certificate));
-        }
-
-        // TODO in future expand this condition for other PKI protocols
-        if (!$this->configurationManager->isScepForCertificateTypeAvailable($certificateType)) {
-            throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.invalidPkiConfiguration', certificate: $certificate));
-        }
-
-        $pkiType = $certificateType->getPkiType();
-        switch ($pkiType) {
-            case PkiType::SCEP:
-                if (!$certificateType->getScepUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepUrl', certificate: $certificate));
-                }
-
-                if (!$certificateType->getScepCrlUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepCrlUrl', certificate: $certificate));
-                }
-
-                if (!$certificateType->getScepRevocationUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepRevocationUrl', certificate: $certificate));
-                }
-
-                return new ScepPkiProvider(
-                    $this->projectDir,
-                    $this->getCertificateRequestDir(),
-                    $this->fileManager,
-                    $certificateType->getScepUrl(),
-                    $certificateType->getScepCrlUrl(),
-                    $certificateType->getScepRevocationUrl(),
-                    $this->httpClient,
-                    $certificateType->getScepTimeout(),
-                    $certificateType->getScepVerifyServerSslCertificate(),
-                    $certificateType->getScepRevocationBasicAuthUser(),
-                    $certificateType->getScepRevocationBasicAuthPassword(),
-                );
-            case PkiType::NONE:
-            default:
-                throw new \Exception('Unsupported PKI protocol type "'.$pkiType->value.'"');
-        }
+        return $this->pkiProviderFactory->getProvider($certificate);
     }
 }

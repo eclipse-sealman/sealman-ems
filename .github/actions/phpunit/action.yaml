@@ -18,5 +18,5 @@ runs:
               echo "APPLICATION_VERSION=${{ inputs.version }}" >> docker/deployments/test/.env
               docker compose -f docker/deployments/test/compose.yaml up -d
               docker/deployments/test/wait-until-ready.sh
-              docker compose -f docker/deployments/test/compose.yaml exec application php bin/phpunit --group "${{ inputs.group }}"
+              docker compose -f docker/deployments/test/compose.yaml exec application php vendor/bin/phpunit --group "${{ inputs.group }}"
               docker compose -f docker/deployments/test/compose.yaml down
