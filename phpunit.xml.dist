@@ -26,6 +26,7 @@
         <testsuite name="Feature:AuditLog">
             <directory>tests/suites/Feature/AuditLog</directory>
         </testsuite>
+        
         <!-- Scenario testsuites -->
         <testsuite name="Scenario:WebApi">
             <directory>tests/suites/Scenario/WebApi</directory>
@@ -60,6 +61,9 @@
         <!-- WebApi testsuites -->
         <testsuite name="WebApi:Endpoint">
             <directory>tests/suites/WebApi/Endpoint</directory>
+        </testsuite>
+        <testsuite name="WebApi:UserAccess">
+            <directory>tests/suites/WebApi/UserAccess</directory>
         </testsuite>
         <testsuite name="WebApi:Documentation">
             <directory>tests/suites/WebApi/Documentation</directory>
