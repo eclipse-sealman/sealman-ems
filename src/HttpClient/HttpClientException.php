@@ -20,7 +20,7 @@ class HttpClientException extends \Exception
     protected string $logMessage;
     protected ?array $logMessageVariables = [];
 
-    public function __construct(string $logMessage, ?array $logMessageVariables = [], ?string $message = null, int $code = 0, \Throwable $previous = null)
+    public function __construct(string $logMessage, ?array $logMessageVariables = [], ?string $message = null, int $code = 0, ?\Throwable $previous = null)
     {
         $this->logMessage = $logMessage;
         $this->logMessageVariables = $logMessageVariables;

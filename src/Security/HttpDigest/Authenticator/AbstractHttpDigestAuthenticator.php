@@ -63,7 +63,7 @@ abstract class AbstractHttpDigestAuthenticator implements AuthenticationEntryPoi
 
     abstract public function createPassport(Request $request, DigestData $digestData): Passport;
 
-    public function __construct(AesPasswordHasher $aesPasswordHasher, DeviceSecretUserProvider $deviceSecretUserProvider, $httpDigestRealmName, $httpDigestKey, $httpDigestNonceValiditySeconds = 300, LoggerInterface $logger = null)
+    public function __construct(AesPasswordHasher $aesPasswordHasher, DeviceSecretUserProvider $deviceSecretUserProvider, $httpDigestRealmName, $httpDigestKey, $httpDigestNonceValiditySeconds = 300, ?LoggerInterface $logger = null)
     {
         $this->aesPasswordHasher = $aesPasswordHasher;
         $this->httpDigestRealmName = $httpDigestRealmName;
@@ -211,7 +211,7 @@ abstract class AbstractHttpDigestAuthenticator implements AuthenticationEntryPoi
         return $this->start($request, $exception);
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         $authenticateHeader = $this->getUnauthorizedHeaderChallenge();
 
