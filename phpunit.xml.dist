@@ -68,6 +68,11 @@
         <testsuite name="WebApi:Documentation">
             <directory>tests/suites/WebApi/Documentation</directory>
         </testsuite>
+
+        <!-- Has to be last to allow other tests be loaded before -->
+        <testsuite name="Smoke">
+            <directory>tests/suites/Smoke</directory>
+        </testsuite>
     </testsuites>
 
     <extensions>
