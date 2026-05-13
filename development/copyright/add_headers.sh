@@ -5,7 +5,7 @@ echo "<type> is one of \"default\", \"git-diff\" or absolute paths to search for
 echo "(replace) is optional string \"replace\" passed to actually replace files, otherwise it will be a dry run"
 echo ""
 
-scriptDir="$(pwd)"
+scriptDir=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 appDir="${scriptDir/\/development\/copyright//}"
 
 defaultPaths=("app" "bin" "config" "docker" "migrations" "src" "templates" "tests")
@@ -50,7 +50,7 @@ add_header() {
     local file="$1"
     local extension="$2"
 
-    local copyrightFile="$extension.copyright"
+    local copyrightFile="${scriptDir}/${extension}.copyright"
     local headerSize=$(wc -c < "$copyrightFile")
 
     if head -c "${headerSize}" "$file" | cmp -s "${copyrightFile}"; then
