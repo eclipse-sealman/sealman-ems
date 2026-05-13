@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Copyright (c) 2025 Contributors to the Eclipse Foundation.
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
 echo "Usage: ./development/copyright/add_headers.sh <type> (replace)"
 echo "<type> is one of \"default\", \"git-diff\" or absolute paths to search for files to be replaced (comma separated)"
 echo "(replace) is optional string \"replace\" passed to actually replace files, otherwise it will be a dry run"
@@ -44,7 +55,7 @@ fi
 
 echo ""
 
-extensions=("tsx")
+extensions=("tsx" "sh" "conf" "yaml" "php" "twig" "Dockerfile" "Dockerfile.dockerignore")
 
 add_header() {
     local file="$1"
@@ -63,6 +74,16 @@ add_header() {
     if [ "$dryRun" = true ] ; then
         # Dry run. Do not replace
         return
+    fi
+
+    local copyrightPrependFile="${copyrightFile}.prepend"
+    if [ -a "${copyrightPrependFile}" ]; then
+        # Remove lines from prepend file which should exist with or without copyright
+        lines=$(wc -l < "$copyrightPrependFile")
+        for i in $(seq 1 "${lines}");
+        do
+            sed -i "1d" "${file}"
+        done
     fi
 
     tmpFile=$(mktemp "${scriptDir}/file.${extension}.XXXXXX")
