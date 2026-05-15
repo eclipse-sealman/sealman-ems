@@ -22,37 +22,35 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class Password extends Constraint
 {
-    public $messagePasswordMinimumLengthRequirementFailed = 'validation.password.minimumLengthRequirementFailed';
-    public $messagePasswordDigitMissing = 'validation.password.digitMissing';
-    public $messagePasswordSmallCharMissing = 'validation.password.smallCharMissing';
-    public $messagePasswordBigCharMissing = 'validation.password.bigCharMissing';
-    public $messagePasswordSpecialCharMissing = 'validation.password.specialCharMissing';
-    public $messagePasswordRecentlyUsed = 'validation.password.recentlyUsed';
+    public ?User $user = null;
 
-    public null|User $user = null;
+    public string $messagePasswordMinimumLengthRequirementFailed = 'validation.password.minimumLengthRequirementFailed';
+    public string $messagePasswordDigitMissing = 'validation.password.digitMissing';
+    public string $messagePasswordSmallCharMissing = 'validation.password.smallCharMissing';
+    public string $messagePasswordBigCharMissing = 'validation.password.bigCharMissing';
+    public string $messagePasswordSpecialCharMissing = 'validation.password.specialCharMissing';
+    public string $messagePasswordRecentlyUsed = 'validation.password.recentlyUsed';
 
     #[HasNamedArguments]
     public function __construct(
-        null|User $user = null,
-        null|string $messagePasswordMinimumLengthRequirementFailed = null,
-        null|string $messagePasswordDigitMissing = null,
-        null|string $messagePasswordSmallCharMissing = null,
-        null|string $messagePasswordBigCharMissing = null,
-        null|string $messagePasswordSpecialCharMissing = null,
-        null|string $messagePasswordRecentlyUsed = null,
-        null|array $groups = null,
-        $payload = null)
-    {
-        $options = array_filter([
-            'messagePasswordMinimumLengthRequirementFailed' => $messagePasswordMinimumLengthRequirementFailed ?? $this->messagePasswordMinimumLengthRequirementFailed,
-            'messagePasswordDigitMissing' => $messagePasswordDigitMissing ?? $this->messagePasswordDigitMissing,
-            'messagePasswordSmallCharMissing' => $messagePasswordSmallCharMissing ?? $this->messagePasswordSmallCharMissing,
-            'messagePasswordBigCharMissing' => $messagePasswordBigCharMissing ?? $this->messagePasswordBigCharMissing,
-            'messagePasswordSpecialCharMissing' => $messagePasswordSpecialCharMissing ?? $this->messagePasswordSpecialCharMissing,
-            'messagePasswordRecentlyUsed' => $messagePasswordRecentlyUsed ?? $this->messagePasswordRecentlyUsed,
-            'user' => $user ?? $this->user,
-        ]);
+        ?User $user = null,
+        ?string $messagePasswordMinimumLengthRequirementFailed = null,
+        ?string $messagePasswordDigitMissing = null,
+        ?string $messagePasswordSmallCharMissing = null,
+        ?string $messagePasswordBigCharMissing = null,
+        ?string $messagePasswordSpecialCharMissing = null,
+        ?string $messagePasswordRecentlyUsed = null,
+        ?array $groups = null,
+        mixed $payload = null,
+    ) {
+        parent::__construct(null, $groups, $payload);
 
-        parent::__construct($options, $groups, $payload);
+        $this->user = $user ?? $this->user;
+        $this->messagePasswordMinimumLengthRequirementFailed = $messagePasswordMinimumLengthRequirementFailed ?? $this->messagePasswordMinimumLengthRequirementFailed;
+        $this->messagePasswordDigitMissing = $messagePasswordDigitMissing ?? $this->messagePasswordDigitMissing;
+        $this->messagePasswordSmallCharMissing = $messagePasswordSmallCharMissing ?? $this->messagePasswordSmallCharMissing;
+        $this->messagePasswordBigCharMissing = $messagePasswordBigCharMissing ?? $this->messagePasswordBigCharMissing;
+        $this->messagePasswordSpecialCharMissing = $messagePasswordSpecialCharMissing ?? $this->messagePasswordSpecialCharMissing;
+        $this->messagePasswordRecentlyUsed = $messagePasswordRecentlyUsed ?? $this->messagePasswordRecentlyUsed;
     }
 }

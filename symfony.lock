@@ -20,26 +20,8 @@
             "ref": "896306d79d4ee143af9eadf9b09fd34a8c391b70"
         }
     },
-    "doctrine/annotations": {
-        "version": "1.13",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "a2759dd6123694c8d901d0ec80006e044c2e6457"
-        },
-        "files": [
-            "config/routes/annotations.yaml"
-        ]
-    },
-    "doctrine/cache": {
-        "version": "2.1.1"
-    },
     "doctrine/collections": {
         "version": "1.6.8"
-    },
-    "doctrine/common": {
-        "version": "3.3.0"
     },
     "doctrine/data-fixtures": {
         "version": "1.5.3"
@@ -113,9 +95,6 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.7"
-    },
     "friendsofsymfony/rest-bundle": {
         "version": "3.3",
         "recipe": {
@@ -153,9 +132,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "2.3.0"
-    },
-    "laminas/laminas-code": {
-        "version": "4.5.1"
     },
     "lexik/jwt-authentication-bundle": {
         "version": "2.16",
@@ -318,18 +294,6 @@
     },
     "sebastian/version": {
         "version": "3.0.2"
-    },
-    "sensio/framework-extra-bundle": {
-        "version": "6.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.2",
-            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
-        },
-        "files": [
-            "config/packages/sensio_framework_extra.yaml"
-        ]
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.7",
@@ -523,9 +487,6 @@
     },
     "symfony/property-info": {
         "version": "v5.4.7"
-    },
-    "symfony/proxy-manager-bridge": {
-        "version": "v5.4.6"
     },
     "symfony/routing": {
         "version": "5.4",

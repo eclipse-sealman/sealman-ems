@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\TemplateDeny;
 use App\Entity\Template;
 use App\Form\TemplateCreateType;
@@ -31,7 +32,6 @@ use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/template')]
 #[Api\Resource(
@@ -43,7 +43,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 #[Rest\View(serializerGroups: ['identification', 'template:public', 'templateVersion:public', 'timestampable', 'blameable', 'deny'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN', ['templateVersion:admin'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN_VPN', ['templateVersion:adminVpn'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
 #[Areas(['admin', 'smartems'])]
 class TemplateController extends AbstractApiController
 {

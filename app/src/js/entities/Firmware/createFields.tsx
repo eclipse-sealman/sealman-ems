@@ -10,14 +10,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import { Text, getFields, RadioEnum, FieldsInterface } from "@arteneo/forge";
+import { Text, getFields, RadioEnum, FieldsInterface, SelectApi } from "@arteneo/forge";
 import { sourceType } from "~app/entities/Firmware/enums";
 import FirmwareFilepath from "~app/components/Form/fields/FirmwareFilepath";
 import { showAndRequireOnEqual } from "~app/utilities/fields";
 import { DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/definitions";
 import { CommunicationProcedureType } from "~app/entities/DeviceType/enums";
+import { FeatureType } from "~app/enums/Feature";
+import { getFirmwareSchema } from "~app/entities/Firmware/utilities";
 
-const composeGetFields = (deviceType: DeviceConfigurationTypeInterface) => {
+const composeGetFields = (deviceType: DeviceConfigurationTypeInterface, feature: FeatureType) => {
     let enableGuessVersion = false;
 
     const guessVersionCommunicationProcedures: CommunicationProcedureType[] = [
@@ -29,6 +31,9 @@ const composeGetFields = (deviceType: DeviceConfigurationTypeInterface) => {
         enableGuessVersion = true;
     }
 
+    const firmwareSchema = getFirmwareSchema(deviceType, feature);
+    const isFirmwareSchemaAny = firmwareSchema === "anySchema";
+
     const fields: FieldsInterface = {
         sourceType: <RadioEnum {...{ required: true, enum: sourceType }} />,
         externalUrl: <Text {...{ ...showAndRequireOnEqual("sourceType", "externalUrl") }} />,
@@ -36,6 +41,14 @@ const composeGetFields = (deviceType: DeviceConfigurationTypeInterface) => {
         filepath: <FirmwareFilepath {...{ enableGuessVersion, ...showAndRequireOnEqual("sourceType", "upload") }} />,
         name: <Text {...{ required: true }} />,
         version: <Text {...{ required: true }} />,
+        requiredFirmware: (
+            <SelectApi
+                {...{
+                    hidden: isFirmwareSchemaAny,
+                    endpoint: "/firmware/required/firmware/options/" + feature + "/" + deviceType.id,
+                }}
+            />
+        ),
     };
 
     return getFields(fields);

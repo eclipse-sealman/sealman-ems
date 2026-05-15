@@ -15,11 +15,11 @@ import { Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Display, { DisplayProps, DisplayRowsInterface } from "~app/components/Display/Display";
 import { DisplayRowTitleProps } from "~app/components/Display/DisplayRowTitle";
-import VariableInterface from "~app/definitions/VariableInterface";
 import VariablePreColumn from "~app/components/Table/columns/VariablePreColumn";
+import { VariableValueInterface } from "~app/components/Details/Device/DevicePredefinedVariablesDisplay";
 
 interface DisplayVariablesProps extends Omit<DisplayProps, "result" | "rows"> {
-    variables: VariableInterface[];
+    variables: VariableValueInterface[];
     emptyLabel?: string;
     emptyLabelVariables?: TranslateVariablesInterface;
 }

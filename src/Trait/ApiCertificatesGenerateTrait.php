@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\CertificateDenyInterface;
 use App\Service\Helper\CertificateManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 trait ApiCertificatesGenerateTrait
@@ -35,7 +35,7 @@ trait ApiCertificatesGenerateTrait
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function generateCertificateAction(Request $request, int $id, int $certificateTypeId)
     {

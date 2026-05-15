@@ -16,11 +16,13 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\DeviceTypeDeny;
 use App\Entity\Certificate;
 use App\Entity\CertificateType;
 use App\Entity\Device;
 use App\Entity\DeviceType;
+use App\Entity\DeviceTypeCustomDataMapping;
 use App\Enum\AuthenticationMethod;
 use App\Enum\CertificateEntity;
 use App\Enum\CommunicationProcedure;
@@ -45,7 +47,6 @@ use Doctrine\Common\Collections\Collection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -58,7 +59,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     denyClass: DeviceTypeDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'deviceType:public', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class DeviceTypeController extends AbstractApiController
 {
@@ -191,6 +192,9 @@ class DeviceTypeController extends AbstractApiController
             'hasDeviceCommands' => $object->getHasDeviceCommands(),
             'hasConfig' => $object->getHasConfig1() || $object->getHasConfig2() || $object->getHasConfig3(),
             'hasFirmware' => $object->getHasFirmware1() || $object->getHasFirmware2() || $object->getHasFirmware3(),
+            'hasFirmware1' => $object->getHasFirmware1(),
+            'hasFirmware2' => $object->getHasFirmware2(),
+            'hasFirmware3' => $object->getHasFirmware3(),
             'hasNoneCommunicationProcedure' => $hasNoneCommunicationProcedure,
             'requiredCertificateTypes' => $requiredCertificateTypes,
         ];
@@ -218,13 +222,22 @@ class DeviceTypeController extends AbstractApiController
                     $object->setDeviceTypeSecretCredential(null);
                 }
                 $object->setDeviceTypeCertificateTypeCredential(null);
+                $object->setDeviceTypeCertificateTypeMTlsScepAuthentication(null);
                 break;
             case AuthenticationMethod::X509:
                 $object->setDeviceTypeSecretCredential(null);
                 $object->setCredentialsSource(null);
+                $object->setDeviceTypeCertificateTypeMTlsScepAuthentication(null);
                 break;
+            case AuthenticationMethod::MTLS_SCEP:
+                $object->setDeviceTypeSecretCredential(null);
+                $object->setCredentialsSource(null);
+                $object->setDeviceTypeCertificateTypeCredential(null);
+                break;
+            case AuthenticationMethod::MTLS:
             case AuthenticationMethod::NONE:
             default:
+                $object->setDeviceTypeCertificateTypeMTlsScepAuthentication(null);
                 $object->setDeviceTypeCertificateTypeCredential(null);
                 $object->setDeviceTypeSecretCredential(null);
                 $object->setCredentialsSource(null);
@@ -330,6 +343,7 @@ class DeviceTypeController extends AbstractApiController
         // Credentials cannot be duplicated since they are specific for one device type
         $duplicatedObject->setDeviceTypeSecretCredential(null);
         $duplicatedObject->setDeviceTypeCertificateTypeCredential(null);
+        $duplicatedObject->setDeviceTypeCertificateTypeMTlsScepAuthentication(null);
 
         $this->duplicateCollection($object, $duplicatedObject, 'certificateTypes');
 
@@ -421,5 +435,46 @@ class DeviceTypeController extends AbstractApiController
             'communicationProcedureCertificateCategoryOptional' => $this->getCertificateTypesByCertificateCategories($communicationProcedure->getCommunicationProcedureCertificateCategoryOptional(), CertificateEntity::DEVICE),
             'deviceVpnCertificateType' => $this->getDeviceVpnCertificateType(),
         ];
+    }
+
+    /**
+     * Copy default custom data mappings from communication procedure to device type.
+     */
+    #[Rest\Get('/{id}/copy/default/mappings', requirements: ['id' => '\d+'])]
+    #[Api\Summary('Copy default custom data mappings from communication procedure to device type')]
+    #[Api\ParameterPathId('ID of {{ subjectLower }} to copy default custom data mappings to')]
+    #[Api\Response200(description: 'Device type with copied default custom data mappings')]
+    #[Api\Response404Id]
+    public function copyDefaultCustomDataMappingsAction(Request $request, int $id)
+    {
+        $deviceType = $this->find($id, DeviceTypeDeny::COPY_DEFAULT_CUSTOM_DATA_MAPPINGS);
+
+        $communicationProcedure = $this->deviceCommunicationFactory->getDeviceCommunicationByDeviceType($deviceType);
+
+        if (!$communicationProcedure) {
+            throw new NotFoundHttpException();
+        }
+
+        foreach ($communicationProcedure->getDefaultCustomDataMappings() as $customDataMapping) {
+            $newCustomDataMapping = new DeviceTypeCustomDataMapping();
+
+            $newCustomDataMapping->setDeviceType($deviceType);
+            $newCustomDataMapping->setName($customDataMapping->getName());
+            $newCustomDataMapping->setPath($customDataMapping->getPath());
+            $newCustomDataMapping->setVariableEnabled($customDataMapping->getVariableEnabled());
+            $newCustomDataMapping->setType($customDataMapping->getType());
+            $newCustomDataMapping->setVariableName($customDataMapping->getVariableName());
+
+            $deviceType->addDeviceTypeCustomDataMapping($newCustomDataMapping);
+
+            $this->entityManager->persist($newCustomDataMapping);
+        }
+
+        $this->entityManager->persist($deviceType);
+        $this->entityManager->flush();
+
+        $this->modifyResponseObject($deviceType);
+
+        return $deviceType;
     }
 }

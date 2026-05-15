@@ -3,7 +3,6 @@
 Notes:
 
 -   SAST (Static code analysis) is not yet implemented
--   Tests are not yet implemented (just HttpClient tests exists)
 -   Run dependabot to keep packages up to date is not yet implemented
 -   SBOM is not yet implemented
 

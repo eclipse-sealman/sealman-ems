@@ -16,18 +16,18 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
-use App\Entity\VpnConnection;
-use Doctrine\ORM\QueryBuilder;
+use App\Attribute\IsGrantedOr;
 use App\Deny\VpnConnectionDeny;
-use Carve\ApiBundle\Attribute as Api;
-use Carve\ApiBundle\Trait\ApiGetTrait;
-use Carve\ApiBundle\Trait\ApiListTrait;
+use App\Entity\VpnConnection;
 use App\Trait\ApiVpnCloseConnectionTrait;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Carve\ApiBundle\Attribute as Api;
+use Carve\ApiBundle\Controller\AbstractApiController;
 use Carve\ApiBundle\Model\ListQueryFilterInterface;
 use Carve\ApiBundle\Model\ListQuerySortingInterface;
-use Carve\ApiBundle\Controller\AbstractApiController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Carve\ApiBundle\Trait\ApiGetTrait;
+use Carve\ApiBundle\Trait\ApiListTrait;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 #[Rest\Route('/vpnconnection')]
 #[Api\Resource(
@@ -36,7 +36,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
     listFormFilterByAppend: ['device.deviceType', 'owned']
 )]
 #[Rest\View(serializerGroups: ['identification', 'vpnConnection:public', 'deviceType:identification', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
 #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
 class VpnConnectionController extends AbstractApiController
 {
@@ -80,7 +80,6 @@ class VpnConnectionController extends AbstractApiController
             $queryBuilder->setParameter('user', $this->getUser());
         }
     }
-
 
     protected function modifyFilter(ListQueryFilterInterface $filter, QueryBuilder $queryBuilder, string $alias): bool
     {

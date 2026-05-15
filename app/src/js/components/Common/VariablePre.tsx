@@ -57,7 +57,12 @@ const VariablePre = ({
         resolvedContent = "[ " + resolvedContent.join(", ") + " ]";
     }
     if (resolvedContent && typeof resolvedContent == "object") {
-        resolvedContent = "[ " + Object.values(resolvedContent).join(", ") + " ]";
+        resolvedContent =
+            "[ " +
+            Object.entries(resolvedContent)
+                .map(([key, value]) => `${key} => ${value}`)
+                .join(", ") +
+            " ]";
     }
 
     const isCollapsable = resolvedContent && overflowActive;

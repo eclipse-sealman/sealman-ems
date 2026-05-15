@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class EndpointDevice extends Constraint
 {
-    public $messageVirtualIpHostPartUsedByDevice = 'validation.endpointDevice.virtualIpHostPartUsedByDevice';
-    public $messageInvalidVirtualIpHostPart = 'validation.endpointDevice.invalidVirtualIpHostPart';
-    public $messageNameNotUnique = 'validation.endpointDevice.nameNotUnique';
-    public $messagePhysicalIpNotUnique = 'validation.endpointDevice.physicalIpNotUnique';
-    public $messageVirtualIpHostPartNotUnique = 'validation.endpointDevice.virtualIpHostPartNotUnique';
-    public $messageAccessDenied = 'validation.endpointDevice.accessDenied';
+    public string $messageVirtualIpHostPartUsedByDevice = 'validation.endpointDevice.virtualIpHostPartUsedByDevice';
+    public string $messageInvalidVirtualIpHostPart = 'validation.endpointDevice.invalidVirtualIpHostPart';
+    public string $messageNameNotUnique = 'validation.endpointDevice.nameNotUnique';
+    public string $messagePhysicalIpNotUnique = 'validation.endpointDevice.physicalIpNotUnique';
+    public string $messageVirtualIpHostPartNotUnique = 'validation.endpointDevice.virtualIpHostPartNotUnique';
+    public string $messageAccessDenied = 'validation.endpointDevice.accessDenied';
 
     public function getTargets(): string|array
     {

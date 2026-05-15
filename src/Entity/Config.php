@@ -15,11 +15,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Traits\BlameableEntityTrait;
 use App\Entity\Traits\BlameableEntityInterface;
+use App\Entity\Traits\BlameableEntityTrait;
 use App\Entity\Traits\TemplateComponentInterface;
-use App\Entity\Traits\TimestampableEntityTrait;
 use App\Entity\Traits\TimestampableEntityInterface;
+use App\Entity\Traits\TimestampableEntityTrait;
 use App\Enum\ConfigGenerator;
 use App\Enum\Feature;
 use App\Model\AuditableInterface;

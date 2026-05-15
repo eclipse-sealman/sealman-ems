@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class User extends Constraint
 {
-    public $messageCannotDisableYourself = 'validation.user.cannotDisableYourself';
-    public $messageCannotDemoteYourself = 'validation.user.cannotDemoteYourself';
-    public $messageOneRoleRequired = 'validation.user.oneRoleRequired';
-    public $messageOneAccessTagRequired = 'validation.user.oneAccessTagRequired';
-    public $messageDisabledExpireAtNotNull = 'validation.user.disabledExpireAtNotNull';
-    public $messageRoleVpnEndpointDevicesRequiresRoleVpn = 'validation.user.roleVpnEndpointDevicesRequiresRoleVpn';
+    public string $messageCannotDisableYourself = 'validation.user.cannotDisableYourself';
+    public string $messageCannotDemoteYourself = 'validation.user.cannotDemoteYourself';
+    public string $messageOneRoleRequired = 'validation.user.oneRoleRequired';
+    public string $messageOneAccessTagRequired = 'validation.user.oneAccessTagRequired';
+    public string $messageDisabledExpireAtNotNull = 'validation.user.disabledExpireAtNotNull';
+    public string $messageRoleVpnEndpointDevicesRequiresRoleVpn = 'validation.user.roleVpnEndpointDevicesRequiresRoleVpn';
 
     public function getTargets(): string|array
     {

@@ -19,6 +19,7 @@ use App\Entity\CommunicationLog;
 use App\Entity\Device;
 use App\Entity\DeviceType;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\Traits\CommunicationEntityInterface;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
 use App\Enum\CertificateCategory;
@@ -94,6 +95,7 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
             CommunicationProcedureRequirement::HAS_VARIABLES,
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
             CommunicationProcedureRequirement::HAS_VPN,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
         ];
     }
 
@@ -168,7 +170,6 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
 
     public function process(DeviceType $deviceType, Request $request, SgGatewayModel $sgGatewayModel): ResponseModel
     {
-        $incrementConnections = false;
         $this->setDeviceType($deviceType);
         $this->setRequest($request);
         $this->setSgGatewayModel($sgGatewayModel);
@@ -189,8 +190,6 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
 
         $this->communicationLogManager->createLogInfo('log.incomingRequest');
 
-        $incrementConnections = false;
-
         if (!$this->getDevice()) {
             $this->processMissingSgGateway();
         } else {
@@ -210,16 +209,13 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
 
         $this->processSgGateway();
 
-        $incrementConnections = true;
-
         $this->communicationLogManager->createLogDebug('log.requestProcessed', [], $this->getDeviceModelResponse($this->getResponse())->__toString());
 
         $this->entityManager->flush();
 
-        if ($incrementConnections) {
-            $this->incrementDeviceConnections();
-            $this->entityManager->flush();
-        }
+        // Increment device connections only if device is enabled (and set in class property)
+        $this->incrementDeviceConnections();
+        $this->entityManager->flush();
 
         return $this->getResponse();
     }
@@ -234,7 +230,7 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
     /**
      * Processing existing Sg Gateway.
      */
-    protected function processSgGateway()
+    protected function processSgGateway(): void
     {
         $this->updateLastDataInformation();
 
@@ -257,11 +253,15 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
             return;
         }
 
-        if ($this->processFirmware(Feature::PRIMARY, $this->getSgGatewayModel()->getFirmwareVersion())) {
+        if ($this->processFirmware(Feature::PRIMARY, $this->getSgGatewayModel()->getFirmwareVersion(), $this->getReceivedDeviceHardwareVersion())) {
             $this->getDevice()->setReinstallFirmware1(true);
         }
 
-        $reinstallingFirmware = $this->processReinstallFirmware(Feature::PRIMARY);
+        $reinstallingFirmware = $this->processReinstallFirmware(
+            feature: Feature::PRIMARY,
+            receivedFirmwareVersion: $this->getSgGatewayModel()->getFirmwareVersion(),
+            receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+        );
 
         if (!$reinstallingFirmware) {
             // Check if config will be sent if certificate or deviceSecret will renew or generate
@@ -298,14 +298,14 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
         $this->getDevice()->setUuid($this->getDeviceTypeUniqueUuid());
         $this->getDevice()->setHashIdentifier($this->getDeviceUniqueHashIdentifier());
 
+        $this->updateLastDataInformation();
+
         $this->communicationLogManager->setDevice($this->getDevice());
         $this->communicationLogManager->updateCommunicationLogsWithoutDevice();
 
         $this->communicationLogManager->createLogInfo('log.deviceCreate');
 
         $this->entityManager->persist($this->getDevice());
-
-        $this->incrementDeviceConnections();
     }
 
     protected function handleNoChange(): void
@@ -330,9 +330,9 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
         return $response;
     }
 
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
-        $configuration = ['firmwareUrl' => $this->getFirmwareUrl($feature, $firmware)];
+        $configuration = ['firmwareUrl' => $this->getFirmwareUrl($feature, $firmware, $firmwareHardwareFile)];
         $this->getResponse()->setConfiguration(new SerializableJson(\json_encode($configuration)));
 
         $this->getDevice()->setReinstallFirmware1(false);
@@ -391,5 +391,19 @@ class SgGatewayCommunication extends AbstractDeviceCommunication
         }
 
         return $entity;
+    }
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        if ($this->getSgGatewayModel()) {
+            if ($this->getSgGatewayModel()->getHardwareVersion()) {
+                return $this->getSgGatewayModel()->getHardwareVersion();
+            }
+        }
+
+        return null;
     }
 }

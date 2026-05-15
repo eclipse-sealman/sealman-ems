@@ -10,7 +10,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Keep the same base image in core docker
-FROM php:8.4.15-fpm-alpine3.23 AS scep
+FROM php:8.5.6-fpm-alpine3.23 AS scep
 
 RUN mkdir -p /var/www/application/bin
 COPY /docker/images/scep/assets/scep.c /var/www/application/bin/

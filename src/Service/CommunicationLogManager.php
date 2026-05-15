@@ -32,6 +32,7 @@ use App\Service\Helper\EncryptionManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
 use App\Service\Helper\TranslatorTrait;
 use App\Service\Helper\ViewHandlerTrait;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\ArrayParameterType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -398,91 +399,49 @@ class CommunicationLogManager
         return $response;
     }
 
-    public function createLogCritical(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLogCritical(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
-        return $this->createLog(LogLevel::CRITICAL, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData);
+        return $this->createLog(LogLevel::CRITICAL, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData, $createLog, $feature);
     }
 
-    public function createLogError(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLogError(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
-        return $this->createLog(LogLevel::ERROR, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData);
+        return $this->createLog(LogLevel::ERROR, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData, $createLog, $feature);
     }
 
-    public function createLogWarning(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLogWarning(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
-        return $this->createLog(LogLevel::WARNING, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData);
+        return $this->createLog(LogLevel::WARNING, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData, $createLog, $feature);
     }
 
-    public function createLogInfo(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLogInfo(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
-        return $this->createLog(LogLevel::INFO, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData);
+        return $this->createLog(LogLevel::INFO, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData, $createLog, $feature);
     }
 
-    public function createLogDebug(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLogDebug(string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
-        return $this->createLog(LogLevel::DEBUG, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData);
+        return $this->createLog(LogLevel::DEBUG, $message, $messageVariables, $content, $device, $translate, $processVariables, $fillDeviceData, $createLog, $feature);
     }
 
-    public function createLog(LogLevel $logLevel, string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true): CommunicationLog
+    public function createLog(LogLevel $logLevel, string $message, array $messageVariables = [], ?string $content = null, ?Device $device = null, bool $translate = true, bool $processVariables = true, bool $fillDeviceData = true, bool $createLog = true, ?Feature $feature = null): CommunicationLog
     {
+        if (!$createLog) {
+            return new CommunicationLog();
+        }
+
         if (null == $device) {
             $device = $this->getDevice();
         }
 
-        if ($translate) {
-            // Presetting parameters for nicer logs
-            $translateMessageVariables = [
-                '{{ identifier }}' => 'N/A',
-                '{{ name }}' => 'N/A',
-                '{{ data }}' => 'N/A',
-                '{{ deviceType }}' => 'N/A',
-                '{{ deviceName }}' => 'N/A',
-                '{{ communicationProcedure }}' => 'N/A',
-                '{{ routePrefix }}' => 'N/A',
-                '{{ nameFirmware1 }}' => 'N/A',
-                '{{ nameFirmware2 }}' => 'N/A',
-                '{{ nameFirmware3 }}' => 'N/A',
-                '{{ nameConfig1 }}' => 'N/A',
-                '{{ nameConfig2 }}' => 'N/A',
-                '{{ nameConfig3 }}' => 'N/A',
-            ];
-
-            if ($this->getDeviceCommunication()) {
-                $translateMessageVariables['{{ data }}'] = $this->getDeviceCommunication()->getLogData();
-            }
-
-            if ($this->getDeviceType()) {
-                $translateMessageVariables['{{ deviceType }}'] = $this->getDeviceType()->getName();
-                $translateMessageVariables['{{ deviceName }}'] = $this->getDeviceType()->getDeviceName();
-                $translateMessageVariables['{{ communicationProcedure }}'] = $this->getDeviceType()->getCommunicationProcedure() ? $this->getDeviceType()->getCommunicationProcedure()->value : 'N/A';
-                $translateMessageVariables['{{ routePrefix }}'] = $this->getDeviceType()->getRoutePrefix();
-                $translateMessageVariables['{{ nameFirmware1 }}'] = $this->getDeviceType()->getNameFirmware1();
-                $translateMessageVariables['{{ nameFirmware2 }}'] = $this->getDeviceType()->getNameFirmware2();
-                $translateMessageVariables['{{ nameFirmware3 }}'] = $this->getDeviceType()->getNameFirmware3();
-                $translateMessageVariables['{{ nameConfig1 }}'] = $this->getDeviceType()->getNameConfig1();
-                $translateMessageVariables['{{ nameConfig2 }}'] = $this->getDeviceType()->getNameConfig2();
-                $translateMessageVariables['{{ nameConfig3 }}'] = $this->getDeviceType()->getNameConfig3();
-            }
-            if ($device) {
-                $translateMessageVariables['{{ identifier }}'] = $device->getIdentifier();
-                $translateMessageVariables['{{ name }}'] = $device->getName();
-            }
-
-            if ($processVariables) {
-                $processedMessageVariables = [];
-                foreach ($messageVariables as $messageVariableName => $messageVariableValue) {
-                    // Processing variable names from "variableName" to "{{ variableName }}" for convenience
-                    $processedMessageVariables['{{ '.$messageVariableName.' }}'] = $messageVariableValue;
-                }
-            } else {
-                $processedMessageVariables = $messageVariables;
-            }
-
-            $translateMessageVariables = array_merge($translateMessageVariables, $processedMessageVariables);
-            $translatedMessage = $this->trans($message, $translateMessageVariables);
-        } else {
-            $translatedMessage = $message;
-        }
+        $translatedMessage = $this->getTranslatedMessage(
+            message: $message,
+            messageVariables: $messageVariables,
+            device: $device,
+            feature: $feature,
+            translate: $translate,
+            processVariables: $processVariables
+        );
 
         $processedContent = null;
         if (null === $content) {
@@ -540,6 +499,72 @@ class CommunicationLogManager
         }
 
         return $communicationLog;
+    }
+
+    protected function getTranslatedMessage(string $message, array $messageVariables = [], ?Device $device = null, ?Feature $feature = null, bool $translate = true, bool $processVariables = true): string
+    {
+        if ($translate) {
+            // Presetting parameters for nicer logs
+            $translateMessageVariables = [
+                '{{ identifier }}' => 'N/A',
+                '{{ name }}' => 'N/A',
+                '{{ data }}' => 'N/A',
+                '{{ deviceType }}' => 'N/A',
+                '{{ deviceName }}' => 'N/A',
+                '{{ communicationProcedure }}' => 'N/A',
+                '{{ routePrefix }}' => 'N/A',
+                '{{ nameFirmware1 }}' => 'N/A',
+                '{{ nameFirmware2 }}' => 'N/A',
+                '{{ nameFirmware3 }}' => 'N/A',
+                '{{ nameConfig1 }}' => 'N/A',
+                '{{ nameConfig2 }}' => 'N/A',
+                '{{ nameConfig3 }}' => 'N/A',
+            ];
+
+            if ($this->getDeviceCommunication()) {
+                $translateMessageVariables['{{ data }}'] = $this->getDeviceCommunication()->getLogData();
+            }
+
+            if ($this->getDeviceType()) {
+                $translateMessageVariables['{{ deviceType }}'] = $this->getDeviceType()->getName();
+                $translateMessageVariables['{{ deviceName }}'] = $this->getDeviceType()->getDeviceName();
+                $translateMessageVariables['{{ communicationProcedure }}'] = $this->getDeviceType()->getCommunicationProcedure() ? $this->getDeviceType()->getCommunicationProcedure()->value : 'N/A';
+                $translateMessageVariables['{{ routePrefix }}'] = $this->getDeviceType()->getRoutePrefix();
+                $translateMessageVariables['{{ nameFirmware1 }}'] = $this->getDeviceType()->getNameFirmware1();
+                $translateMessageVariables['{{ nameFirmware2 }}'] = $this->getDeviceType()->getNameFirmware2();
+                $translateMessageVariables['{{ nameFirmware3 }}'] = $this->getDeviceType()->getNameFirmware3();
+                $translateMessageVariables['{{ nameConfig1 }}'] = $this->getDeviceType()->getNameConfig1();
+                $translateMessageVariables['{{ nameConfig2 }}'] = $this->getDeviceType()->getNameConfig2();
+                $translateMessageVariables['{{ nameConfig3 }}'] = $this->getDeviceType()->getNameConfig3();
+
+                if ($feature) {
+                    $getNameFirmware = 'getNameFirmware'.$feature->value;
+                    $getNameConfig = 'getNameConfig'.$feature->value;
+                    $translateMessageVariables['{{ nameFirmwareFeature }}'] = $this->getDeviceType()->$getNameFirmware();
+                    $translateMessageVariables['{{ nameConfigFeature }}'] = $this->getDeviceType()->$getNameConfig();
+                }
+            }
+            if ($device) {
+                $translateMessageVariables['{{ identifier }}'] = $device->getIdentifier();
+                $translateMessageVariables['{{ name }}'] = $device->getName();
+            }
+
+            if ($processVariables) {
+                $processedMessageVariables = [];
+                foreach ($messageVariables as $messageVariableName => $messageVariableValue) {
+                    // Processing variable names from "variableName" to "{{ variableName }}" for convenience
+                    $processedMessageVariables['{{ '.$messageVariableName.' }}'] = $messageVariableValue;
+                }
+            } else {
+                $processedMessageVariables = $messageVariables;
+            }
+
+            $translateMessageVariables = array_merge($translateMessageVariables, $processedMessageVariables);
+
+            return $this->trans($message, $translateMessageVariables);
+        } else {
+            return $message;
+        }
     }
 
     // Methods makes sure that logs generated before received form is validated and device found or created, will still be assigned to correct device

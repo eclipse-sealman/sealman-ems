@@ -47,6 +47,8 @@ const authenticationMethod = new Enum(
         "digest",
         // , "jwt",
         "x509",
+        "mTls",
+        "mTlsScep",
     ],
     "enum.deviceType.authenticationMethod."
 );
@@ -57,6 +59,13 @@ const credentialsSource = new Enum(
     "enum.deviceType.credentialsSource."
 );
 export { credentialsSource };
+
+type FirmwareVersionSchemaType = "anySchema" | "egOsSchema" | "semanticVersioning" | "vSemanticVersioning";
+const firmwareVersionSchema = new Enum(
+    ["anySchema", "egOsSchema", "semanticVersioning", "vSemanticVersioning"],
+    "enum.deviceType.firmwareVersionSchema."
+);
+export { firmwareVersionSchema, FirmwareVersionSchemaType };
 
 type CommunicationProcedureType =
     | "none"

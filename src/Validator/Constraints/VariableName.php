@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class VariableName extends Constraint
 {
-    public $messageVariableNameInvalid = 'validation.variableName.invalid';
-    public $messageVariableNameThisNotAllowed = 'validation.variableName.thisNotAllowed';
+    public string $messageVariableNameInvalid = 'validation.variableName.invalid';
+    public string $messageVariableNameThisNotAllowed = 'validation.variableName.thisNotAllowed';
+    public string $messageVariableNameDataNotAllowed = 'validation.variableName.dataNotAllowed';
 }

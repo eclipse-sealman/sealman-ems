@@ -26,6 +26,8 @@ use App\Model\AuditableInterface;
 use App\Model\UploadInterface;
 use App\Validator\Constraints\AvailableDeviceType;
 use App\Validator\Constraints\Firmware as FirmwareValidator;
+use App\Validator\Constraints\FirmwareEnabledHardwareFiles;
+use App\Validator\Constraints\FirmwareSourceType;
 use Carve\ApiBundle\Deny\DenyInterface;
 use Carve\ApiBundle\Deny\DenyTrait;
 use Carve\ApiBundle\Validator\Constraints as Assert;
@@ -37,6 +39,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
 #[FirmwareValidator(groups: ['firmware:common'])]
+#[FirmwareSourceType(groups: ['firmware:create'])]
+#[FirmwareEnabledHardwareFiles(groups: ['firmware:create:enabledHardwareFiles'])]
 class Firmware implements DenyInterface, TimestampableEntityInterface, BlameableEntityInterface, UploadInterface, TemplateComponentInterface, AuditableInterface
 {
     use DenyTrait;
@@ -50,9 +54,9 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     /**
      * Device type.
      */
-    #[Groups(['firmware:public', AuditableInterface::GROUP])]
-    #[Assert\NotBlank(groups: ['firmware:create'])]
-    #[AvailableDeviceType(groups: ['firmware:create'])]
+    #[Groups(['firmware:public', 'firmwareHardwareFile:public', AuditableInterface::GROUP])]
+    #[Assert\NotBlank(groups: ['firmware:create', 'firmware:create:enabledHardwareFiles'])]
+    #[AvailableDeviceType(groups: ['firmware:create', 'firmware:create:enabledHardwareFiles'])]
     #[ORM\ManyToOne(targetEntity: DeviceType::class, inversedBy: 'firmwares')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?DeviceType $deviceType = null;
@@ -60,8 +64,8 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     /**
      * Defines firmware feature. They are dynamically defined in connected device type.
      */
-    #[Groups(['firmware:public', AuditableInterface::GROUP])]
-    #[Assert\NotBlank(groups: ['firmware:create'])]
+    #[Groups(['firmware:public', 'firmwareHardwareFile:public', AuditableInterface::GROUP])]
+    #[Assert\NotBlank(groups: ['firmware:create', 'firmware:create:enabledHardwareFiles'])]
     #[ORM\Column(type: Types::STRING, enumType: Feature::class)]
     private ?Feature $feature = null;
 
@@ -69,8 +73,8 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
      * Source type (upload or external url).
      */
     #[Groups(['firmware:public', AuditableInterface::GROUP])]
-    #[Assert\NotBlank(groups: ['firmware:common'])]
-    #[ORM\Column(type: Types::STRING, enumType: SourceType::class)]
+    #[Assert\NotBlank(groups: ['firmware:create'])]
+    #[ORM\Column(type: Types::STRING, enumType: SourceType::class, nullable: true)]
     private ?SourceType $sourceType = null;
 
     /**
@@ -82,10 +86,17 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     private ?string $name = null;
 
     /**
+     * Does this firmware supports hardware files?
+     */
+    #[Groups(['firmware:public', 'identification', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $enableHardwareFiles = false;
+
+    /**
      * MD5 hash.
      */
     #[Groups(['firmware:public', AuditableInterface::GROUP])]
-    #[ORM\Column(type: Types::STRING)]
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $md5 = null;
 
     /**
@@ -113,7 +124,7 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     /**
      * UUID.
      */
-    #[Groups(['firmware:public', AuditableInterface::GROUP])]
+    #[Groups(['firmware:public', 'firmwareHardwareFile:public', AuditableInterface::GROUP])]
     #[ORM\Column(type: Types::STRING, unique: true)]
     private ?string $uuid = null;
 
@@ -155,10 +166,24 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     #[ORM\OneToMany(mappedBy: 'firmware3', targetEntity: TemplateVersion::class)]
     private Collection $templates3;
 
+    /**
+     * Hardware files.
+     */
+    #[ORM\OneToMany(mappedBy: 'firmware', targetEntity: FirmwareHardwareFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $hardwareFiles;
+
+    /**
+     * Required firmware for update path.
+     */
+    #[Groups(['firmware:public'])]
+    #[ORM\ManyToOne(targetEntity: Firmware::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Firmware $requiredFirmware = null;
+
     #[Groups(['representation', 'identification'])]
     public function getRepresentation(): string
     {
-        return (string) $this->getName();
+        return (string) $this->getName().' ('.$this->getVersion().')';
     }
 
     #[Groups(['firmware:public'])]
@@ -197,6 +222,7 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
         $this->templates1 = new ArrayCollection();
         $this->templates2 = new ArrayCollection();
         $this->templates3 = new ArrayCollection();
+        $this->hardwareFiles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -357,5 +383,35 @@ class Firmware implements DenyInterface, TimestampableEntityInterface, Blameable
     public function setLegacyUuid(?string $legacyUuid)
     {
         $this->legacyUuid = $legacyUuid;
+    }
+
+    public function getHardwareFiles(): Collection
+    {
+        return $this->hardwareFiles;
+    }
+
+    public function setHardwareFiles(Collection $hardwareFiles)
+    {
+        $this->hardwareFiles = $hardwareFiles;
+    }
+
+    public function getEnableHardwareFiles(): ?bool
+    {
+        return $this->enableHardwareFiles;
+    }
+
+    public function setEnableHardwareFiles(?bool $enableHardwareFiles)
+    {
+        $this->enableHardwareFiles = $enableHardwareFiles;
+    }
+
+    public function getRequiredFirmware(): ?Firmware
+    {
+        return $this->requiredFirmware;
+    }
+
+    public function setRequiredFirmware(?Firmware $requiredFirmware)
+    {
+        $this->requiredFirmware = $requiredFirmware;
     }
 }

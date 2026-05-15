@@ -32,6 +32,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  * Tests create and visibility of access tags by VPN user on a collection of endpoint devices using device form.
  */
 #[Group('full')]
+#[Group('WebApiRoleVpn')] // To be used in CI parallel tests
 class AccessTagsEndpointDeviceCollectionCreateTest extends AbstractTestCase
 {
     // Endpoint device

@@ -74,6 +74,7 @@ const DeviceTypeLimitedFieldset = ({
                         {!noCommunicationFields && render("credentialsSource")}
                         {!noCommunicationFields && render("deviceTypeSecretCredential")}
                         {!noCommunicationFields && render("deviceTypeCertificateTypeCredential")}
+                        {!noCommunicationFields && render("deviceTypeCertificateTypeMTlsScepAuthentication")}
                     </Box>
                 </Box>
                 {!noCommunicationFields && (
@@ -95,6 +96,28 @@ const DeviceTypeLimitedFieldset = ({
                                 },
                             }}
                         >
+                            <Box
+                                {...{
+                                    sx: {
+                                        display: "grid",
+                                        gridTemplateColumns: { xs: "minmax(0, 1fr)", md: "repeat(3, minmax(0,1fr))" },
+                                        gap: 3,
+                                    },
+                                }}
+                            >
+                                <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
+                                    {render("firmwareSchema1")}
+                                    {render("allowDowngradeFirmware1")}
+                                </Box>
+                                <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
+                                    {render("firmwareSchema2")}
+                                    {render("allowDowngradeFirmware2")}
+                                </Box>
+                                <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
+                                    {render("firmwareSchema3")}
+                                    {render("allowDowngradeFirmware3")}
+                                </Box>
+                            </Box>
                             {render("enableFirmwareMinRsrp")}
                             {render("firmwareMinRsrp")}
                             {render("enableConfigMinRsrp")}
@@ -122,6 +145,12 @@ const DeviceTypeLimitedFieldset = ({
                             },
                         }}
                     >
+                        <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
+                            {render("hasCustomData")}
+                        </Box>
+                        <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
+                            {render("hasHardwares")}
+                        </Box>
                         <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
                             {render("hasCertificates")}
                         </Box>

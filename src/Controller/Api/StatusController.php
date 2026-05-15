@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Model\DiskStatusModel;
 use App\Model\SystemStatusModel;
 use App\Service\Helper\SystemStatusManagerTrait;
@@ -24,11 +25,10 @@ use Carve\ApiBundle\Controller\AbstractApiController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/status')]
 #[Rest\View(serializerGroups: ['status:public'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 #[OA\Tag('Status')]
 class StatusController extends AbstractApiController

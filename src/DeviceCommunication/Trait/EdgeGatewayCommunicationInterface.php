@@ -26,7 +26,7 @@ interface EdgeGatewayCommunicationInterface
 {
     public function getDeviceTypeValidationGroups(DeviceType $deviceType): array;
 
-    public function processEdgeGatewayRequest(DeviceType $deviceType, Request $request, EdgeGatewayModel $edgeGatewayModel): ResponseModel;
+    public function processEdgeGatewayRequest(DeviceType $deviceType, Request $request, EdgeGatewayModel $edgeGatewayModel, array $data = []): ResponseModel;
 
     public function prepareErrorResponse(DeviceType $deviceType, Request $request, FormInterface $form): Response|ResponseModel;
 }

@@ -32,6 +32,7 @@ use Tests\Utilities\Utility\Accessor;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class MicrosoftOidcManagerTest extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

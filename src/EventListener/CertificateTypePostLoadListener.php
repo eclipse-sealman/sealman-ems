@@ -18,7 +18,7 @@ namespace App\EventListener;
 use App\Entity\CertificateType;
 use App\Service\Trait\CertificateTypeHelperTrait;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: CertificateType::class)]
@@ -26,7 +26,7 @@ class CertificateTypePostLoadListener
 {
     use CertificateTypeHelperTrait;
 
-    public function postLoad(CertificateType $certificateType, LifecycleEventArgs $event): void
+    public function postLoad(CertificateType $certificateType, PostLoadEventArgs $event): void
     {
         $certificateType->setIsAvailable(null === $this->getCertificateTypeAvailableDeny($certificateType));
     }

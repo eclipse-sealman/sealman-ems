@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ImportFileRowTemplate extends Constraint
 {
-    public $messageTemplatesDisabled = 'validation.importFileRow.templatesDisabled';
-    public $messageTemplateDeviceTypeMismatch = 'validation.importFileRow.templateDeviceTypeMismatch';
+    public string $messageTemplatesDisabled = 'validation.importFileRow.templatesDisabled';
+    public string $messageTemplateDeviceTypeMismatch = 'validation.importFileRow.templateDeviceTypeMismatch';
 
     public function getTargets(): string|array
     {

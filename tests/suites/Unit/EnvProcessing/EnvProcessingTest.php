@@ -22,10 +22,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Utilities\Utility\Accessor;
 
 /**
- * Testing App\DependencyInjection\DoctrineSslExtension class.
+ * Testing  App\DependencyInjection\DoctrineSslExtension class.
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class EnvProcessingTest extends KernelTestCase
 {
     public static function variableValueProvider(): array

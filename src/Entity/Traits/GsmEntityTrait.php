@@ -18,6 +18,7 @@ namespace App\Entity\Traits;
 use App\Model\AuditableInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait GsmEntityTrait
@@ -68,6 +69,7 @@ trait GsmEntityTrait
     private ?string $cellularUptime1 = null;
 
     #[Groups(['gsm:admin', 'gsm:smartems', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $cellularUptimeSeconds1 = null;
 
@@ -80,6 +82,7 @@ trait GsmEntityTrait
     private ?string $cellularUptime2 = null;
 
     #[Groups(['gsm:admin', 'gsm:smartems', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $cellularUptimeSeconds2 = null;
 

@@ -344,8 +344,6 @@ trait VpnContainerClientCommunicationTrait
 
     public function processVpnContainerClientConfiguration(DeviceType $deviceType, Request $request, string $uuid): ResponseModel
     {
-        $incrementConnections = false;
-
         $initilizeResponse = $this->initilizeVpnContainerClientEndpoint($deviceType, $request, null, $uuid);
         if ($initilizeResponse) {
             return $initilizeResponse;
@@ -371,9 +369,9 @@ trait VpnContainerClientCommunicationTrait
 
         $this->updateVpnContainerClientLastDataInformation();
 
-        $incrementConnections = true;
-
         if (!$this->getDevice()->getEnabled()) {
+            $this->entityManager->flush();
+
             $this->communicationLogManager->createLogWarning('log.deviceDisabled');
 
             $this->getResponse()->setError("VPN Container Client with identifier = '".$uuid."' is disabled");
@@ -418,10 +416,9 @@ trait VpnContainerClientCommunicationTrait
 
         $this->entityManager->flush();
 
-        if ($incrementConnections) {
-            $this->incrementDeviceConnections();
-            $this->entityManager->flush();
-        }
+        // Increment device connections only if device is enabled (and set in class property)
+        $this->incrementDeviceConnections();
+        $this->entityManager->flush();
 
         $this->getResponse()->setName($this->getDevice()->getName());
         $this->getResponse()->setUuid($this->getDevice()->getUuid());
@@ -643,8 +640,6 @@ trait VpnContainerClientCommunicationTrait
         $this->communicationLogManager->createLogInfo('log.deviceCreate');
 
         $this->entityManager->persist($this->getDevice());
-
-        $this->incrementDeviceConnections();
 
         $this->entityManager->flush();
 

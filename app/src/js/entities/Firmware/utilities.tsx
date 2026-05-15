@@ -9,7 +9,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-import { DeviceTypeInterface } from "~app/entities/DeviceType/definitions";
+import { DeviceTypeInterface, DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/definitions";
 import { FeatureType } from "~app/enums/Feature";
 
 export const getFeatureName = (deviceType: DeviceTypeInterface, feature: FeatureType) => {
@@ -20,5 +20,16 @@ export const getFeatureName = (deviceType: DeviceTypeInterface, feature: Feature
             return deviceType.nameFirmware2 ?? "";
         case "3":
             return deviceType.nameFirmware3 ?? "";
+    }
+};
+
+export const getFirmwareSchema = (deviceType: DeviceConfigurationTypeInterface, feature: FeatureType) => {
+    switch (feature) {
+        case "1":
+            return deviceType.firmwareSchema1 ?? "anySchema";
+        case "2":
+            return deviceType.firmwareSchema2 ?? "anySchema";
+        case "3":
+            return deviceType.firmwareSchema3 ?? "anySchema";
     }
 };

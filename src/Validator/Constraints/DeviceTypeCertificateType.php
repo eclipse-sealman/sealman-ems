@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class DeviceTypeCertificateType extends Constraint
 {
-    public $messageCertificateCategoryNotSupported = 'validation.deviceType.certificateCategoryNotSupported';
+    public string $messageCertificateCategoryNotSupported = 'validation.deviceType.certificateCategoryNotSupported';
 
     public function getTargets(): string|array
     {

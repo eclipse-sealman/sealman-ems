@@ -59,7 +59,7 @@ const CertificateType = () => {
             delete _values.scepRevocationBasicAuthUser;
             delete _values.scepRevocationBasicAuthPassword;
             delete _values.scepHashFunction;
-            delete _values.scepKeyLength;
+            delete _values.scepKeyType;
         }
 
         return _values;
@@ -92,7 +92,7 @@ const CertificateType = () => {
                         scepTimeout: 5,
                         scepVerifyServerSslCertificate: false,
                         scepHashFunction: "SHA512",
-                        scepKeyLength: "4096",
+                        scepKeyType: "RSA4096",
                     },
                     changeSubmitValues: (values: FormikValues) => changeSubmitValues(values, false),
                 },

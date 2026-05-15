@@ -21,27 +21,24 @@ class RepresentationNormalizer implements NormalizerInterface
 {
     public const ENABLED = 'enabled';
 
-    /**
-     * Return supresses following deprecation message.
-     *
-     * Method "Symfony\Component\Serializer\Normalizer\NormalizerInterface::normalize()" might add "array|string|int|float|bool|\ArrayObject|null" as a native return type declaration in the future.
-     *
-     * @return mixed
-     */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize(mixed $data, ?string $format = null, array $context = []): \ArrayObject|array|string|int|float|bool|null
     {
-        if (null === $object) {
-            return null;
+        if (null === $data) {
+            return [];
+        }
+
+        if (!is_object($data)) {
+            return [];
         }
 
         $result = [];
 
-        if (method_exists($object, 'getId')) {
-            $result['id'] = $object->getId();
+        if (method_exists($data, 'getId')) {
+            $result['id'] = $data->getId();
         }
 
-        if (method_exists($object, 'getRepresentation')) {
-            $result['representation'] = $object->getRepresentation();
+        if (method_exists($data, 'getRepresentation')) {
+            $result['representation'] = $data->getRepresentation();
         }
 
         return $result;

@@ -140,7 +140,7 @@ class ConfigurationManager
 
     public function isScepForCertificateTypeAvailable(CertificateType $certificateType): bool
     {
-        return !$this->isScepBlocked() && PkiType::SCEP == $certificateType->getPkiType() && $certificateType->getScepUrl() && $certificateType->getScepCrlUrl() && $certificateType->getScepRevocationUrl() && $certificateType->getScepHashFunction() && $certificateType->getScepKeyLength() && $certificateType->getScepTimeout() > 0;
+        return !$this->isScepBlocked() && PkiType::SCEP == $certificateType->getPkiType() && $certificateType->getScepUrl() && $certificateType->getScepCrlUrl() && $certificateType->getScepRevocationUrl() && $certificateType->getScepHashFunction() && $certificateType->getScepKeyType() && $certificateType->getScepTimeout() > 0;
     }
 
     public function isMaintenanceModeEnabled(): bool

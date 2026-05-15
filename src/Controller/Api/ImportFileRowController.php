@@ -16,9 +16,11 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\ImportFileRowDeny;
 use App\Entity\ImportFileRow;
 use App\Entity\ImportFileRowVariable;
+use App\Enum\VariableType;
 use App\Form\BatchAccessTagsType;
 use App\Form\BatchFlagType;
 use App\Form\BatchLabelsType;
@@ -40,7 +42,6 @@ use Carve\ApiBundle\Model\BatchResult;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -50,7 +51,7 @@ use Symfony\Component\HttpFoundation\Request;
     denyClass: ImportFileRowDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'importFileRow:public', 'timestampable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class ImportFileRowController extends AbstractApiController
 {
@@ -96,7 +97,13 @@ class ImportFileRowController extends AbstractApiController
     {
         $process = function (ImportFileRow $row, FormInterface $form) {
             $name = $form->get('name')->getData();
+            $variableTypeString = $form->get('variableType')->getData();
             $variableValue = $form->get('variableValue')->getData();
+
+            $variableType = VariableType::tryFrom($variableTypeString);
+            if (null === $variableType) {
+                return new BatchResult($device, BatchResultStatus::ERROR, 'validation.device.variableTypeInvalid');
+            }
 
             $queryBuilder = $this->getRepository(ImportFileRowVariable::class)->createQueryBuilder('ifrv');
             $queryBuilder->andWhere('ifrv.row = :row');
@@ -115,6 +122,7 @@ class ImportFileRowController extends AbstractApiController
             }
 
             $importFileRowVariable->setVariableValue($variableValue);
+            $importFileRowVariable->setVariableType($variableType);
 
             $errors = $this->validator->validate($importFileRowVariable, null, ['Default', 'importFileRow:import']);
             if (0 === count($errors)) {

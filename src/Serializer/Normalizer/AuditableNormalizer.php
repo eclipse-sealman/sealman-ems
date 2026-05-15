@@ -52,23 +52,16 @@ class AuditableNormalizer implements NormalizerInterface
      */
     public const AUDITABLE_MODE = 'auditable_mode';
 
-    /**
-     * Return supresses following deprecation message.
-     *
-     * Method "Symfony\Component\Serializer\Normalizer\NormalizerInterface::normalize()" might add "array|string|int|float|bool|\ArrayObject|null" as a native return type declaration in the future.
-     *
-     * @return mixed
-     */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize(mixed $data, ?string $format = null, array $context = []): \ArrayObject|array|string|int|float|bool|null
     {
-        if ($object instanceof PersistentCollection) {
-            $object->initialize();
+        if ($data instanceof PersistentCollection) {
+            $data->initialize();
 
             $mode = $context[self::AUDITABLE_MODE];
             switch ($mode) {
                 case AuditableMode::OLD:
                     $serialized = [];
-                    foreach ($object->getSnapshot() as $element) {
+                    foreach ($data->getSnapshot() as $element) {
                         $serialized[] = $element->getId();
                     }
 
@@ -77,7 +70,7 @@ class AuditableNormalizer implements NormalizerInterface
                     return $serialized;
                 case AuditableMode::NEW:
                     $serialized = [];
-                    foreach ($object->getValues() as $element) {
+                    foreach ($data->getValues() as $element) {
                         $serialized[] = $element->getId();
                     }
 
@@ -89,7 +82,7 @@ class AuditableNormalizer implements NormalizerInterface
             }
         }
 
-        return $object->getId();
+        return $data->getId();
     }
 
     public function supportsNormalization($data, $format = null, array $context = []): bool
@@ -120,13 +113,13 @@ class AuditableNormalizer implements NormalizerInterface
         // This normalizer should not affect auditable entity and let it be normalized normally
         // Except when auditable entity is referenced inside auditable entity (i.e. User::$updatedBy) which should be normalized by this class
         // To detect such case AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT_COUNTERS is used
-        $objectHash = \spl_object_hash($data);
+        $splObjectId = \spl_object_id($data);
         // AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT_COUNTERS is protected so we use hardcoded value
-        if (isset($context['circular_reference_limit_counters'][$objectHash])) {
+        if (isset($context['circular_reference_limit_counters'][$splObjectId])) {
             return true;
         }
 
-        if ($objectHash === $auditableEntity) {
+        if ($splObjectId === $auditableEntity) {
             return false;
         }
 

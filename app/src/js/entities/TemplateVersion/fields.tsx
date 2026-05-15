@@ -25,6 +25,8 @@ import { cidr } from "~app/enums/Cidr";
 import VirtualIpHostPart from "~app/components/Form/fields/VirtualIpHostPart";
 import { DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/definitions";
 import TemplateVersionReinstall from "~app/components/Form/fields/TemplateVersionReinstall";
+import SelectApiFirmware from "~app/components/Form/fields/SelectApiFirmware";
+import { variableType } from "~app/enums/VariableType";
 
 const composeGetFields = (
     deviceType: DeviceConfigurationTypeInterface,
@@ -124,7 +126,7 @@ const composeGetFields = (
 
     if (deviceType.hasFirmware1) {
         fields.firmware1 = (
-            <SelectApi
+            <SelectApiFirmware
                 {...{
                     label: "firmware",
                     labelVariables: { firmwareName: deviceType.nameFirmware1 },
@@ -150,7 +152,7 @@ const composeGetFields = (
 
     if (deviceType.hasFirmware2) {
         fields.firmware2 = (
-            <SelectApi
+            <SelectApiFirmware
                 {...{
                     label: "firmware",
                     labelVariables: { firmwareName: deviceType.nameFirmware2 },
@@ -176,7 +178,7 @@ const composeGetFields = (
 
     if (deviceType.hasFirmware3) {
         fields.firmware3 = (
-            <SelectApi
+            <SelectApiFirmware
                 {...{
                     label: "firmware",
                     labelVariables: { firmwareName: deviceType.nameFirmware3 },
@@ -240,6 +242,7 @@ const composeGetFields = (
                 {...{
                     fields: {
                         name: <Text {...{ required: true }} />,
+                        variableType: <SelectEnum {...{ enum: variableType, required: true }} />,
                         variableValue: <Textarea {...{ required: true, fieldProps: { minRows: 1 } }} />,
                     },
                 }}

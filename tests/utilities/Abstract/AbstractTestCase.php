@@ -82,6 +82,13 @@ abstract class AbstractTestCase extends WebTestCase
         return false;
     }
 
+    public static function removeAuditLogs(): void
+    {
+        $connection = static::getContainer()->get('doctrine')->getManager()->getConnection();
+        $statement = $connection->prepare('DELETE FROM audit_log');
+        $statement->executeStatement();
+    }
+
     /**
      * Use following structure for DX friendly and readable fixtures:.
      *
@@ -117,9 +124,7 @@ abstract class AbstractTestCase extends WebTestCase
         }
 
         if (static::removeAuditLogsAfterFixtures()) {
-            $connection = static::getContainer()->get('doctrine')->getManager()->getConnection();
-            $statement = $connection->prepare('DELETE FROM audit_log');
-            $statement->execute();
+            static::removeAuditLogs();
         }
 
         if (static::useKeepStaticConnections()) {

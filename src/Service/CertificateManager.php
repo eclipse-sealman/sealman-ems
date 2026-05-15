@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Certificate;
+use App\Entity\CertificateType;
 use App\Model\CertificateUploadFilesModel;
 use App\Model\CertificateUploadPkcs12Model;
 use App\Service\Helper\EncryptionManagerTrait;
@@ -33,6 +34,16 @@ class CertificateManager
     use VpnManagerTrait;
     use PkiProvidersManagerTrait;
     use EventDispatcherTrait;
+
+    public function getCaCertificateForCertificateType(CertificateType $certificateType): ?string
+    {
+        return $this->pkiProvidersManager->getCaCertificateForCertificateType($certificateType);
+    }
+
+    public function getCrlContentForCertificateType(CertificateType $certificateType): ?string
+    {
+        return $this->pkiProvidersManager->getCrlContentForCertificateType($certificateType);
+    }
 
     public function revokeCertificate(Certificate $certificateObject): void
     {

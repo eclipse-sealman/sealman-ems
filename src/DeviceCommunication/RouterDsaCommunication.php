@@ -17,6 +17,7 @@ namespace App\DeviceCommunication;
 
 use App\Entity\DeviceType;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
 use App\Enum\CommunicationProcedureRequirement;
 use App\Enum\Feature;
@@ -85,6 +86,7 @@ class RouterDsaCommunication extends RouterCommunication
             CommunicationProcedureRequirement::HAS_VPN,
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
             CommunicationProcedureRequirement::HAS_ALWAYS_REINSTALL_CONFIG3,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
         ];
 
         return $requirements;
@@ -161,15 +163,23 @@ class RouterDsaCommunication extends RouterCommunication
             $this->getResponse()->setContent('Router is disabled.');
         } else {
             // Reinstalling DsaAgent
-            if ($this->processFirmware(Feature::SECONDARY, $this->getRouterModel()->getAgentVersion())) {
+            if ($this->processFirmware(Feature::SECONDARY, $this->getRouterModel()->getAgentVersion(), $this->getReceivedDeviceHardwareVersion())) {
                 $this->getDevice()->setReinstallFirmware2(true);
             }
-            if (!$this->processReinstallFirmware(Feature::SECONDARY)) {
+            if (!$this->processReinstallFirmware(
+                feature: Feature::SECONDARY,
+                receivedFirmwareVersion: $this->getRouterModel()->getAgentVersion(),
+                receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+            )) {
                 // Reinstalling PySdk
-                if ($this->processFirmware(Feature::TERTIARY, $this->getRouterModel()->getPySdkPackageVersion())) {
+                if ($this->processFirmware(Feature::TERTIARY, $this->getRouterModel()->getPySdkPackageVersion(), $this->getReceivedDeviceHardwareVersion())) {
                     $this->getDevice()->setReinstallFirmware3(true);
                 }
-                if (!$this->processReinstallFirmware(Feature::TERTIARY)) {
+                if (!$this->processReinstallFirmware(
+                    feature: Feature::TERTIARY,
+                    receivedFirmwareVersion: $this->getRouterModel()->getPySdkPackageVersion(),
+                    receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+                )) {
                     if (!$this->processReinstallConfig(Feature::TERTIARY, $this->getRouterModel()->getConfig(), false)) {
                         $this->communicationLogManager->createLogInfo('log.deviceNoConfigWillBeSent');
                         $this->getResponse()->headers->set('Content-Type', self::RESPONSE_AGENT_NO_CHANGE_HEADER);
@@ -211,7 +221,7 @@ class RouterDsaCommunication extends RouterCommunication
         $this->getResponse()->setContent($generatedConfigDevice->getConfigGenerated());
     }
 
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
         $bootloader = '';
 
@@ -231,8 +241,10 @@ class RouterDsaCommunication extends RouterCommunication
             $this->getDevice()->setReinstallFirmware3(false);
         }
 
+        $md5 = null !== $firmwareHardwareFile ? $firmwareHardwareFile->getMd5() : $firmware->getMd5();
+
         $this->getResponse()->headers->set('Content-Type', $contentType);
-        $this->getResponse()->setContent('URL="'.$this->getFirmwareUrl($feature, $firmware).'"'.$bootloader."\r\nMD5=".$firmware->getMd5()."\r\n");
+        $this->getResponse()->setContent('URL="'.$this->getFirmwareUrl($feature, $firmware, $firmwareHardwareFile).'"'.$bootloader."\r\nMD5=".$md5."\r\n");
 
         $this->entityManager->persist($this->getDevice());
     }
@@ -271,7 +283,9 @@ class RouterDsaCommunication extends RouterCommunication
         $this->fillVersionFirmware2($this->getDevice());
         $this->fillVersionFirmware3($this->getDevice());
 
-        $this->getDevice()->setModel($this->getRouterModel()->getModel());
+        if ($this->getRouterModel()->getModel()) {
+            $this->getDevice()->setModel($this->getRouterModel()->getModel());
+        }
     }
 
     public function fillVersionFirmware1(FirmwareStatusEntityInterface $entity): FirmwareStatusEntityInterface
@@ -305,5 +319,25 @@ class RouterDsaCommunication extends RouterCommunication
         }
 
         return $entity;
+    }
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        if ($this->getRouterModel()) {
+            if ($this->getRouterModel()->getModel()) {
+                return $this->getRouterModel()->getModel();
+            }
+        }
+
+        if ($this->getDevice()) {
+            if ($this->getDevice()->getModel()) {
+                return $this->getDevice()->getModel();
+            }
+        }
+
+        return null;
     }
 }

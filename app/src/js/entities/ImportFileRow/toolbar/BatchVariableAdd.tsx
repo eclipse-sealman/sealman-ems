@@ -10,7 +10,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import { Optional, BatchFormAlert, BatchFormAlertProps, Text, Textarea } from "@arteneo/forge";
+import { Optional, BatchFormAlert, BatchFormAlertProps, Text, Textarea, SelectEnum } from "@arteneo/forge";
+import { variableType } from "~app/enums/VariableType";
 
 type BatchVariableAddProps = Optional<BatchFormAlertProps, "dialogProps">;
 
@@ -26,6 +27,7 @@ const BatchVariableAdd = (props: BatchVariableAddProps) => {
                     formProps: {
                         fields: {
                             name: <Text {...{ required: true }} />,
+                            variableType: <SelectEnum {...{ enum: variableType, required: true }} />,
                             variableValue: <Textarea {...{ required: true, fieldProps: { minRows: 1 } }} />,
                         },
                         endpoint: "/importfilerow/batch/variable/add",

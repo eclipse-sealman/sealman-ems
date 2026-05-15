@@ -25,41 +25,59 @@ class TusFile extends BaseFile
     public const SIMPLE_MIME_TYPE_PDF = 'pdf';
     public const SIMPLE_MIME_TYPE_EXCEL = 'excel';
 
-    public $simpleMimeTypesImageMessage = 'validation.tusFileSimpleMimeTypesImage';
-    public $simpleMimeTypesPdfMessage = 'validation.tusFileSimpleMimeTypesPdf';
-    public $simpleMimeTypesExcelMessage = 'validation.tusFileSimpleMimeTypesExcel';
+    public string $simpleMimeTypesImageMessage = 'validation.tusFileSimpleMimeTypesImage';
+    public string $simpleMimeTypesPdfMessage = 'validation.tusFileSimpleMimeTypesPdf';
+    public string $simpleMimeTypesExcelMessage = 'validation.tusFileSimpleMimeTypesExcel';
+
+    public string $notFoundMessage = 'validation.tusFileNotFound';
+    public string $notReadableMessage = 'validation.tusFileNotReadable';
+    public string $maxSizeMessage = 'validation.tusFileMaxSize';
+    public string $mimeTypesMessage = 'validation.tusFileMimeTypes';
+    public string $disallowEmptyMessage = 'validation.tusFileDisallowEmpty';
+    public string $filenameTooLongMessage = 'validation.tusFilenameTooLongMessage';
+
+    public string $uploadIniSizeErrorMessage = 'validation.tusFileUploadIniSizeError';
+    public string $uploadFormSizeErrorMessage = 'validation.tusFileUploadFormSizeError';
+    public string $uploadPartialErrorMessage = 'validation.tusFileUploadPartialError';
+    public string $uploadNoFileErrorMessage = 'validation.tusFileUploadNoFileError';
+    public string $uploadNoTmpDirErrorMessage = 'validation.tusFileUploadNoTmpDirError';
+    public string $uploadCantWriteErrorMessage = 'validation.tusFileUploadCantWriteError';
+    public string $uploadExtensionErrorMessage = 'validation.tusFileUploadExtensionError';
+    public string $uploadErrorMessage = 'validation.tusFileUploadError';
 
     public function __construct(
-        null|array $options = null,
-        null|string $simpleMimeTypes = null,
+        ?string $simpleMimeTypes = null,
         null|int|string $maxSize = null,
-        null|bool $binaryFormat = null,
+        ?bool $binaryFormat = null,
         null|array|string $mimeTypes = null,
-        null|int $filenameMaxLength = null,
-        null|string $notFoundMessage = 'validation.tusFileNotFound',
-        null|string $notReadableMessage = 'validation.tusFileNotReadable',
-        null|string $maxSizeMessage = 'validation.tusFileMaxSize',
-        null|string $mimeTypesMessage = 'validation.tusFileMimeTypes',
-        null|string $disallowEmptyMessage = 'validation.tusFileDisallowEmpty',
-        null|string $filenameTooLongMessage = 'validation.tusFilenameTooLongMessage',
+        ?int $filenameMaxLength = null,
 
-        null|string $uploadIniSizeErrorMessage = 'validation.tusFileUploadIniSizeError',
-        null|string $uploadFormSizeErrorMessage = 'validation.tusFileUploadFormSizeError',
-        null|string $uploadPartialErrorMessage = 'validation.tusFileUploadPartialError',
-        null|string $uploadNoFileErrorMessage = 'validation.tusFileUploadNoFileError',
-        null|string $uploadNoTmpDirErrorMessage = 'validation.tusFileUploadNoTmpDirError',
-        null|string $uploadCantWriteErrorMessage = 'validation.tusFileUploadCantWriteError',
-        null|string $uploadExtensionErrorMessage = 'validation.tusFileUploadExtensionError',
-        null|string $uploadErrorMessage = 'validation.tusFileUploadError',
-        null|array $groups = null,
-        $payload = null,
+        ?string $notFoundMessage = null,
+        ?string $notReadableMessage = null,
+        ?string $maxSizeMessage = null,
+        ?string $mimeTypesMessage = null,
+        ?string $disallowEmptyMessage = null,
+        ?string $filenameTooLongMessage = null,
+
+        ?string $uploadIniSizeErrorMessage = null,
+        ?string $uploadFormSizeErrorMessage = null,
+        ?string $uploadPartialErrorMessage = null,
+        ?string $uploadNoFileErrorMessage = null,
+        ?string $uploadNoTmpDirErrorMessage = null,
+        ?string $uploadCantWriteErrorMessage = null,
+        ?string $uploadExtensionErrorMessage = null,
+        ?string $uploadErrorMessage = null,
 
         null|array|string $extensions = null,
-        null|string $extensionsMessage = null, )
-    {
-        if (isset($options['simpleMimeTypes']) || $simpleMimeTypes) {
-            $mimeTypes = isset($options['mimeTypes']) ? $options['mimeTypes'] : $mimeTypes;
-            $simpleMimeTypes = isset($options['simpleMimeTypes']) ? $options['simpleMimeTypes'] : $simpleMimeTypes;
+        ?string $extensionsMessage = null,
+        ?string $filenameCharset = null,
+        ?string $filenameCountUnit = null,
+        ?string $filenameCharsetMessage = null,
+
+        ?array $groups = null,
+        mixed $payload = null,
+    ) {
+        if ($simpleMimeTypes) {
             $simpleMimeTypesMapping = self::getSimpleMimeTypesMapping();
 
             if (null === $mimeTypes) {
@@ -70,50 +88,54 @@ class TusFile extends BaseFile
                 $mimeTypes = [$mimeTypes];
             }
 
-            $mimeTypes = array_merge($mimeTypes, $simpleMimeTypesMapping[$simpleMimeTypes]);
-
-            $options['mimeTypes'] = $mimeTypes;
-
             switch ($simpleMimeTypes) {
                 case self::SIMPLE_MIME_TYPE_IMAGE:
-                    $options['mimeTypesMessage'] = 'validation.tusFileSimpleMimeTypesImage';
+                    $mimeTypesMessage = $mimeTypesMessage ?? 'validation.tusFileSimpleMimeTypesImage';
                     break;
                 case self::SIMPLE_MIME_TYPE_PDF:
-                    $options['mimeTypesMessage'] = 'validation.tusFileSimpleMimeTypesPdf';
+                    $mimeTypesMessage = $mimeTypesMessage ?? 'validation.tusFileSimpleMimeTypesPdf';
                     break;
                 case self::SIMPLE_MIME_TYPE_EXCEL:
-                    $options['mimeTypesMessage'] = 'validation.tusFileSimpleMimeTypesExcel';
+                    $mimeTypesMessage = $mimeTypesMessage ?? 'validation.tusFileSimpleMimeTypesExcel';
                     break;
                 default:
                     throw new ConstraintDefinitionException(sprintf('The "%s" constraint allows $simpleMimeTypes to be one of following values: '.implode(',', [self::SIMPLE_MIME_TYPE_IMAGE, SIMPLE_MIME_TYPE_PDF, SIMPLE_MIME_TYPE_EXCEL]), static::class));
                     break;
             }
+
+            $mimeTypes = array_merge($mimeTypes, $simpleMimeTypesMapping[$simpleMimeTypes]);
         }
 
         parent::__construct(
-            $options,
-            $maxSize,
-            $binaryFormat,
-            $mimeTypes,
-            $filenameMaxLength,
-            $notFoundMessage,
-            $notReadableMessage,
-            $maxSizeMessage,
-            $mimeTypesMessage,
-            $disallowEmptyMessage,
-            $filenameTooLongMessage,
-            $uploadIniSizeErrorMessage,
-            $uploadFormSizeErrorMessage,
-            $uploadPartialErrorMessage,
-            $uploadNoFileErrorMessage,
-            $uploadNoTmpDirErrorMessage,
-            $uploadCantWriteErrorMessage,
-            $uploadExtensionErrorMessage,
-            $uploadErrorMessage,
-            $groups,
-            $payload,
-            $extensions,
-            $extensionsMessage,
+            maxSize: $maxSize,
+            binaryFormat: $binaryFormat,
+            mimeTypes: $mimeTypes,
+            filenameMaxLength: $filenameMaxLength,
+
+            notFoundMessage: $notFoundMessage,
+            notReadableMessage: $notReadableMessage,
+            maxSizeMessage: $maxSizeMessage,
+            mimeTypesMessage: $mimeTypesMessage,
+            disallowEmptyMessage: $disallowEmptyMessage,
+            filenameTooLongMessage: $filenameTooLongMessage,
+
+            uploadIniSizeErrorMessage: $uploadIniSizeErrorMessage,
+            uploadFormSizeErrorMessage: $uploadFormSizeErrorMessage,
+            uploadPartialErrorMessage: $uploadPartialErrorMessage,
+            uploadNoFileErrorMessage: $uploadNoFileErrorMessage,
+            uploadNoTmpDirErrorMessage: $uploadNoTmpDirErrorMessage,
+            uploadCantWriteErrorMessage: $uploadCantWriteErrorMessage,
+            uploadExtensionErrorMessage: $uploadExtensionErrorMessage,
+            uploadErrorMessage: $uploadErrorMessage,
+
+            extensions: $extensions,
+            extensionsMessage: $extensionsMessage,
+            filenameCharset: $filenameCharset,
+            filenameCountUnit: $filenameCountUnit,
+            filenameCharsetMessage: $filenameCharsetMessage,
+
+            groups: $groups,
+            payload: $payload,
         );
     }
 

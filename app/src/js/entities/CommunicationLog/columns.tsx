@@ -18,6 +18,7 @@ import ResultDialogMessage from "~app/components/Table/actions/ResultDialogMessa
 import VpnDeviceColumn from "~app/components/Table/columns/VpnDeviceColumn";
 import DateTimeSecondsColumn from "~app/components/Table/columns/DateTimeSecondsColumn";
 import ResultDialogContent from "~app/components/Table/actions/ResultDialogContent";
+import ShowCustomDataValues from "~app/entities/CommunicationLog/actions/ShowCustomDataValues";
 
 const columns = {
     logLevel: <LogLevelColumn />,
@@ -66,6 +67,7 @@ const columns = {
                     }),
                 }}
             />
+            <ShowCustomDataValues />
         </ActionsColumn>
     ),
 };

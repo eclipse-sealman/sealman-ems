@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Form\AuthenticatedChangePasswordType;
 use App\Service\Helper\PasswordManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
@@ -23,13 +24,12 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 #[Rest\Route('/authenticated')]
 #[Rest\View(serializerGroups: ['public'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 #[OA\Tag('Authenticated')]
 class AuthenticatedController extends AbstractFOSRestController

@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ImportFileRowReinstallConfig3 extends Constraint
 {
-    public $messageConfig3Disabled = 'validation.importFileRow.config3Disabled';
-    public $messageConfig3Always = 'validation.importFileRow.config3Always';
+    public string $messageConfig3Disabled = 'validation.importFileRow.config3Disabled';
+    public string $messageConfig3Always = 'validation.importFileRow.config3Always';
 
     public function getTargets(): string|array
     {

@@ -23,16 +23,20 @@ doctrine:
         types:
             datetime: Carve\ApiBundle\DBAL\Types\UTCDateTimeType
             bigint: App\DBAL\Types\BigIntType
+
+        profiling_collect_backtrace: "%kernel.debug%"
     orm:
-        auto_generate_proxy_classes: true
-        # Symfony suggest to switch it to true. Switching it breaks loading fixtures in tests
-        # Additionally there is potential performance degradation
-        # https://github.com/doctrine/orm/issues/11087
-        # Recommended to wait until necessary to switch (Symfony 7.4 probably)
-        enable_lazy_ghost_objects: false
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         class_metadata_factory_name: App\ORM\Mapping\ClassMetadataFactory
         auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                dir: "%kernel.project_dir%/src/Entity"
+                prefix: 'App\Entity'
+                alias: App
+        controller_resolver:
+            enabled: false
         dql:
             string_functions:
                 binary: DoctrineExtensions\Query\Mysql\Binary
@@ -40,26 +44,17 @@ doctrine:
                 dateAdd: DoctrineExtensions\Query\Mysql\DateAdd
                 dateSub: DoctrineExtensions\Query\Mysql\DateSub
                 utc_timestamp: DoctrineExtensions\Query\Mysql\UtcTimestamp
-        mappings:
-            App:
-                is_bundle: false
-                dir: "%kernel.project_dir%/src/Entity"
-                prefix: 'App\Entity'
-                alias: App
-
-when@test:
-    doctrine:
-        dbal:
-            # DAMA\DoctrineTestBundle savepoints configuration
-            connections:
-                default:
-                    # "TEST_TOKEN" is typically set by ParaTest
-                    use_savepoints: true
 
 when@prod:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
+            # There was a bit of deprecation and un-deprecation with this metadata_cache_driver configuration
+            # Metadata cache seems to be required to clear cache on production environment
+            # Otherwise we get following error:
+            # In DoctrineMetadataCacheWarmer.php line 38: DoctrineMetadataCacheWarmer must load metadata first, check priority of your warmers.
+            metadata_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
             query_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool

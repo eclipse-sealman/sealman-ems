@@ -24,7 +24,7 @@ class RadiusHasher implements LegacyPasswordHasherInterface
      */
     public function needsRehash(string $hashedPassword): bool
     {
-        // Radius doesn't handle passwords in database
+        // Radius doesn't handle passwords in application database
         return false;
     }
 
@@ -33,7 +33,7 @@ class RadiusHasher implements LegacyPasswordHasherInterface
      */
     public function hash(string $plainPassword, null|string $salt = null): string
     {
-        // Radius doesn't handle passwords in database
+        // Radius doesn't handle passwords in application database
         // This value will not work with any other hashing algorithms
         return 'RADIUS';
     }

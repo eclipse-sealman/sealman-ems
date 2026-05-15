@@ -10,8 +10,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { OptionInterface } from "@arteneo/forge";
+import EntityDenyInterface from "~app/definitions/EntityDenyInterface";
 import EntityInterface from "~app/definitions/EntityInterface";
-import { CommunicationProcedureType, FormatConfigType } from "~app/entities/DeviceType/enums";
+import {
+    CommunicationProcedureType,
+    FormatConfigType,
+    FirmwareVersionSchemaType,
+} from "~app/entities/DeviceType/enums";
 import { FieldRequirementType } from "~app/enums/FieldRequirement";
 import { MasqueradeTypeType } from "~app/enums/MasqueradeType";
 
@@ -22,7 +27,7 @@ interface DeviceTypeOptionInterface extends OptionInterface {
 
 type DeviceTypeOptionsType = DeviceTypeOptionInterface[];
 
-interface DeviceConfigurationTypeInterface extends EntityInterface {
+interface DeviceConfigurationTypeInterface extends EntityDenyInterface {
     name: string;
     hasConfig1: boolean;
     hasAlwaysReinstallConfig1: boolean;
@@ -42,6 +47,7 @@ interface DeviceConfigurationTypeInterface extends EntityInterface {
     nameFirmware2?: string;
     hasFirmware3: boolean;
     nameFirmware3?: string;
+    hasHardwares: boolean;
     isVpnAvailable: boolean;
     isEndpointDevicesAvailable: boolean;
     isMasqueradeAvailable: boolean;
@@ -62,7 +68,14 @@ interface DeviceConfigurationTypeInterface extends EntityInterface {
     connectionAggregationPeriod: number;
     virtualSubnetCidr: number;
     masqueradeType: MasqueradeTypeType;
+    hasCustomData: boolean;
     communicationProcedure: CommunicationProcedureType;
+    firmwareSchema1?: FirmwareVersionSchemaType;
+    allowDowngradeFirmware1?: boolean;
+    firmwareSchema2?: FirmwareVersionSchemaType;
+    allowDowngradeFirmware2?: boolean;
+    firmwareSchema3?: FirmwareVersionSchemaType;
+    allowDowngradeFirmware3?: boolean;
     certificateTypes: DeviceTypeCertificateType[];
 }
 

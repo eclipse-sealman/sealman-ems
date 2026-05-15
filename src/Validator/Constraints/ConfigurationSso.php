@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ConfigurationSso extends Constraint
 {
-    public $messageRequired = 'validation.required';
+    public string $messageRequired = 'validation.required';
 
     public function getTargets(): string|array
     {

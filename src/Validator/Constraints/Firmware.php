@@ -20,9 +20,13 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Firmware extends Constraint
 {
-    public $messageRequired = 'validation.required';
-    public $messageFeatureInvalid = 'validation.firmware.featureInvalid';
-    public $messageNameNotUnique = 'validation.firmware.nameNotUnique';
+    public string $messageRequired = 'validation.required';
+    public string $messageFeatureInvalid = 'validation.firmware.featureInvalid';
+    public string $messageNameNotUnique = 'validation.firmware.nameNotUnique';
+    public string $messageRequiredFirmwareMustBeNull = 'validation.firmware.requiredFirmwareMustBeNull';
+    public string $messageFirmwareVersionNotMatchingSchema = 'validation.firmware.firmwareVersionNotMatchingSchema';
+    public string $messageRequiredFirmwareNotHigherVersion = 'validation.firmware.requiredFirmwareNotHigherVersion';
+    public string $messageRequiredFirmwareInvalid = 'validation.firmware.requiredFirmwareInvalid';
 
     public function getTargets(): string|array
     {

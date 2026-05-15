@@ -27,11 +27,11 @@ RUN --mount=type=bind,from=composer,source=/var/www/html/composer.phar,target=/u
     export COMPOSER_ALLOW_SUPERUSER=1; \
     composer install --no-cache --no-dev --optimize-autoloader; \
     chown -R www-data:www-data \
-        /var/www/application/var/log \
-        /var/www/application/var/cache \
-        /var/www/application/public \
-        /var/www/application/private \
-        /var/lib/nginx; \
+    /var/www/application/var/log \
+    /var/www/application/var/cache \
+    /var/www/application/public \
+    /var/www/application/private \
+    /var/lib/nginx; \
     php bin/console --no-debug app:licenses:composer-dump; \
     # Remove var/cache/* as it was populated by running bin/console command
     rm -rf /var/www/application/var/cache/*

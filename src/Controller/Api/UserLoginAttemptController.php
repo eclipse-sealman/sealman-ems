@@ -16,19 +16,19 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\UserLoginAttempt;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/userloginattempt')]
 #[Api\Resource(
     class: UserLoginAttempt::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'userLoginAttempt:public', 'createdAt'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class UserLoginAttemptController extends AbstractApiController
 {

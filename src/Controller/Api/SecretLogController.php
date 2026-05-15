@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\SecretLogDeny;
 use App\Entity\SecretLog;
 use App\Service\Helper\DeviceSecretManagerTrait;
@@ -25,7 +26,6 @@ use Carve\ApiBundle\Trait\ApiExportCsvTrait;
 use Carve\ApiBundle\Trait\ApiExportExcelTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Rest\Route('/secretlog')]
@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
     denyClass: SecretLogDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'secretLog:public', 'deviceType:identification', 'createdAt', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class SecretLogController extends AbstractApiController
 {

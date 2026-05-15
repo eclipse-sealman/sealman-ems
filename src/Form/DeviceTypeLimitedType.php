@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\DeviceType;
+use App\Enum\FirmwareVersionSchema;
 use App\Form\Helper\FormShaper;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use Symfony\Component\Form\AbstractType;
@@ -40,10 +41,18 @@ class DeviceTypeLimitedType extends AbstractType
         $builder->add('color');
         $builder->add('enableConfigLogs');
 
+        $builder->add('firmwareSchema1');
+        $builder->add('firmwareSchema2');
+        $builder->add('firmwareSchema3');
+        $builder->add('allowDowngradeFirmware1');
+        $builder->add('allowDowngradeFirmware2');
+        $builder->add('allowDowngradeFirmware3');
+
         $builder->add('authenticationMethod');
         $builder->add('credentialsSource');
         $builder->add('deviceTypeSecretCredential');
         $builder->add('deviceTypeCertificateTypeCredential');
+        $builder->add('deviceTypeCertificateTypeMTlsScepAuthentication');
 
         $builder->add('enableConnectionAggregation');
         $builder->add('connectionAggregationPeriod');
@@ -56,6 +65,8 @@ class DeviceTypeLimitedType extends AbstractType
         $builder->add('configMinRsrp');
         $builder->add('enableFirmwareMinRsrp');
         $builder->add('firmwareMinRsrp');
+        $builder->add('hasHardwares');
+        $builder->add('hasCustomData');
 
         // CertificateType cannot be deleted if at one device has certificate in this certificateType (is in requiredCertificateTypes)
         $builder->add('certificateTypes', CollectionType::class, [
@@ -70,6 +81,27 @@ class DeviceTypeLimitedType extends AbstractType
             ],
         ]);
 
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            // Not used hasXXX fields will/were removed during PRE_SUBMIT
+            // Now code below sets not used hasXXX to false to make hasXXX sequence valid
+            // Forcefully set fields to false that has to be false
+            $deviceType = $event->getData();
+
+            if (!$deviceType->getHasFirmware1() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema1()) {
+                $deviceType->setAllowDowngradeFirmware1(false);
+            }
+
+            if (!$deviceType->getHasFirmware2() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema2()) {
+                $deviceType->setAllowDowngradeFirmware2(false);
+            }
+
+            if (!$deviceType->getHasFirmware3() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema3()) {
+                $deviceType->setAllowDowngradeFirmware3(false);
+            }
+
+            $event->setData($deviceType);
+        });
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
             $shaper = new FormShaper($event);
 
@@ -81,6 +113,7 @@ class DeviceTypeLimitedType extends AbstractType
                 $shaper->removeField('credentialsSource');
                 $shaper->removeField('deviceTypeSecretCredential');
                 $shaper->removeField('deviceTypeCertificateTypeCredential');
+                $shaper->removeField('deviceTypeCertificateTypeMTlsScepAuthentication');
             }
 
             if (!$options['hasCertificates']) {
@@ -119,6 +152,21 @@ class DeviceTypeLimitedType extends AbstractType
             if (!$shaper->isFieldValueTrue('enableConfigMinRsrp')) {
                 $shaper->removeField('configMinRsrp');
             }
+
+            if (!$options['hasFirmware1']) {
+                $shaper->removeField('firmwareSchema1');
+                $shaper->removeField('allowDowngradeFirmware1');
+            }
+
+            if (!$options['hasFirmware2']) {
+                $shaper->removeField('firmwareSchema2');
+                $shaper->removeField('allowDowngradeFirmware2');
+            }
+
+            if (!$options['hasFirmware3']) {
+                $shaper->removeField('firmwareSchema3');
+                $shaper->removeField('allowDowngradeFirmware3');
+            }
         });
     }
 
@@ -132,6 +180,9 @@ class DeviceTypeLimitedType extends AbstractType
             'hasDeviceCommands' => false,
             'hasConfig' => false,
             'hasFirmware' => false,
+            'hasFirmware1' => false,
+            'hasFirmware2' => false,
+            'hasFirmware3' => false,
             'hasNoneCommunicationProcedure' => false,
             'requiredCertificateTypes' => [],
             'data_class' => DeviceType::class,
@@ -149,6 +200,9 @@ class DeviceTypeLimitedType extends AbstractType
         $resolver->setAllowedTypes('hasDeviceCommands', 'bool');
         $resolver->setAllowedTypes('hasConfig', 'bool');
         $resolver->setAllowedTypes('hasFirmware', 'bool');
+        $resolver->setAllowedTypes('hasFirmware1', 'bool');
+        $resolver->setAllowedTypes('hasFirmware2', 'bool');
+        $resolver->setAllowedTypes('hasFirmware3', 'bool');
         $resolver->setAllowedTypes('hasNoneCommunicationProcedure', 'bool');
         $resolver->setAllowedTypes('requiredCertificateTypes', 'array');
     }

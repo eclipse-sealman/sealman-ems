@@ -25,6 +25,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class HttpClientTest extends TestCase
 {
     public function testMockResponses()

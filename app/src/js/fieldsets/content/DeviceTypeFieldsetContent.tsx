@@ -78,6 +78,7 @@ const DeviceTypeFieldsetContent = ({
                     {!noCommunicationFields && render("credentialsSource")}
                     {!noCommunicationFields && render("deviceTypeSecretCredential")}
                     {!noCommunicationFields && render("deviceTypeCertificateTypeCredential")}
+                    {!noCommunicationFields && render("deviceTypeCertificateTypeMTlsScepAuthentication")}
                 </Box>
             </Box>
             {(!noCommunicationFields || enableFirmwareMinRsrp || enableConfigMinRsrp) && (
@@ -113,16 +114,22 @@ const DeviceTypeFieldsetContent = ({
                                     {render("hasFirmware1")}
                                     {render("nameFirmware1")}
                                     {render("customUrlFirmware1")}
+                                    {render("firmwareSchema1")}
+                                    {render("allowDowngradeFirmware1")}
                                 </Box>
                                 <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
                                     {render("hasFirmware2")}
                                     {render("nameFirmware2")}
                                     {render("customUrlFirmware2")}
+                                    {render("firmwareSchema2")}
+                                    {render("allowDowngradeFirmware2")}
                                 </Box>
                                 <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
                                     {render("hasFirmware3")}
                                     {render("nameFirmware3")}
                                     {render("customUrlFirmware3")}
+                                    {render("firmwareSchema3")}
+                                    {render("allowDowngradeFirmware3")}
                                 </Box>
                             </Box>
                         )}
@@ -186,11 +193,13 @@ const DeviceTypeFieldsetContent = ({
                     {render("hasGsm")}
                     {render("hasRequestConfig")}
                     {render("hasRequestDiagnose")}
+                    {render("hasCustomData")}
+                    {render("hasHardwares")}
+                    {render("hasVariables")}
                     <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
                         {render("hasMasquerade")}
                         {render("masqueradeType")}
                     </Box>
-                    {render("hasVariables")}
                     <Box {...{ sx: { display: "flex", flexDirection: "column", gap: 3 } }}>
                         {render("hasCertificates")}
                     </Box>

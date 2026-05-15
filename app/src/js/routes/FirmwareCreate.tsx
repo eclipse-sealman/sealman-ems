@@ -10,9 +10,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import axios from "axios";
 import { MemoryOutlined } from "@mui/icons-material";
-import { Form, useHandleCatch, useLoader } from "@arteneo/forge";
+import { Form } from "@arteneo/forge";
 import { useNavigate, useParams } from "react-router-dom";
 import { DeviceTypeInterface } from "~app/entities/DeviceType/definitions";
 import CrudFieldset from "~app/fieldsets/CrudFieldset";
@@ -21,31 +20,15 @@ import composeGetFields from "~app/entities/Firmware/createFields";
 import { getFeatureName } from "~app/entities/Firmware/utilities";
 import { FeatureType } from "~app/enums/Feature";
 import SurfaceTitle, { SurfaceTitleProps } from "~app/components/Common/SurfaceTitle";
+import { FormikValues } from "formik";
+import { cloneDeep } from "lodash";
+import useEndpoint from "~app/hooks/useEndpoint";
 
 const FirmwareCreate = () => {
     const navigate = useNavigate();
     const { deviceTypeId, feature } = useParams();
-    const handleCatch = useHandleCatch();
-    const { showLoader, hideLoader } = useLoader();
 
-    const [deviceType, setDeviceType] = React.useState<undefined | DeviceTypeInterface>(undefined);
-
-    React.useEffect(() => load(), []);
-
-    const load = () => {
-        showLoader();
-
-        axios
-            .get("/options/devicetype/" + deviceTypeId)
-            .then((response) => {
-                setDeviceType(response.data);
-                hideLoader();
-            })
-            .catch((error) => {
-                hideLoader();
-                handleCatch(error);
-            });
-    };
+    const { object: deviceType } = useEndpoint<DeviceTypeInterface>("/options/devicetype/" + deviceTypeId);
 
     let content = null;
     let featureName = "";
@@ -53,7 +36,7 @@ const FirmwareCreate = () => {
     if (typeof deviceType !== "undefined") {
         featureName = getFeatureName(deviceType, feature as FeatureType);
 
-        const getFields = composeGetFields(deviceType);
+        const getFields = composeGetFields(deviceType, feature as FeatureType);
         const fields = getFields();
 
         content = (
@@ -63,28 +46,24 @@ const FirmwareCreate = () => {
                         sourceType: "upload",
                     },
                     endpoint: "/firmware/create",
-                    children: (
-                        <CrudFieldset
-                            {...{
-                                fields,
-                                backButtonProps: { onClick: () => navigate(-1) },
-                            }}
-                        />
-                    ),
+                    children: <CrudFieldset {...{ fields }} />,
                     changeSubmitValues: (values) => {
-                        values.deviceType = deviceTypeId;
-                        values.feature = feature;
+                        const changedValues: FormikValues = {
+                            deviceType: deviceTypeId,
+                            feature,
+                            ...cloneDeep(values),
+                        };
 
-                        if (values?.sourceType !== "upload") {
-                            delete values.filepath;
+                        if (changedValues?.sourceType !== "upload") {
+                            delete changedValues.filepath;
                         }
 
-                        if (values?.sourceType !== "externalUrl") {
-                            delete values.externalUrl;
-                            delete values.md5;
+                        if (changedValues?.sourceType !== "externalUrl") {
+                            delete changedValues.externalUrl;
+                            delete changedValues.md5;
                         }
 
-                        return values;
+                        return changedValues;
                     },
                     onSubmitSuccess: (defaultOnSubmitSuccess) => {
                         defaultOnSubmitSuccess();

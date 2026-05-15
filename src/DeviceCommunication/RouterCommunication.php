@@ -62,6 +62,7 @@ class RouterCommunication extends RouterOneConfigCommunication implements Router
             CommunicationProcedureRequirement::HAS_REQUEST_DIAGNOSE,
             CommunicationProcedureRequirement::HAS_VPN,
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
         ];
 
         return $requirements;
@@ -84,7 +85,7 @@ class RouterCommunication extends RouterOneConfigCommunication implements Router
     /**
      * Processing existing Router.
      */
-    protected function processRouter()
+    protected function processRouter(): void
     {
         $this->updateLastDataInformation();
 
@@ -95,13 +96,17 @@ class RouterCommunication extends RouterOneConfigCommunication implements Router
             $this->processRouterImei();
             $this->processRouterImsi();
 
-            if ($this->processFirmware(Feature::PRIMARY, $this->normalizeFirmwareVersion($this->getRouterModel()->getFirmware()))) {
+            if ($this->processFirmware(Feature::PRIMARY, $this->normalizeFirmwareVersion($this->getRouterModel()->getFirmware()), $this->getReceivedDeviceHardwareVersion())) {
                 $this->getDevice()->setReinstallFirmware1(true);
             }
 
             if (!$this->processRequestDiagnoseData()) {
                 // Firmware operations
-                $reinstallingFirmware = $this->processReinstallFirmware(Feature::PRIMARY);
+                $reinstallingFirmware = $this->processReinstallFirmware(
+                    feature: Feature::PRIMARY,
+                    receivedFirmwareVersion: $this->getRouterModel()->getFirmware(),
+                    receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+                );
 
                 // If not reinstalling firmware, try to send StartupConfig or RunningConfig
                 if (!$reinstallingFirmware) {

@@ -131,13 +131,17 @@ class ConfigManager
         }
 
         if ($configDevice->isGenerated()) {
-            if ($createLogs) {
-                $this->communicationLogManager->createLogDebug('log.configDeviceConfigGenerated');
-            }
+            $this->communicationLogManager->createLogDebug(
+                message: 'log.configDeviceConfigGenerated',
+                createLog: $createLogs
+            );
         } else {
-            if ($createLogs) {
-                $this->communicationLogManager->createLogError($configDevice->getErrorMessage(), [], null, null, false, false);
-            }
+            $this->communicationLogManager->createLogError(
+                message: $configDevice->getErrorMessage(),
+                translate: false,
+                processVariables: false,
+                createLog: $createLogs
+            );
         }
 
         return $configDevice;

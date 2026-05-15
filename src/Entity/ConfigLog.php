@@ -77,7 +77,6 @@ class ConfigLog implements DenyInterface, TimestampableEntityInterface, LogLevel
     private ?DeviceType $deviceType = null;
 
     #[ORM\OneToOne(targetEntity: ConfigLogContent::class, mappedBy: 'configLog')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?ConfigLogContent $configLogContent = null;
 
     #[Groups(['configLog:public'])]

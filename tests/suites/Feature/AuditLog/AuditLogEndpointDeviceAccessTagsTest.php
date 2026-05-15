@@ -32,6 +32,7 @@ use Tests\Utilities\Feature\AuditLog\AssertAuditLogTrait;
  * Editing of access tags is a custom solution as it restores not owned access tags after edit.
  */
 #[Group('full')]
+#[Group('Feature')] // To be used in CI parallel tests
 class AuditLogEndpointDeviceAccessTagsTest extends AbstractTestCase
 {
     use AssertAuditLogTrait;

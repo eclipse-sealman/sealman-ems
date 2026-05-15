@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\DeviceDeny;
 use App\Deny\DeviceSecretDeny;
 use App\Entity\Device;
@@ -35,7 +36,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -49,7 +49,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     denyClass: DeviceSecretDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'deviceSecret:public', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 class DeviceSecretController extends AbstractApiController
 {

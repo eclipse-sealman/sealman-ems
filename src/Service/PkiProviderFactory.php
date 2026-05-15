@@ -16,31 +16,37 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Certificate;
+use App\Entity\CertificateType;
 use App\Enum\PkiType;
 use App\Exception\LogsException;
 use App\Provider\Interface\PkiProviderInterface;
 use App\Provider\ScepPkiProvider;
 use App\Service\Helper\ConfigurationManagerTrait;
-use App\Service\Helper\FileManagerTrait;
 use App\Service\Helper\HttpClientTrait;
+use App\Service\Helper\OpenSslManagerTrait;
 use App\Service\Helper\SymfonyDirTrait;
 use App\Service\Helper\VpnLogManagerTrait;
-use Symfony\Component\Filesystem\Filesystem;
 
 class PkiProviderFactory
 {
     use VpnLogManagerTrait;
     use ConfigurationManagerTrait;
-    use FileManagerTrait;
     use SymfonyDirTrait;
     use HttpClientTrait;
+    use OpenSslManagerTrait;
 
     // Using Certificate as parameter instead of CertificateType for better logs
-    public function getProvider(Certificate $certificate): PkiProviderInterface
+    public function getProvider(?Certificate $certificate = null, ?CertificateType $certificateType = null): PkiProviderInterface
     {
-        $certificateType = $certificate->getCertificateType();
-        if (!$certificateType) {
-            throw new LogsException($this->vpnLogManager->createLogCritical('log.pkiProviders.certificateTypeNotSet', certificate: $certificate));
+        if (null === $certificate && null === $certificateType) {
+            throw new \LogsException('Either $certificate or $certificateType must be provided.');
+        }
+
+        if (null === $certificateType) {
+            $certificateType = $certificate->getCertificateType();
+            if (!$certificateType) {
+                throw new LogsException($this->vpnLogManager->createLogCritical('log.pkiProviders.certificateTypeNotSet', certificate: $certificate));
+            }
         }
 
         // TODO in future expand this condition for other PKI protocols
@@ -52,21 +58,21 @@ class PkiProviderFactory
         switch ($pkiType) {
             case PkiType::SCEP:
                 if (!$certificateType->getScepUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepUrl', certificate: $certificate));
+                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepUrl', ['certificateType' => $certificateType->getRepresentation()], certificate: $certificate));
                 }
 
                 if (!$certificateType->getScepCrlUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepCrlUrl', certificate: $certificate));
+                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepCrlUrl', ['certificateType' => $certificateType->getRepresentation()], certificate: $certificate));
                 }
 
                 if (!$certificateType->getScepRevocationUrl()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepRevocationUrl', certificate: $certificate));
+                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingScepRevocationUrl', ['certificateType' => $certificateType->getRepresentation()], certificate: $certificate));
                 }
 
                 return new ScepPkiProvider(
                     $this->projectDir,
                     $this->getCertificateRequestDir(),
-                    $this->fileManager,
+                    $this->openSslManager,
                     $certificateType->getScepUrl(),
                     $certificateType->getScepCrlUrl(),
                     $certificateType->getScepRevocationUrl(),
@@ -84,13 +90,6 @@ class PkiProviderFactory
 
     protected function getCertificateRequestDir(): string
     {
-        $path = $this->projectDir.'/private/certificate_request/';
-
-        $fs = new Filesystem();
-        if (!$fs->exists($path)) {
-            $fs->mkdir($path);
-        }
-
-        return $path;
+        return '/private/certificate_request/';
     }
 }

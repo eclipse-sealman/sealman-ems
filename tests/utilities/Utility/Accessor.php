@@ -21,7 +21,6 @@ class Accessor
     {
         $reflection = new \ReflectionClass(static::getClass($object));
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $args);
     }
@@ -30,7 +29,6 @@ class Accessor
     {
         $reflection = new \ReflectionClass(static::getClass($object));
         $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
 
         return $property->getValue($object);
     }

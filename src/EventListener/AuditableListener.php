@@ -183,7 +183,11 @@ class AuditableListener
                     continue;
                 }
 
-                $ownerField = $mapping['inversedBy'] ?: $mapping['mappedBy'];
+                $ownerField = $mapping['mappedBy'];
+                if (isset($mapping['inversedBy']) && $mapping['inversedBy']) {
+                    $ownerField = $mapping['inversedBy'];
+                }
+
                 $setter = 'set'.ucfirst($ownerField);
 
                 foreach ($collection->getDeleteDiff() as $entity) {
@@ -282,7 +286,7 @@ class AuditableListener
                 AuditableInterface::GROUP,
                 AuditableInterface::ENCRYPTED_GROUP,
             ],
-            AuditableNormalizer::AUDITABLE_ENTITY => \spl_object_hash($entity),
+            AuditableNormalizer::AUDITABLE_ENTITY => \spl_object_id($entity),
             AuditableNormalizer::AUDITABLE_MODE => $mode,
             AbstractNormalizer::CALLBACKS => $this->getEncryptedCallbacks($entity, $comparableEntity),
             // Max depth check and handler is not needed due to use of App\Serializer\Normalizer\AuditableNormalizer

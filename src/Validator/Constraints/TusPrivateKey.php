@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class TusPrivateKey extends Constraint
 {
-    public $messageFileMissing = 'validation.tusPrivateKey.fileMissing';
-    public $messageFileEmpty = 'validation.tusPrivateKey.fileEmpty';
-    public $messageInvalid = 'validation.tusPrivateKey.invalid';
+    public string $messageFileMissing = 'validation.tusPrivateKey.fileMissing';
+    public string $messageFileEmpty = 'validation.tusPrivateKey.fileEmpty';
+    public string $messageInvalid = 'validation.tusPrivateKey.invalid';
 }

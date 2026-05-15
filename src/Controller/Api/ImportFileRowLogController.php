@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\ImportFileRowLog;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/importfilerowlog')]
 #[Api\Resource(
@@ -29,7 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
     listFormFilterByAppend: ['row']
 )]
 #[Rest\View(serializerGroups: ['identification', 'importFileRowLog:public', 'logLevel', 'timestampable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class ImportFileRowLogController extends AbstractApiController
 {

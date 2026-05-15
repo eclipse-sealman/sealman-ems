@@ -76,6 +76,8 @@ class EdgeGatewayWithVpnContainerClientCommunication extends AbstractDeviceCommu
             CommunicationProcedureRequirement::HAS_FIRMWARE1,
             CommunicationProcedureRequirement::HAS_CONFIG1,
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
+            CommunicationProcedureRequirement::HAS_CUSTOM_DATA,
         ];
     }
 

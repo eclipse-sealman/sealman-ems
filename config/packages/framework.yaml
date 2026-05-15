@@ -12,21 +12,12 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: "%env(APP_SECRET)%"
-    #csrf_protection: true
     http_method_override: false
     csrf_protection: false
     handle_all_throwables: true
     uid:
         default_uuid_version: 7
         time_based_uuid_version: 7
-
-    # Enables session support. Note that the session will ONLY be started if you read or write from it.
-    # Remove or comment this section to explicitly disable session support.
-    session:
-        handler_id: null
-        cookie_secure: auto
-        cookie_samesite: lax
-        storage_factory_id: session.storage.factory.native
 
     #esi: true
     #fragments: true
@@ -36,7 +27,7 @@ framework:
     serializer:
         circular_reference_handler: carve_api.serializer.circular_reference_handler
         default_context:
-            datetime_timezone: 'UTC'
+            datetime_timezone: "UTC"
 
     trusted_proxies: "%env(TRUSTED_PROXIES)%"
     #using "%env()%" is not possible due to bug in symfony with env arrays e.g. %env(csv:XXX)%
@@ -46,8 +37,6 @@ framework:
 when@test:
     framework:
         test: true
-        session:
-            storage_factory_id: session.storage.factory.mock_file
 
 when@prod:
     framework:

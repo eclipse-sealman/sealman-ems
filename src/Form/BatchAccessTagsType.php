@@ -32,7 +32,7 @@ class BatchAccessTagsType extends BatchQueryType
             'multiple' => true,
             'class' => AccessTag::class,
             'constraints' => [
-                new Count(['min' => 1]),
+                new Count(min: 1),
             ],
         ]);
     }

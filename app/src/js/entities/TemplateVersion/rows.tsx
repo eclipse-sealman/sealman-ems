@@ -10,7 +10,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import { EnumColumn, RepresentationColumn, CollectionRepresentationColumn, TextColumn } from "@arteneo/forge";
+import { EnumColumn, CollectionRepresentationColumn, TextColumn } from "@arteneo/forge";
 import { getRows } from "~app/utilities/common";
 import { DisplayRowsInterface } from "~app/components/Display/Display";
 import { DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/definitions";
@@ -23,6 +23,7 @@ import MasqueradeTypeColumn from "~app/components/Table/columns/MasqueradeTypeCo
 import VariablesColumn from "~app/components/Table/columns/VariablesColumn";
 import EndpointDevicesColumn from "~app/components/Table/columns/EndpointDevicesColumn";
 import ConfigShowEditColumn from "~app/components/Table/columns/ConfigShowEditColumn";
+import FirmwareNameColumn from "~app/entities/Firmware/columns/FirmwareNameColumn";
 
 const composeGetTitleProps = (templateVersion: TemplateVersionInterface) => {
     return (rowKey: string): DisplayRowTitleProps => {
@@ -101,15 +102,15 @@ const composeGetRows = (deviceType: DeviceConfigurationTypeInterface, limited: b
     }
 
     if (deviceType.hasFirmware1) {
-        rows.firmware1 = <RepresentationColumn />;
+        rows.firmware1 = <FirmwareNameColumn {...{ path: "firmware1" }} />;
     }
 
     if (deviceType.hasFirmware2) {
-        rows.firmware2 = <RepresentationColumn />;
+        rows.firmware2 = <FirmwareNameColumn {...{ path: "firmware2" }} />;
     }
 
     if (deviceType.hasFirmware3) {
-        rows.firmware3 = <RepresentationColumn />;
+        rows.firmware3 = <FirmwareNameColumn {...{ path: "firmware3" }} />;
     }
 
     if (deviceType.hasVariables) {

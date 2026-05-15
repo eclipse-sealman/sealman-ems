@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class RouterCommunicationIdentifier extends Constraint
 {
-    public $message = 'validation.identifierMustNotBeEmpty';
+    public string $message = 'validation.identifierMustNotBeEmpty';
 
     public function getTargets(): string|array
     {

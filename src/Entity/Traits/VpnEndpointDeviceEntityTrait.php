@@ -19,6 +19,7 @@ use App\Model\AuditableInterface;
 use Carve\ApiBundle\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait VpnEndpointDeviceEntityTrait
@@ -30,6 +31,7 @@ trait VpnEndpointDeviceEntityTrait
     private ?string $physicalIp = null;
 
     #[Groups(['device:vpnDevicePublic', 'deviceEndpointDevice:public', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $physicalIpSortable = null;
 

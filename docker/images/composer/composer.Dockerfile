@@ -10,7 +10,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Keep the same base image in core docker
-FROM php:8.4.15-fpm-alpine3.23 AS composer
+FROM php:8.5.6-fpm-alpine3.23 AS composer
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'c8b085408188070d5f52bcfe4ecfbee5f727afa458b2573b8eaaf77b3419b0bf2768dc67c86944da1544f06fa544fd47') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"

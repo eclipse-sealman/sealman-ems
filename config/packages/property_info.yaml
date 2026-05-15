@@ -9,5 +9,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-sensio_framework_extra:
-    router: { annotations: false }
+framework:
+    property_info:
+        with_constructor_extractor: true

@@ -28,6 +28,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
 /**
  * Testing VpnAddressManager::processConfiguration method.
  */
+#[Group('Unit')] // To be used in CI parallel tests
 class VpnAddressManagerProcessConfigurationTest extends AbstractTestCase
 {
     // Provider array keys

@@ -56,6 +56,6 @@ class UserValidator extends ConstraintValidator
             $this->context->buildViolation($constraint->messageDisabledExpireAtNotNull)->atPath('enabled')->addViolation();
         }
 
-        // Not validating roleVPN against VPN license, because field is not available in form if no VPN license. This validation would prevent handling SMA+VPN users while VPN license was downgraded
+        // Not validating roleVPN against VPN feature, because field is not available in form if no VPN feature. This validation would prevent handling users while VPN feature was downgraded
     }
 }

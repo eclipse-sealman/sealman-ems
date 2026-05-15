@@ -34,6 +34,7 @@ class MockLogsCollector implements LogsCollectorInterface
 
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class ProviderHttpClientTest extends TestCase
 {
     public function testMockResponses()

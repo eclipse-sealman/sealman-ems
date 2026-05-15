@@ -9,8 +9,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+import { VariableTypeType } from "~app/enums/VariableType";
+
 interface VariableInterface {
     name: string;
+    variableType: VariableTypeType;
     variableValue?: string;
 }
 

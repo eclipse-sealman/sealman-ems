@@ -26,7 +26,7 @@ class ApiDescriber implements RouteDescriberInterface
 {
     use RouteDescriberTrait;
 
-    public function describe(OA\OpenApi $api, Route $route, \ReflectionMethod $reflectionMethod)
+    public function describe(OA\OpenApi $api, Route $route, \ReflectionMethod $reflectionMethod): void
     {
         $this->addResponse401($api, $route, $reflectionMethod);
         $this->addResponse403($api, $route, $reflectionMethod);

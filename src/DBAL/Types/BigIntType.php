@@ -27,7 +27,7 @@ class BigIntType extends DoctrineBigIntType
     /**
      * {@inheritDoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
+    public function convertToPHPValue($value, AbstractPlatform $platform): string|int|null
     {
         return null === $value ? null : (int) $value;
     }

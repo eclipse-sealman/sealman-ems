@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace App\Form\DeviceCommunication;
 
+use App\Enum\ConfigFormat;
 use App\Enum\EdgeGatewayCommandName;
 use App\Enum\EdgeGatewayCommandStatus;
+use App\Exception\UnsupportedValueException;
 use App\Model\EdgeGatewayModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -42,11 +44,22 @@ class EdgeGatewayConfigurationType extends AbstractType
         $builder->add('commandStatusErrorCategory');
         $builder->add('commandStatusErrorPid');
         $builder->add('commandStatusErrorMessage');
-        $builder->add('config', CollectionType::class, [
-            'entry_type' => EdgeGatewayConfigurationConfigType::class,
-            'error_bubbling' => false,
-            'allow_add' => true,
-        ]);
+
+        $formatConfig1 = $options['formatConfig1'];
+        switch ($formatConfig1) {
+            case ConfigFormat::PLAIN:
+                $builder->add('config');
+                break;
+            case ConfigFormat::JSON:
+                $builder->add('config', CollectionType::class, [
+                    'entry_type' => EdgeGatewayConfigurationConfigType::class,
+                    'error_bubbling' => false,
+                    'allow_add' => true,
+                ]);
+                break;
+            default:
+                throw new UnsupportedValueException($formatConfig1);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -54,7 +67,8 @@ class EdgeGatewayConfigurationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => EdgeGatewayModel::class,
             'csrf_protection' => false,
-            //Validation groups provided in controller
+            'formatConfig1' => null,
+            // Validation groups provided in controller
         ]);
     }
 }

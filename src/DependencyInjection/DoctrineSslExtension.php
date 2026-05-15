@@ -15,10 +15,11 @@ declare(strict_types=1);
 
 namespace App\DependencyInjection;
 
-use PDO;
+use App\Tool\TypeCaster;
+use Pdo\Mysql;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class DoctrineSslExtension extends Extension implements PrependExtensionInterface
 {
@@ -61,20 +62,6 @@ class DoctrineSslExtension extends Extension implements PrependExtensionInterfac
         }
     }
 
-    protected function getValidatedBooleanValue(mixed $value, bool $default = false): bool
-    {
-        if (\is_bool($value)) {
-            return $value;
-        }
-
-        if (\is_int($value) || \is_float($value) || (\is_string($value) && strlen($value) > 0)) {
-            // Copied from symfony ENV:bool
-            return (bool) (filter_var($value, \FILTER_VALIDATE_BOOLEAN) ?: filter_var($value, \FILTER_VALIDATE_INT) ?: filter_var($value, \FILTER_VALIDATE_FLOAT));
-        }
-
-        return $default;
-    }
-
     public function load(array $configs, ContainerBuilder $container): void
     {
     }
@@ -88,15 +75,15 @@ class DoctrineSslExtension extends Extension implements PrependExtensionInterfac
         $options = [];
 
         $container->setParameter('mysqlServerValidation', $this->mysqlServerValidation);
-        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $this->mysqlServerValidation;
+        $options[Mysql::ATTR_SSL_VERIFY_SERVER_CERT] = $this->mysqlServerValidation;
 
         if ($this->mysqlSslCa) {
-            $options[PDO::MYSQL_ATTR_SSL_CA] = $this->filestorageDir.$this->mysqlSslCa;
+            $options[\PDO::MYSQL_ATTR_SSL_CA] = $this->filestorageDir.$this->mysqlSslCa;
             $container->setParameter('mysqlSslCa', $this->filestorageDir.$this->mysqlSslCa);
         }
         if ($this->mysqlSslKey && $this->mysqlSslCert) {
-            $options[PDO::MYSQL_ATTR_SSL_CERT] = $this->filestorageDir.$this->mysqlSslCert;
-            $options[PDO::MYSQL_ATTR_SSL_KEY] = $this->filestorageDir.$this->mysqlSslKey;
+            $options[\PDO::MYSQL_ATTR_SSL_CERT] = $this->filestorageDir.$this->mysqlSslCert;
+            $options[\PDO::MYSQL_ATTR_SSL_KEY] = $this->filestorageDir.$this->mysqlSslKey;
             $container->setParameter('mysqlSslCert', $this->filestorageDir.$this->mysqlSslCert);
             $container->setParameter('mysqlSslKey', $this->filestorageDir.$this->mysqlSslKey);
         }
@@ -104,5 +91,10 @@ class DoctrineSslExtension extends Extension implements PrependExtensionInterfac
         if (count($options) > 0) {
             $container->prependExtensionConfig('doctrine', ['dbal' => ['options' => $options]]);
         }
+    }
+
+    protected function getValidatedBooleanValue(mixed $value, bool $default = false): bool
+    {
+        return TypeCaster::toBool($value, $default);
     }
 }

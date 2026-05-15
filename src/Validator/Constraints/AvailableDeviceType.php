@@ -18,25 +18,22 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Attribute\HasNamedArguments;
 use Symfony\Component\Validator\Constraint;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class AvailableDeviceType extends Constraint
 {
-    public $messageDisabled = 'validation.deviceType.disabled';
-    public $messageNotAvailable = 'validation.deviceType.notAvailable';
+    public string $messageDisabled = 'validation.deviceType.disabled';
+    public string $messageNotAvailable = 'validation.deviceType.notAvailable';
 
     #[HasNamedArguments]
-    public function __construct(null|string $messageDisabled = null, null|string $messageNotAvailable = null, null|array $groups = null, $payload = null)
-    {
-        $options = array_filter([
-            'messageDisabled' => $messageDisabled ?? $this->messageDisabled,
-            'messageNotAvailable' => $messageNotAvailable ?? $this->messageNotAvailable,
-        ]);
+    public function __construct(
+        ?string $messageDisabled = null,
+        ?string $messageNotAvailable = null,
+        ?array $groups = null,
+        mixed $payload = null,
+    ) {
+        parent::__construct(null, $groups, $payload);
 
-        parent::__construct($options, $groups, $payload);
-    }
-
-    public function getTargets(): string|array
-    {
-        return self::PROPERTY_CONSTRAINT;
+        $this->messageDisabled = $messageDisabled ?? $this->messageDisabled;
+        $this->messageNotAvailable = $messageNotAvailable ?? $this->messageNotAvailable;
     }
 }

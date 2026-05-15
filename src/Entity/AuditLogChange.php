@@ -75,7 +75,6 @@ class AuditLogChange implements CreatedAtEntityInterface
 
     #[Groups(['auditLogChangeValues:public'])]
     #[ORM\OneToOne(targetEntity: AuditLogChangeValues::class, mappedBy: 'auditLogChange')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?AuditLogChangeValues $auditLogChangeValues = null;
 
     /**

@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace App\Service\Helper;
 
+use FOS\RestBundle\Controller\Annotations\View as ViewAnnotation;
+use FOS\RestBundle\FOSRestBundle;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +25,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 trait ViewHandlerTrait
 {
-    /**
-     * @var ViewHandlerInterface
-     */
-    protected $viewHandler;
+    protected ViewHandlerInterface $viewHandler;
 
     #[Required]
     public function setViewHandler(ViewHandlerInterface $viewHandler)
@@ -34,36 +33,40 @@ trait ViewHandlerTrait
         $this->viewHandler = $viewHandler;
     }
 
+    /**
+     * Creates View based on $request and $data.
+     *
+     * Simulates FOS\RestBundle\EventListener\ViewResponseListener::onKernelView() behavior
+     */
     protected function getAnnotatedView(Request $request, $data): View
     {
         $view = new View($data);
 
-        $viewAnnotation = $request->attributes->get('_template');
+        /** @var ViewAnnotation|null $configuration */
+        $configuration = $request->attributes->get(FOSRestBundle::VIEW_ATTRIBUTE);
 
-        if ($viewAnnotation->getVars()) {
-            $view->setVars($viewAnnotation->getVars());
-        }
-        if (null !== $viewAnnotation->getStatusCode() && (null === $view->getStatusCode() || Response::HTTP_OK === $view->getStatusCode())) {
-            $view->setStatusCode($viewAnnotation->getStatusCode());
-        }
+        if ($configuration instanceof ViewAnnotation) {
+            if (null !== $configuration->getStatusCode() && (null === $view->getStatusCode() || Response::HTTP_OK === $view->getStatusCode())) {
+                $view->setStatusCode($configuration->getStatusCode());
+            }
 
-        $context = $view->getContext();
-        if ($viewAnnotation->getSerializerGroups()) {
-            if (null === $context->getGroups()) {
-                $context->setGroups($viewAnnotation->getSerializerGroups());
-            } else {
-                $context->setGroups(array_merge($context->getGroups(), $viewAnnotation->getSerializerGroups()));
+            $context = $view->getContext();
+            if ($configuration->getSerializerGroups()) {
+                if (null === $context->getGroups()) {
+                    $context->setGroups($configuration->getSerializerGroups());
+                } else {
+                    $context->setGroups(array_merge($context->getGroups(), $configuration->getSerializerGroups()));
+                }
+            }
+            if (true === $configuration->getSerializerEnableMaxDepthChecks()) {
+                $context->enableMaxDepth();
+            } elseif (false === $configuration->getSerializerEnableMaxDepthChecks()) {
+                $context->disableMaxDepth();
             }
         }
 
-        if ($viewAnnotation->getSerializerEnableMaxDepthChecks()) {
-            $context->setMaxDepth(0, false);
-        }
-
-        if (true === $viewAnnotation->getSerializerEnableMaxDepthChecks()) {
-            $context->enableMaxDepth();
-        } elseif (false === $viewAnnotation->getSerializerEnableMaxDepthChecks()) {
-            $context->disableMaxDepth();
+        if (null === $view->getFormat()) {
+            $view->setFormat($request->getRequestFormat());
         }
 
         return $view;

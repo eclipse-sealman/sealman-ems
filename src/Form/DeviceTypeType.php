@@ -18,6 +18,7 @@ namespace App\Form;
 use App\Entity\DeviceType;
 use App\Enum\CommunicationProcedure;
 use App\Enum\CommunicationProcedureRequirement;
+use App\Enum\FirmwareVersionSchema;
 use App\Form\Helper\FormShaper;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use App\Service\Trait\CertificateTypeHelperTrait;
@@ -47,9 +48,16 @@ class DeviceTypeType extends AbstractType
 
         $builder->add('routePrefix');
         $builder->add('authenticationMethod');
+        $builder->add('firmwareSchema1');
+        $builder->add('allowDowngradeFirmware1');
+        $builder->add('firmwareSchema2');
+        $builder->add('allowDowngradeFirmware2');
+        $builder->add('firmwareSchema3');
+        $builder->add('allowDowngradeFirmware3');
         $builder->add('credentialsSource');
         $builder->add('deviceTypeSecretCredential');
         $builder->add('deviceTypeCertificateTypeCredential');
+        $builder->add('deviceTypeCertificateTypeMTlsScepAuthentication');
         $builder->add('communicationProcedure');
         $builder->add('enableConnectionAggregation');
         $builder->add('connectionAggregationPeriod');
@@ -76,6 +84,7 @@ class DeviceTypeType extends AbstractType
         $builder->add('nameConfig3');
         $builder->add('formatConfig3');
 
+        $builder->add('hasHardwares');
         $builder->add('hasTemplates');
         $builder->add('hasEndpointDevices');
         $builder->add('hasGsm');
@@ -89,6 +98,7 @@ class DeviceTypeType extends AbstractType
         $builder->add('fieldSerialNumber');
         $builder->add('fieldImsi');
         $builder->add('hasDeviceToNetworkConnection');
+        $builder->add('hasCustomData');
 
         $builder->add('hasVariables');
         $builder->add('hasCertificates');
@@ -118,6 +128,18 @@ class DeviceTypeType extends AbstractType
             // Forcefully set fields to false that has to be false
             $deviceType = $event->getData();
 
+            if (!$deviceType->getHasFirmware1() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema1()) {
+                $deviceType->setAllowDowngradeFirmware1(false);
+            }
+
+            if (!$deviceType->getHasFirmware2() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema2()) {
+                $deviceType->setAllowDowngradeFirmware2(false);
+            }
+
+            if (!$deviceType->getHasFirmware3() || FirmwareVersionSchema::ANY_SCHEMA === $deviceType->getFirmwareSchema3()) {
+                $deviceType->setAllowDowngradeFirmware3(false);
+            }
+
             if (!$deviceType->getHasConfig1()) {
                 $deviceType->setHasAlwaysReinstallConfig1(false);
             }
@@ -128,6 +150,10 @@ class DeviceTypeType extends AbstractType
 
             if (!$deviceType->getHasConfig3()) {
                 $deviceType->setHasAlwaysReinstallConfig3(false);
+            }
+
+            if (!$deviceType->getHasFirmware1() && !$deviceType->getHasFirmware2() && !$deviceType->getHasFirmware3()) {
+                $deviceType->setHasHardwares(false);
             }
 
             if (!$deviceType->getHasVariables()) {
@@ -194,6 +220,7 @@ class DeviceTypeType extends AbstractType
                 $shaper->removeField('credentialsSource');
                 $shaper->removeField('deviceTypeSecretCredential');
                 $shaper->removeField('deviceTypeCertificateTypeCredential');
+                $shaper->removeField('deviceTypeCertificateTypeMTlsScepAuthentication');
                 $shaper->removeField('enableConnectionAggregation');
             }
 
@@ -217,6 +244,7 @@ class DeviceTypeType extends AbstractType
 
             if (!$shaper->isFieldValueTrue('hasFirmware1') && !$shaper->isFieldValueTrue('hasFirmware2') && !$shaper->isFieldValueTrue('hasFirmware3')) {
                 $shaper->removeField('enableFirmwareMinRsrp');
+                $shaper->removeField('hasHardwares');
             }
 
             if (!$shaper->isFieldValueTrue('hasConfig1') && !$shaper->isFieldValueTrue('hasConfig2') && !$shaper->isFieldValueTrue('hasConfig3')) {
@@ -226,16 +254,22 @@ class DeviceTypeType extends AbstractType
             if (!$shaper->isFieldValueTrue('hasFirmware1')) {
                 $shaper->removeField('nameFirmware1');
                 $shaper->removeField('customUrlFirmware1');
+                $shaper->removeField('firmwareSchema1');
+                $shaper->removeField('allowDowngradeFirmware1');
             }
 
             if (!$shaper->isFieldValueTrue('hasFirmware2')) {
                 $shaper->removeField('nameFirmware2');
                 $shaper->removeField('customUrlFirmware2');
+                $shaper->removeField('firmwareSchema2');
+                $shaper->removeField('allowDowngradeFirmware2');
             }
 
             if (!$shaper->isFieldValueTrue('hasFirmware3')) {
                 $shaper->removeField('nameFirmware3');
                 $shaper->removeField('customUrlFirmware3');
+                $shaper->removeField('firmwareSchema3');
+                $shaper->removeField('allowDowngradeFirmware3');
             }
 
             if (!$shaper->isFieldValueTrue('hasConfig1')) {

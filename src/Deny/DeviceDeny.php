@@ -44,6 +44,8 @@ class DeviceDeny extends AbstractApiDuplicateCertificateTypeObjectDeny implement
     public const ACCESS_TAG_ADD = 'accessTagAdd';
     public const ACCESS_TAG_DELETE = 'accessTagDelete';
     public const PREDEFINED_VARIABLES = 'predefinedVariables';
+    public const CUSTOM_DATA_VARIABLES = 'customDataVariables';
+    public const CUSTOM_DATA_VALUES = 'customDataValues';
     public const LOGS = 'logs';
     public const COMMUNICATION_LOGS = 'communicationLogs';
     public const DEVICE_COMMANDS = 'deviceCommands';
@@ -266,6 +268,32 @@ class DeviceDeny extends AbstractApiDuplicateCertificateTypeObjectDeny implement
     public function predefinedVariablesDeny(Device $device): ?string
     {
         if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SMARTEMS')) {
+            return 'accessDenied';
+        }
+
+        return null;
+    }
+
+    public function customDataVariablesDeny(Device $device): ?string
+    {
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SMARTEMS')) {
+            return 'accessDenied';
+        }
+
+        if (!$device->getDeviceType()->getHasCustomData()) {
+            return 'accessDenied';
+        }
+
+        return null;
+    }
+
+    public function customDataValuesDeny(Device $device): ?string
+    {
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_SMARTEMS')) {
+            return 'accessDenied';
+        }
+
+        if (!$device->getDeviceType()->getHasCustomData()) {
             return 'accessDenied';
         }
 

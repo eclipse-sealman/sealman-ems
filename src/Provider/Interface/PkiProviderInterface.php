@@ -16,14 +16,14 @@ declare(strict_types=1);
 namespace App\Provider\Interface;
 
 use App\Enum\PkiHashAlgorithm;
-use App\Enum\PkiKeyLength;
+use App\Enum\PkiKeyType;
 use App\Trait\LogsCollectorInterface;
 
 interface PkiProviderInterface extends LogsCollectorInterface
 {
     public function getCaCertificate(): string;
 
-    public function signCsr(PkiHashAlgorithm $hashAlgorithm, PkiKeyLength $keyLength, string $caCertificatePem, \OpenSSLCertificateSigningRequest $csr): string;
+    public function signCsr(PkiHashAlgorithm $hashAlgorithm, PkiKeyType $keyType, string $caCertificatePem, string $csr): string;
 
     public function revokeCertificate(string $serialNumber): void;
 

@@ -18,6 +18,7 @@ namespace App\Entity\Traits;
 use App\Model\AuditableInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait VpnClientDeviceEntityTrait
@@ -26,10 +27,12 @@ trait VpnClientDeviceEntityTrait
     use VpnClientEntityTrait;
 
     #[Groups(['device:vpnDevicePublic', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $vpnTrafficIn = null;
 
     #[Groups(['device:vpnDevicePublic', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $vpnTrafficOut = null;
 
@@ -38,6 +41,7 @@ trait VpnClientDeviceEntityTrait
     private ?string $virtualSubnetIp = null;
 
     #[Groups(['device:vpnClientPublic', 'deviceEndpointDevice:public', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $virtualSubnetIpSortable = null;
 

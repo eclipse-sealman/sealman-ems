@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class DeviceLock extends Constraint
 {
-    public $messageVirtualSubnetCidrLocked = 'validation.device.virtualSubnetCidrLocked';
-    public $messageEndpointDeviceLocked = 'validation.device.endpointDeviceLocked';
+    public string $messageVirtualSubnetCidrLocked = 'validation.device.virtualSubnetCidrLocked';
+    public string $messageEndpointDeviceLocked = 'validation.device.endpointDeviceLocked';
 
     public function getTargets(): string|array
     {

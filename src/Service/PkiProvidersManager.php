@@ -16,11 +16,12 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Certificate;
+use App\Entity\CertificateType;
 use App\Entity\Device;
 use App\Entity\DeviceTypeCertificateType;
 use App\Entity\User;
 use App\Enum\PkiHashAlgorithm;
-use App\Enum\PkiKeyLength;
+use App\Enum\PkiKeyType;
 use App\Enum\PkiType;
 use App\Exception\LogsException;
 use App\Exception\ProviderException;
@@ -30,7 +31,9 @@ use App\Service\Helper\CertificateManagerTrait;
 use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\EncryptionManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
+use App\Service\Helper\FileManagerTrait;
 use App\Service\Helper\HttpClientTrait;
+use App\Service\Helper\OpenSslManagerTrait;
 use App\Service\Helper\PkiProviderFactoryTrait;
 use App\Service\Helper\SymfonyDirTrait;
 use App\Service\Helper\VpnLogManagerTrait;
@@ -39,7 +42,7 @@ use App\Service\Trait\CertificateTypeHelperTrait;
 use App\Tool\Urlizer;
 use Carve\ApiBundle\Exception\RequestExecutionException;
 use Carve\ApiBundle\Helper\Arr;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class PkiProvidersManager
 {
@@ -52,7 +55,40 @@ class PkiProvidersManager
     use VpnLogManagerTrait;
     use VpnManagerTrait;
     use HttpClientTrait;
+    use OpenSslManagerTrait;
+
+    use FileManagerTrait;
     use PkiProviderFactoryTrait;
+
+    public function getCaCertificateForCertificateType(CertificateType $certificateType): ?string
+    {
+        if ($this->configurationManager->isScepBlocked()) {
+            throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.invalidLicense', ['certificateType' => $certificateType->getRepresentation()]));
+        }
+
+        $provider = $this->getPkiProviderByCertificateType($certificateType);
+
+        try {
+            return $provider->getCaCertificate();
+        } catch (ProviderException $providerException) {
+            throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.caRequestFailed', ['certificateType' => $certificateType->getRepresentation(), 'exceptionMessage' => $providerException->getMessage()]));
+        }
+    }
+
+    public function getCrlContentForCertificateType(CertificateType $certificateType): ?string
+    {
+        if ($this->configurationManager->isScepBlocked()) {
+            throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.invalidLicense', ['certificateType' => $certificateType->getRepresentation()]));
+        }
+
+        $provider = $this->getPkiProviderByCertificateType($certificateType);
+
+        try {
+            return $provider->getCrl();
+        } catch (ProviderException $providerException) {
+            throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.crlRequestFailed', ['certificateType' => $certificateType->getRepresentation(), 'exceptionMessage' => $providerException->getMessage()]));
+        }
+    }
 
     public function generateCertificate(Certificate $certificate): void
     {
@@ -78,41 +114,24 @@ class PkiProvidersManager
 
             $provider->addLogInfo('log.pkiProviders.certificateRequested', ['certificateSubject' => $certificateSubject]);
 
-            $csrDn = $this->prepareCsrDn($caCertificateData, $certificate, $certificateSubject);
-
             $hashAlgorithm = $this->getHashAlgorithm($certificate);
-            $keyLength = $this->getKeyLength($certificate);
+            $keyType = $this->getKeyType($certificate);
+            $csrSubject = $this->openSslManager->getFullSubjectStringWithUpdatedCommonName($caCertificateData, $certificateSubject);
+            $csrAdditionalText = $this->getCsrAdditionalTextForSubjectAlt($certificate);
 
-            $openSslConfigPath = $this->projectDir.'/config/openssl/pki_providers_manager.conf';
-            $fs = new Filesystem();
-            if (!$fs->exists($openSslConfigPath)) {
-                throw new \Exception('Missing '.$openSslConfigPath.' file');
-            }
+            $privateKey = $this->openSslManager->generatePrivateKey($keyType);
+            $csr = $this->openSslManager->generateCsr(
+                keyType: $keyType,
+                hashAlgorithm: $hashAlgorithm,
+                privateKey: $privateKey,
+                subject: $csrSubject,
+                addText: $csrAdditionalText,
+            );
 
-            $defaultConfigArgs = [
-                'digest_alg' => $hashAlgorithm->value,
-                'private_key_bits' => intval($keyLength->value),
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            ];
+            // Using SHA512 and RSA4096 for signing CSR to have stronger certificate even if CSR was created with lower parameters - SCEP is not fully supporting EC and other algorithms
+            $signedCertificatePem = $provider->signCsr(PkiHashAlgorithm::SHA512, PkiKeyType::RSA4096, $caCertificatePem, $csr);
 
-            $privateKey = openssl_pkey_new($defaultConfigArgs);
-
-            // Somehow config file overwrites private key bit size if added before key generation
-            // Using custom configuration file because default openSSL configuration adds default values for C,ST,L,O parts of subject
-            // Our custom configuration file leaves those fields empty, current code copies values from CA
-            $defaultConfigArgs['config'] = $openSslConfigPath;
-
-            $csr = openssl_csr_new($csrDn, $privateKey, $defaultConfigArgs);
-
-            if (false === $csr) {
-                throw new ProviderException($provider->addLogCritical('log.pkiProviders.csrGenerationFailed'));
-            }
-
-            $signedCertificatePem = $provider->signCsr($hashAlgorithm, $keyLength, $caCertificatePem, $csr);
-
-            openssl_pkey_export($privateKey, $privateKeyPem);
-
-            if (!openssl_x509_check_private_key($signedCertificatePem, $privateKeyPem)) {
+            if (!openssl_x509_check_private_key($signedCertificatePem, $privateKey)) {
                 throw new ProviderException($provider->addLogCritical('log.pkiProviders.pairCheckFailed'));
             }
 
@@ -120,7 +139,7 @@ class PkiProvidersManager
             $certificate->setCertificate($this->encryptionManager->encrypt($signedCertificatePem));
             $certificate->setCertificateCa($this->encryptionManager->encrypt($caCertificatePem));
             $certificate->setCertificateGenerated(true);
-            $certificate->setPrivateKey($this->encryptionManager->encrypt($privateKeyPem));
+            $certificate->setPrivateKey($this->encryptionManager->encrypt($privateKey));
             $certificate->setCertificateSubject($certificateSubject);
 
             $signedCertificateData = openssl_x509_parse($signedCertificatePem);
@@ -138,12 +157,59 @@ class PkiProvidersManager
             $this->vpnLogManager->createLogs($provider->getLogs(), certificate: $certificate);
 
             $this->vpnLogManager->createLogInfo('log.pkiProviders.certificateRequestSuccess', certificate: $certificate);
+        } catch (ProcessFailedException $exception) {
+            $log = $this->vpnLogManager->createLogError(
+                'log.pkiProviders.consoleCommandFailed',
+                [
+                    'commandString' => $exception->getProcess()->getCommandLine(),
+                    'exceptionMessage' => $exception->getMessage(),
+                ],
+                certificate: $certificate,
+            );
+            throw new LogsException($log);
         } catch (ProviderException $providerException) {
             // log request failed
             $this->vpnLogManager->createLogs($provider->getLogs(), certificate: $certificate);
 
             throw new LogsException($providerException);
+        } catch (\Exception $exception) {
+            // unknown error - log it as critical
+            $log = $this->vpnLogManager->createLogCritical(
+                'log.pkiProviders.unknownException',
+                [
+                    'exceptionMessage' => $exception->getMessage(),
+                ],
+                certificate: $certificate,
+            );
+
+            throw new LogsException($log);
         }
+    }
+
+    protected function getCsrAdditionalTextForSubjectAlt(Certificate $certificate): array
+    {
+        $device = $certificate->getDevice();
+        if (!$device) {
+            return [];
+        }
+
+        $deviceTypeCertificateType = $this->getRepository(DeviceTypeCertificateType::class)->findOneBy([
+            'deviceType' => $device->getDeviceType(),
+            'certificateType' => $certificate->getCertificateType(),
+        ]);
+        if (!$deviceTypeCertificateType) {
+            return [];
+        }
+
+        $type = $deviceTypeCertificateType->getSubjectAltNameType();
+        $value = $deviceTypeCertificateType->getSubjectAltNameValue();
+        if (!$deviceTypeCertificateType->getEnableSubjectAltName() || !$type || !$value) {
+            return [];
+        }
+
+        return [
+            'subjectAltName = '.$type->value => $value,
+        ];
     }
 
     public function revokeCertificate(Certificate $certificate): void
@@ -224,48 +290,6 @@ class PkiProvidersManager
         }
     }
 
-    protected function prepareCsrDn(array $caCertificateData, Certificate $certificate, string $certificateSubject): array
-    {
-        $dn = [
-            'commonName' => $certificateSubject,
-        ];
-
-        if (Arr::has($caCertificateData, 'subject.C')) {
-            $dn['countryName'] = Arr::get($caCertificateData, 'subject.C');
-        }
-
-        if (Arr::has($caCertificateData, 'subject.ST')) {
-            $dn['stateOrProvinceName'] = Arr::get($caCertificateData, 'subject.ST');
-        }
-
-        if (Arr::has($caCertificateData, 'subject.L')) {
-            $dn['localityName'] = Arr::get($caCertificateData, 'subject.L');
-        }
-
-        if (Arr::has($caCertificateData, 'subject.O')) {
-            $dn['organizationName'] = Arr::get($caCertificateData, 'subject.O');
-        }
-
-        if ($certificate->getDevice()) {
-            $deviceTypeCertificateType = $this->getRepository(DeviceTypeCertificateType::class)->findOneBy([
-                'deviceType' => $certificate->getDevice()->getDeviceType(),
-                'certificateType' => $certificate->getCertificateType(),
-            ]);
-
-            if ($deviceTypeCertificateType) {
-                if (
-                    $deviceTypeCertificateType->getEnableSubjectAltName() &&
-                    $deviceTypeCertificateType->getSubjectAltNameType() &&
-                    $deviceTypeCertificateType->getSubjectAltNameValue()
-                ) {
-                    $dn['subjectAltName'] = $deviceTypeCertificateType->getSubjectAltNameType()->value.':'.$deviceTypeCertificateType->getSubjectAltNameValue();
-                }
-            }
-        }
-
-        return $dn;
-    }
-
     protected function getCertificateSubject(Certificate $certificate): string
     {
         // certificateEntity is already validated
@@ -323,7 +347,7 @@ class PkiProvidersManager
         }
     }
 
-    protected function getKeyLength(Certificate $certificate): PkiKeyLength
+    protected function getKeyType(Certificate $certificate): PkiKeyType
     {
         $certificateType = $certificate->getCertificateType();
         if (!$certificateType) {
@@ -333,11 +357,11 @@ class PkiProvidersManager
         $pkiType = $certificateType->getPkiType();
         switch ($pkiType) {
             case PkiType::SCEP:
-                if (!$certificateType->getScepKeyLength()) {
-                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingKeyLength', certificate: $certificate));
+                if (!$certificateType->getScepKeyType()) {
+                    throw new LogsException($this->vpnLogManager->createLogError('log.pkiProviders.scep.missingKeyType', certificate: $certificate));
                 }
 
-                return $certificateType->getScepKeyLength();
+                return $certificateType->getScepKeyType();
             case PkiType::NONE:
             default:
                 throw new \Exception('Unsupported PKI protocol type "'.$pkiType->value.'"');
@@ -348,5 +372,10 @@ class PkiProvidersManager
     protected function getPkiProvider(Certificate $certificate): PkiProviderInterface
     {
         return $this->pkiProviderFactory->getProvider($certificate);
+    }
+
+    protected function getPkiProviderByCertificateType(CertificateType $certificateType): PkiProviderInterface
+    {
+        return $this->pkiProviderFactory->getProvider(certificateType: $certificateType);
     }
 }

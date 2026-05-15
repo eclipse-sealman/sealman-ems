@@ -14,6 +14,12 @@ import EntityDenyInterface from "~app/definitions/EntityDenyInterface";
 import EntityInterface from "~app/definitions/EntityInterface";
 import { CertificateBehaviorType, CertificateCategoryType } from "~app/entities/CertificateType/enums";
 
+interface CustomDataValuesInterface {
+    name: string;
+    value?: string;
+    variableName?: string;
+}
+
 interface CertificateInterface extends ResultInterface {
     certificateSubject?: string;
     certificate?: string;
@@ -78,4 +84,5 @@ export {
     CertificateAutomaticBehavior,
     CertificateAutomaticBehaviorExtended,
     CertificateAutomaticBehaviorStateType,
+    CustomDataValuesInterface,
 };

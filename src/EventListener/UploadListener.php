@@ -18,7 +18,7 @@ namespace App\EventListener;
 use App\Model\UploadInterface;
 use App\Service\UploadManager;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
@@ -42,7 +42,7 @@ class UploadListener implements EventSubscriber
         ];
     }
 
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(PostPersistEventArgs $args)
     {
         $entity = $args->getObject();
 

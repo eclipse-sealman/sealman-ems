@@ -15,21 +15,19 @@ declare(strict_types=1);
 
 namespace App\Service\Helper;
 
-use Symfony\Component\Routing\RouterInterface;
+use App\Service\FirmwareFileFactory;
 use Symfony\Contracts\Service\Attribute\Required;
 
-// TODO Why this trait is named RouterInterfaceTrait? It should be RouterTrait
-// Legacy thing - there was RouterTrait meaning tk800 - maybe SymfonyRouterTrait?
-trait RouterInterfaceTrait
+trait FirmwareFileFactoryTrait
 {
     /**
-     * @var RouterInterface
+     * @var FirmwareFileFactory
      */
-    protected $routerInterface;
+    protected $firmwareFileFactory;
 
     #[Required]
-    public function setRouterInterface(RouterInterface $routerInterface)
+    public function setFirmwareFileFactory(FirmwareFileFactory $firmwareFileFactory)
     {
-        $this->routerInterface = $routerInterface;
+        $this->firmwareFileFactory = $firmwareFileFactory;
     }
 }

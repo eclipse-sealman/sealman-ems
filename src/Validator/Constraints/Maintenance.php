@@ -20,9 +20,9 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Maintenance extends Constraint
 {
-    public $messageRequired = 'validation.required';
-    public $messageBackupEmpty = 'validation.backupEmpty';
-    public $messageRestoreEmpty = 'validation.restoreEmpty';
+    public string $messageRequired = 'validation.required';
+    public string $messageBackupEmpty = 'validation.backupEmpty';
+    public string $messageRestoreEmpty = 'validation.restoreEmpty';
 
     public function getTargets(): string|array
     {

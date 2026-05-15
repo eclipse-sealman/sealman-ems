@@ -28,6 +28,7 @@ import {
     credentialsSource,
     certificateEncoding,
     communicationProcedure,
+    firmwareVersionSchema,
     formatConfig,
 } from "~app/entities/DeviceType/enums";
 import {
@@ -45,7 +46,10 @@ import { fieldRequirement } from "~app/enums/FieldRequirement";
 import { Translation } from "react-i18next";
 import CertificateTypeCollectionDeviceType from "~app/components/Form/fields/CertificateTypeCollectionDeviceType";
 import {
+    getHasHardwareProps,
+    hasFirmwareSpecificSchema,
     isCertificateTypeCredentialUsed,
+    isCertificateTypeMTlsScepAuthenticationUsed,
     isCredentialsSourceUsed,
     isDeviceSecretCredentialUsed,
 } from "~app/entities/DeviceType/utilities";
@@ -143,7 +147,7 @@ const getFieldWithRequiredProps = (
                             t(
                                 requireDeviceVpnCertificate
                                     ? "label.enableDeviceVpnCertificate"
-                                    : "label." + requiredField ?? "unknown"
+                                    : "label." + (requiredField ?? "unknown")
                             ) +
                             " " +
                             t("help.requiredFieldEnableToUse") +
@@ -253,6 +257,44 @@ const getEnableFieldProps = (requirements: CommunicationProcedureRequirements, n
     };
 };
 
+const handleHasFirmwareOnChange = (
+    path: string,
+    // eslint-disable-next-line
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void,
+    event: React.SyntheticEvent,
+    checked: boolean,
+    onChange: () => void,
+    values: FormikValues
+) => {
+    // using loop because values variables are not updated yet (using setFieldValue first will not update values variable in this function execution)
+    const fieldNamePrefix = "hasFirmware";
+    const falseFieldNames = ["hasHardwares", "enableFirmwareMinRsrp"];
+
+    let isAnyFirmwareChecked = false;
+    for (let i = 1; i <= 3; i++) {
+        const fieldName = fieldNamePrefix + (i + "");
+        if (fieldName === path) {
+            if (checked) {
+                isAnyFirmwareChecked = true;
+                break;
+            }
+        } else {
+            if (values[fieldName] === true) {
+                isAnyFirmwareChecked = true;
+                break;
+            }
+        }
+    }
+
+    if (!isAnyFirmwareChecked) {
+        falseFieldNames.forEach((name: string) => {
+            setFieldValue(name, false);
+        });
+    }
+
+    onChange();
+};
+
 const getCredentialsSourceProps = (createForm: boolean): FieldInterface => {
     if (createForm) {
         return {
@@ -283,6 +325,14 @@ const getDeviceTypeCertificateTypeCredentialProps = (): FieldInterface => {
     return {
         hidden: (values: FormikValues) => (isCertificateTypeCredentialUsed(values) ? false : true),
         required: (values: FormikValues) => (isCertificateTypeCredentialUsed(values) ? true : false),
+        help: true,
+    };
+};
+
+const getDeviceTypeCertificateTypeMTlsScepAuthenticationProps = (): FieldInterface => {
+    return {
+        hidden: (values: FormikValues) => (isCertificateTypeMTlsScepAuthenticationUsed(values) ? false : true),
+        required: (values: FormikValues) => (isCertificateTypeMTlsScepAuthenticationUsed(values) ? true : false),
         help: true,
     };
 };
@@ -413,17 +463,52 @@ const composeGetFields = (
                 {...{ certificateTypes: certificateTypes, ...getDeviceTypeCertificateTypeCredentialProps() }}
             />
         ),
+        deviceTypeCertificateTypeMTlsScepAuthentication: (
+            <SelectApi
+                {...{
+                    endpoint: "/options/available/mtls/scep/certificate/types",
+                    ...getDeviceTypeCertificateTypeMTlsScepAuthenticationProps(),
+                }}
+            />
+        ),
         communicationProcedure: <RadioEnum {...{ enum: communicationProcedure, help: true, required: true }} />,
 
-        hasFirmware1: <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware1") }} />,
+        hasFirmware1: (
+            <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware1"), onChange: handleHasFirmwareOnChange }} />
+        ),
         nameFirmware1: <Text {...{ ...showAndRequireOnTrue("hasFirmware1") }} />,
         customUrlFirmware1: <Text {...{ help: "help.customUrlFirmware", ...showOnTrue("hasFirmware1") }} />,
-        hasFirmware2: <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware2") }} />,
+        firmwareSchema1: (
+            <SelectEnum {...{ enum: firmwareVersionSchema, help: true, ...showAndRequireOnTrue("hasFirmware1") }} />
+        ),
+        allowDowngradeFirmware1: (
+            <Checkbox {...{ help: true, hidden: (values) => !hasFirmwareSpecificSchema(values, "1") }} />
+        ),
+
+        hasFirmware2: (
+            <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware2"), onChange: handleHasFirmwareOnChange }} />
+        ),
         nameFirmware2: <Text {...{ ...showAndRequireOnTrue("hasFirmware2") }} />,
         customUrlFirmware2: <Text {...{ help: "help.customUrlFirmware", ...showOnTrue("hasFirmware2") }} />,
-        hasFirmware3: <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware3") }} />,
+        firmwareSchema2: (
+            <SelectEnum {...{ enum: firmwareVersionSchema, help: true, ...showAndRequireOnTrue("hasFirmware2") }} />
+        ),
+        allowDowngradeFirmware2: (
+            <Checkbox {...{ help: true, hidden: (values) => !hasFirmwareSpecificSchema(values, "2") }} />
+        ),
+
+        hasFirmware3: (
+            <Checkbox {...{ ...getFieldProps(requirements, "hasFirmware3"), onChange: handleHasFirmwareOnChange }} />
+        ),
         nameFirmware3: <Text {...{ ...showAndRequireOnTrue("hasFirmware3") }} />,
         customUrlFirmware3: <Text {...{ help: "help.customUrlFirmware", ...showOnTrue("hasFirmware3") }} />,
+        firmwareSchema3: (
+            <SelectEnum {...{ enum: firmwareVersionSchema, help: true, ...showAndRequireOnTrue("hasFirmware3") }} />
+        ),
+        allowDowngradeFirmware3: (
+            <Checkbox {...{ help: true, hidden: (values) => !hasFirmwareSpecificSchema(values, "3") }} />
+        ),
+
         hasConfig1: <Checkbox {...{ ...getFieldProps(requirements, "hasConfig1") }} />,
         hasAlwaysReinstallConfig1: (
             <Checkbox
@@ -473,6 +558,8 @@ const composeGetFields = (
         fieldRegistrationId: <RadioEnum {...{ enum: fieldRequirement }} />,
         fieldEndorsementKey: <RadioEnum {...{ enum: fieldRequirement }} />,
         fieldHardwareVersion: <RadioEnum {...{ enum: fieldRequirement }} />,
+
+        hasHardwares: <Checkbox {...{ ...getHasHardwareProps(requirements) }} />,
 
         hasVariables: (
             <Checkbox
@@ -565,6 +652,7 @@ const composeGetFields = (
                 {...{ ...getFieldProps(requirements, "hasDeviceToNetworkConnection", undefined, undefined, true) }}
             />
         ),
+        hasCustomData: <Checkbox {...{ ...getFieldProps(requirements, "hasCustomData") }} />,
         //This collection handles hasCertificateType field in same place as other hasX fields
         hasCertificateTypesCollection: (
             <CertificateTypeCollectionDeviceType

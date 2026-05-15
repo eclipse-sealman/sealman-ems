@@ -17,17 +17,17 @@ namespace App\EventListener;
 
 use App\Entity\DeviceTypeCertificateType;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: DeviceTypeCertificateType::class)]
 class DeviceTypeCertificateTypePostLoadListener
 {
-    public function postLoad(DeviceTypeCertificateType $deviceTypeCertificateType, LifecycleEventArgs $event): void
+    public function postLoad(DeviceTypeCertificateType $deviceTypeCertificateType, PostLoadEventArgs $event): void
     {
         $deviceTypeCertificateType->setIsCertificateTypeAvailable(
-                $deviceTypeCertificateType->getDeviceType()->getHasCertificates() &&
-                $deviceTypeCertificateType->getCertificateType()->getIsAvailable()
-            );
+            $deviceTypeCertificateType->getDeviceType()->getHasCertificates() &&
+            $deviceTypeCertificateType->getCertificateType()->getIsAvailable()
+        );
     }
 }

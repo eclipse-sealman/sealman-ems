@@ -174,12 +174,12 @@ trait AuthenticationTrait
             return false;
         }
 
-        // SMART EMS uses qop
+        // SEALMAN uses qop
         if (!Arr::get($parameters, 'qop')) {
             return false;
         }
 
-        // SMART EMS supports qop=auth
+        // SEALMAN supports qop=auth
         if ('auth' !== Arr::get($parameters, 'qop')) {
             return false;
         }

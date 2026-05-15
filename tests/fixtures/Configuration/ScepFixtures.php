@@ -20,7 +20,7 @@ use App\DataFixtures as ProdFixtures;
 use App\Entity\CertificateType;
 use App\Entity\Configuration;
 use App\Enum\PkiHashAlgorithm;
-use App\Enum\PkiKeyLength;
+use App\Enum\PkiKeyType;
 use App\Enum\PkiType;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -59,7 +59,7 @@ class ScepFixtures extends AbstractFixtureGroupAsClass implements DependentFixtu
         $certificateType->setScepRevocationBasicAuthUser('scepuser');
         $certificateType->setScepRevocationBasicAuthPassword('sceppassword');
         $certificateType->setScepHashFunction(PkiHashAlgorithm::SHA512);
-        $certificateType->setScepKeyLength(PkiKeyLength::KEY4096);
+        $certificateType->setScepKeyType(PkiKeyType::RSA4096);
         $certificateType->setPkiType(PkiType::SCEP);
         $certificateType->setScepTimeout(900);
 

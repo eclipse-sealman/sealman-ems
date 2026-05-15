@@ -20,24 +20,7 @@ use Symfony\Component\Validator\Constraints\Ip;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class IpRange extends Ip
 {
-    public $messageInvalidIpRange = 'validation.invalidIpRange';
-    public $messageSubnet = 'validation.invalidSubnet';
-
-    public function __construct(
-        ?array $options = null,
-        ?string $version = null,
-        ?string $message = 'validation.ip',
-        ?callable $normalizer = null,
-        ?array $groups = null,
-        mixed $payload = null
-    ) {
-        parent::__construct(
-            $options,
-            $version,
-            $message,
-            $normalizer,
-            $groups,
-            $payload,
-        );
-    }
+    public string $messageInvalidIpRange = 'validation.invalidIpRange';
+    public string $messageSubnet = 'validation.invalidSubnet';
+    public string $message = 'validation.ip';
 }

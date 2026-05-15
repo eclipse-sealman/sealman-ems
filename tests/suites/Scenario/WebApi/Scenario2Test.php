@@ -24,15 +24,15 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  * This is a scenario test. They are numbered instead of named by design.
  * It has one long method divided into several steps.
  *
- * Scenario 2 tests on SMART EMS license and using Edge gateway. It has following steps.
+ * Scenario 2 tests with features disabled and using Edge gateway. It has following steps.
  * 1. Login as admin
  * 2. Create access tags (Access tag 1, Access tag 2, Access tag 3)
  * 3. Create Device 1 with AT1
  * 4. Create Device 2 with AT1 and AT2
  * 5. Create Device 3 with AT2
  * 6. Create Device 4 with no access tags
- * 7. Create SMART EMS user with AT1 (SE1)
- * 8. Create SMART EMS user with AT2 (SE2)
+ * 7. Create user with device management permissions with AT1 (SE1)
+ * 8. Create user with device management permissions with AT2 (SE2)
  * 9. Login as SE1
  * 10. Verify lists (device)
  * 11. Configure Device 1 as staging with a template and config
@@ -47,6 +47,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Scenario')] // To be used in CI parallel tests
 class Scenario2Test extends AbstractTestCase
 {
     public static function getFixtureGroups(): array
@@ -134,7 +135,7 @@ class Scenario2Test extends AbstractTestCase
         );
         $deviceIds['device4'] = $this->getResponseValue('id');
 
-        // 7. Create SMART EMS user with AT1 (SE1)
+        // 7. Create user with device management permissions with AT1 (SE1)
         $this->getApiClient()->request(
             uri: '/web/api/user/create',
             parameters: fn () => [
@@ -149,7 +150,7 @@ class Scenario2Test extends AbstractTestCase
             ],
         );
 
-        // 8. Create SMART EMS user with AT2 (SE2)
+        // 8. Create user with device management permissions with AT2 (SE2)
         $this->getApiClient()->request(
             uri: '/web/api/user/create',
             parameters: fn () => [

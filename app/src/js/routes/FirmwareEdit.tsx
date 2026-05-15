@@ -16,6 +16,7 @@ import { FieldsInterface, Form, useHandleCatch, useLoader } from "@arteneo/forge
 import { useNavigate, useParams } from "react-router-dom";
 import CrudFieldset from "~app/fieldsets/CrudFieldset";
 import Surface from "~app/components/Common/Surface";
+import editEnabledHardwareFilesFields from "~app/entities/Firmware/editEnabledHardwareFilesFields";
 import getEditSourceUploadFields from "~app/entities/Firmware/editSourceUpload";
 import getEditSourceExternalUrlFields from "~app/entities/Firmware/editSourceExternalUrl";
 import { FirmwareInterface } from "~app/entities/Firmware/definitions";
@@ -51,16 +52,42 @@ const FirmwareEdit = () => {
         return null;
     }
 
-    const endpoint = "/firmware/" + firmware.id + "/source/" + firmware.sourceType.toLowerCase() + "/edit";
-
+    let endpoint = "";
     let fields: FieldsInterface = {};
 
+    const allowEditRequiredFirmware = firmware?.deny?.editRequiredFirmware ? false : true;
+
+    if (firmware.enableHardwareFiles) {
+        const getFields = editEnabledHardwareFilesFields(
+            firmware.deviceType,
+            firmware.feature,
+            allowEditRequiredFirmware,
+            firmware.id
+        );
+        fields = getFields();
+        endpoint = "/firmware/" + firmware.id + "/enabledhardwarefiles/edit";
+    }
+
     if (firmware.sourceType === "upload") {
-        fields = getEditSourceUploadFields();
+        const getFields = getEditSourceUploadFields(
+            firmware.deviceType,
+            firmware.feature,
+            allowEditRequiredFirmware,
+            firmware.id
+        );
+        fields = getFields();
+        endpoint = "/firmware/" + firmware.id + "/source/upload/edit";
     }
 
     if (firmware.sourceType === "externalUrl") {
-        fields = getEditSourceExternalUrlFields();
+        const getFields = getEditSourceExternalUrlFields(
+            firmware.deviceType,
+            firmware.feature,
+            allowEditRequiredFirmware,
+            firmware.id
+        );
+        fields = getFields();
+        endpoint = "/firmware/" + firmware.id + "/source/externalurl/edit";
     }
 
     return (

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\VpnConnection;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
@@ -25,7 +26,6 @@ use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/vpnpermanentconnection')]
 #[Api\Resource(
@@ -44,7 +44,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
         'deny',
     ]
 )]
-#[Security("is_granted('ROLE_ADMIN_VPN')")]
+#[IsGrantedOr('ROLE_ADMIN_VPN')]
 #[Areas(['admin:vpnsecuritysuite'])]
 class VpnPermanentConnectionController extends AbstractApiController
 {

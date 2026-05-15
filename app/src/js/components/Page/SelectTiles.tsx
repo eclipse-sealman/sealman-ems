@@ -10,18 +10,30 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import { Box } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { ArrowBackIosNewOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@arteneo/forge";
+import { Button, TranslateVariablesInterface } from "@arteneo/forge";
 import SurfaceTitle, { SurfaceTitleProps } from "~app/components/Common/SurfaceTitle";
+import { useTranslation } from "react-i18next";
 
 interface SelectTilesProps<T> extends SurfaceTitleProps {
     tiles?: T[];
     renderTile: (tile: T) => React.ReactNode;
+    emptyAlert?: string;
+    emptyAlertVariables?: TranslateVariablesInterface;
+    disableEmptyAlertTranslate?: boolean;
 }
 
-const SelectTiles = <T extends object>({ tiles, renderTile, ...surfaceTitleProps }: SelectTilesProps<T>) => {
+const SelectTiles = <T extends object>({
+    tiles,
+    renderTile,
+    emptyAlert = "selectTiles.noResults",
+    emptyAlertVariables = {},
+    disableEmptyAlertTranslate,
+    ...surfaceTitleProps
+}: SelectTilesProps<T>) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -30,21 +42,29 @@ const SelectTiles = <T extends object>({ tiles, renderTile, ...surfaceTitleProps
                 <SurfaceTitle {...surfaceTitleProps} />
             </Box>
             {typeof tiles !== "undefined" && (
-                <Box
-                    {...{
-                        sx: {
-                            display: "grid",
-                            gap: { xs: 2, lg: 4 },
-                            gridTemplateColumns: {
-                                xs: "minmax(0, 1fr)",
-                                sm: "repeat(2, minmax(0,1fr))",
-                                lg: "repeat(3, minmax(0,1fr))",
-                            },
-                        },
-                    }}
-                >
-                    {tiles.map((tile) => renderTile(tile))}
-                </Box>
+                <>
+                    {tiles.length > 0 ? (
+                        <Box
+                            {...{
+                                sx: {
+                                    display: "grid",
+                                    gap: { xs: 2, lg: 4 },
+                                    gridTemplateColumns: {
+                                        xs: "minmax(0, 1fr)",
+                                        sm: "repeat(2, minmax(0,1fr))",
+                                        lg: "repeat(3, minmax(0,1fr))",
+                                    },
+                                },
+                            }}
+                        >
+                            {tiles.map((tile) => renderTile(tile))}
+                        </Box>
+                    ) : (
+                        <Alert severity="warning">
+                            {disableEmptyAlertTranslate ? emptyAlert : t(emptyAlert, emptyAlertVariables)}
+                        </Alert>
+                    )}
+                </>
             )}
             <Box
                 {...{

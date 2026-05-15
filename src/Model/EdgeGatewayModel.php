@@ -109,7 +109,7 @@ class EdgeGatewayModel
     /**
      * Config content.
      */
-    private ?array $config = null;
+    private null|string|array $config = null;
 
     public function getRegistrationId(): ?string
     {
@@ -251,12 +251,12 @@ class EdgeGatewayModel
         $this->commandStatusErrorMessage = $commandStatusErrorMessage;
     }
 
-    public function getConfig(): ?array
+    public function getConfig(): null|string|array
     {
         return $this->config;
     }
 
-    public function setConfig(?array $config)
+    public function setConfig(null|string|array $config)
     {
         $this->config = $config;
     }

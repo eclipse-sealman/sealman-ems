@@ -25,6 +25,7 @@ use function Symfony\Component\String\u;
 use Symfony\Component\Uid\Uuid;
 use Tests\Utilities\Abstract\AbstractTestCase;
 use Tests\Utilities\ApiClient\Requests\AccessTagRequests;
+use Tests\Utilities\ApiClient\Requests\AuthenticatedRequests;
 use Tests\Utilities\ApiClient\Requests\ConfigRequests;
 use Tests\Utilities\ApiClient\Requests\DeviceAuthenticationRequests;
 use Tests\Utilities\ApiClient\Requests\DeviceEndpointDeviceRequests;
@@ -48,6 +49,7 @@ use Tests\Utilities\ApiClient\Requests\VpnRequests;
  */
 class ApiClient
 {
+    use AuthenticatedRequests;
     use AccessTagRequests;
     use LabelRequests;
     use UserRequests;
@@ -75,6 +77,7 @@ class ApiClient
     {
         $requests = [];
 
+        $requests = array_merge($requests, $this->getAuthenticatedRequests());
         $requests = array_merge($requests, $this->getAccessTagRequests());
         $requests = array_merge($requests, $this->getLabelRequests());
         $requests = array_merge($requests, $this->getUserRequests());

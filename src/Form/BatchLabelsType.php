@@ -32,7 +32,7 @@ class BatchLabelsType extends BatchQueryType
             'multiple' => true,
             'class' => Label::class,
             'constraints' => [
-                new Count(['min' => 1]),
+                new Count(min: 1),
             ],
         ]);
     }

@@ -20,30 +20,37 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class DeviceType extends Constraint
 {
-    public $messageRequiredField = 'validation.deviceType.requiredField';
-    public $messageNotUsedField = 'validation.deviceType.unusedField';
-    public $messageFirmwareNotUsedCannotEnableMinRsrp = 'validation.deviceType.firmwareNotUsedCannotEnableMinRsrp';
-    public $messageConfigNotUsedCannotEnableMinRsrp = 'validation.deviceType.configNotUsedCannotEnableMinRsrp';
-    public $messageAlwaysReinstallConfigNotAvailable = 'validation.deviceType.alwaysReinstallConfigNotAvailable';
-    public $messageHasCertificatesNotAvailable = 'validation.deviceType.hasCertificatesNotAvailable';
-    public $messageEnableCertificatesAutoRenewNotAvailable = 'validation.deviceType.enableCertificatesAutoRenewNotAvailable';
-    public $messageEnableSubjectAltNameNotAvailable = 'validation.deviceType.enableSubjectAltNameNotAvailable';
-    public $messageHasVpnNotAvailable = 'validation.deviceType.hasVpnNotAvailable';
-    public $messageHasEndpointDevicesNotAvailable = 'validation.deviceType.hasEndpointDevicesNotAvailable';
-    public $messageHasMasqueradesNotAvailable = 'validation.deviceType.hasMasqueradesNotAvailable';
-    public $messageRoutePrefixUsed = 'validation.deviceType.routePrefixUsed';
-    public $messageRoutePrefixStart = 'validation.deviceType.routePrefixStart';
-    public $messageRoutePrefixReserved = 'validation.deviceType.routePrefixReserved';
-    public $messagePropertyRequired = 'validation.deviceType.propertyRequired';
-    public $messagePropertyRequiredInCommunication = 'validation.deviceType.propertyRequiredInCommunication';
-    public $messageCertificateCategoryRequired = 'validation.deviceType.certificateCategoryRequired';
-    public $messageCertificateInvalidCertificateEntity = 'validation.deviceType.certificateInvalidCertificateEntity';
-    public $messageCertificateInvalidCertificateCategory = 'validation.deviceType.certificateInvalidCertificateCategory';
-    public $messageCredentialsSourceMissing = 'validation.deviceType.credentialsSourceMissing';
-    public $messageDeviceTypeSecretCredentialMissing = 'validation.deviceType.deviceTypeSecretCredentialMissing';
-    public $messageDeviceTypeSecretCredentialInvalid = 'validation.deviceType.deviceTypeSecretCredentialInvalid';
-    public $messageDeviceTypeCertificateTypeCredentialMissing = 'validation.deviceType.deviceTypeCertificateTypeCredentialMissing';
-    public $messageDeviceTypeCertificateTypeCredentialInvalid = 'validation.deviceType.deviceTypeCertificateTypeCredentialInvalid';
+    public string $messageRequiredField = 'validation.deviceType.requiredField';
+    public string $messageNotUsedField = 'validation.deviceType.unusedField';
+    public string $messageFirmwareNotUsedCannotEnableMinRsrp = 'validation.deviceType.firmwareNotUsedCannotEnableMinRsrp';
+    public string $messageFirmwareNotUsedCannotEnableHardwares = 'validation.deviceType.firmwareNotUsedCannotEnableHasHardwares';
+    public string $messageCannotDisableHardwaresFirmwareHardwareExists = 'validation.deviceType.cannotDisableHasHardwaresFirmwareHardwareExists';
+    public string $messageConfigNotUsedCannotEnableMinRsrp = 'validation.deviceType.configNotUsedCannotEnableMinRsrp';
+    public string $messageAlwaysReinstallConfigNotAvailable = 'validation.deviceType.alwaysReinstallConfigNotAvailable';
+    public string $messageHasCertificatesNotAvailable = 'validation.deviceType.hasCertificatesNotAvailable';
+    public string $messageEnableCertificatesAutoRenewNotAvailable = 'validation.deviceType.enableCertificatesAutoRenewNotAvailable';
+    public string $messageEnableSubjectAltNameNotAvailable = 'validation.deviceType.enableSubjectAltNameNotAvailable';
+    public string $messageHasVpnNotAvailable = 'validation.deviceType.hasVpnNotAvailable';
+    public string $messageHasEndpointDevicesNotAvailable = 'validation.deviceType.hasEndpointDevicesNotAvailable';
+    public string $messageHasMasqueradesNotAvailable = 'validation.deviceType.hasMasqueradesNotAvailable';
+    public string $messageRoutePrefixUsed = 'validation.deviceType.routePrefixUsed';
+    public string $messageRoutePrefixStart = 'validation.deviceType.routePrefixStart';
+    public string $messageRoutePrefixReserved = 'validation.deviceType.routePrefixReserved';
+    public string $messagePropertyRequired = 'validation.deviceType.propertyRequired';
+    public string $messagePropertyRequiredInCommunication = 'validation.deviceType.propertyRequiredInCommunication';
+    public string $messageCertificateCategoryRequired = 'validation.deviceType.certificateCategoryRequired';
+    public string $messageCertificateInvalidCertificateEntity = 'validation.deviceType.certificateInvalidCertificateEntity';
+    public string $messageCertificateInvalidCertificateCategory = 'validation.deviceType.certificateInvalidCertificateCategory';
+    public string $messageCredentialsSourceMissing = 'validation.deviceType.credentialsSourceMissing';
+    public string $messageDeviceTypeSecretCredentialMissing = 'validation.deviceType.deviceTypeSecretCredentialMissing';
+    public string $messageDeviceTypeSecretCredentialInvalid = 'validation.deviceType.deviceTypeSecretCredentialInvalid';
+    public string $messageDeviceTypeCertificateTypeCredentialMissing = 'validation.deviceType.deviceTypeCertificateTypeCredentialMissing';
+    public string $messageDeviceTypeCertificateTypeCredentialInvalid = 'validation.deviceType.deviceTypeCertificateTypeCredentialInvalid';
+    public string $messageFirmwareSchemaMissing = 'validation.deviceType.firmwareSchemaMissing';
+    public string $messageFirmwareSchemaAnyCannotHaveUpdatePath = 'validation.deviceType.firmwareSchemaAnyCannotHaveUpdatePath';
+    public string $messageFirmwareVersionNotMatchingSchema = 'validation.deviceType.firmwareVersionNotMatchingSchema';
+    public string $messageDeviceTypeCertificateTypeMTlsScepAuthenticationMissing = 'validation.deviceType.deviceTypeCertificateTypeMTlsScepAuthenticationMissing';
+    public string $messageDeviceTypeCertificateTypeMTlsScepAuthenticationInvalid = 'validation.deviceType.deviceTypeCertificateTypeMTlsScepAuthenticationInvalid';
 
     public function getTargets(): string|array
     {

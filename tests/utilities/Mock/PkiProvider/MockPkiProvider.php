@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Tests\Utilities\Mock\PkiProvider;
 
 use App\Enum\PkiHashAlgorithm;
-use App\Enum\PkiKeyLength;
+use App\Enum\PkiKeyType;
 use App\Provider\Interface\PkiProviderInterface;
 use App\Trait\LogsCollectorTrait;
 
@@ -35,7 +35,7 @@ class MockPkiProvider implements PkiProviderInterface
         return $this->caCertificate;
     }
 
-    public function signCsr(PkiHashAlgorithm $hashAlgorithm, PkiKeyLength $keyLength, string $caCertificatePem, \OpenSSLCertificateSigningRequest $csr): string
+    public function signCsr(PkiHashAlgorithm $hashAlgorithm, PkiKeyType $keyType, string $caCertificatePem, string $csr): string
     {
         $certificate = \openssl_csr_sign(
             $csr,
@@ -43,8 +43,8 @@ class MockPkiProvider implements PkiProviderInterface
             $this->caPrivateKey,
             365,
             [
-                'digest_alg' => $hashAlgorithm->value,
-                'private_key_bits' => $keyLength->value,
+                'digest_alg' => 'SHA512',
+                'private_key_bits' => 4096,
             ],
             \random_int(1, \intval((PHP_INT_MAX / 2) - 1)) // Serial number
         );

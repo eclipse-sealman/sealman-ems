@@ -47,6 +47,8 @@ import FirmwareCreateSelectDeviceType from "~app/routes/FirmwareCreateSelectDevi
 import FirmwareCreateSelectFeature from "~app/routes/FirmwareCreateSelectFeature";
 import FirmwareCreate from "~app/routes/FirmwareCreate";
 import FirmwareEdit from "~app/routes/FirmwareEdit";
+import FirmwareHardwareFile from "~app/routes/FirmwareHardwareFile";
+import FirmwareHardwareFileCreate from "~app/routes/FirmwareHardwareFileCreate";
 import TemplateVersionStagingEdit from "~app/routes/TemplateVersionStagingEdit";
 import UserVpnConnectionDetails from "~app/routes/UserVpnConnectionDetails";
 import VpnConnection from "~app/routes/VpnConnection";
@@ -72,6 +74,11 @@ import OpenSourceLicense from "~app/routes/OpenSourceLicense";
 import UserCertificatesDetails from "~app/routes/UserCertificatesDetails";
 import SecretLog from "~app/routes/SecretLog";
 import DeviceSecret from "~app/routes/DeviceSecret";
+import FirmwareCreateEnabledHardwareFiles from "~app/routes/FirmwareCreateEnabledHardwareFiles";
+import FirmwareCreateEnabledHardwareFilesSelectDeviceType from "~app/routes/FirmwareCreateEnabledHardwareFilesSelectDeviceType";
+import FirmwareCreateEnabledHardwareFilesSelectFeature from "~app/routes/FirmwareCreateEnabledHardwareFilesSelectFeature";
+import FirmwareHardwareFileEditExternalUrl from "~app/routes/FirmwareHardwareFileEditExternalUrl";
+import DeviceMTlsAuthentication from "~app/routes/DeviceMTlsAuthentication";
 
 const AppRoutes = () => {
     const location = useLocation();
@@ -110,6 +117,7 @@ const AppRoutes = () => {
                     <Route path="/userloginattempt/*" element={<UserLoginAttempt />} />
                     <Route path="/user/*" element={<User />} />
                     <Route path="/deviceauthentication/*" element={<DeviceAuthentication />} />
+                    <Route path="/devicemtlsauthentication/*" element={<DeviceMTlsAuthentication />} />
                     <Route path="/maintenance/*" element={<MaintenanceRoutes />} />
                     <Route path="/accesstag/*" element={<AccessTag />} />
                     <Route path="/label/*" element={<Label />} />
@@ -119,6 +127,7 @@ const AppRoutes = () => {
                     <Route path="/opensourcelicense/*" element={<OpenSourceLicense />} />
                     <Route path="/configuration/*" element={<ConfigurationRoutes />} />
                     <Route path="/secretlog/*" element={<SecretLog />} />
+                    <Route path="/auditlogchange/*" element={<AuditLogChange />} />
                 </Route>
                 <Route path="" element={<RoleChecker adminVpn />}>
                     <Route path="/vpnpermanentconnection/*" element={<VpnPermanentConnection />} />
@@ -138,7 +147,6 @@ const AppRoutes = () => {
                     <Route path="/devicecommand/*" element={<DeviceCommand />} />
                     <Route path="/communicationlog/*" element={<CommunicationLog />} />
                     <Route path="/configlog/*" element={<ConfigLog />} />
-                    <Route path="/auditlogchange/*" element={<AuditLogChange />} />
                     <Route path="/diagnoselog/*" element={<DiagnoseLog />} />
                     <Route path="/template/edit/:id" element={<TemplateEdit />} />
                     <Route path="/template/*" element={<Template />} />
@@ -152,10 +160,28 @@ const AppRoutes = () => {
                     <Route path="/config/create" element={<ConfigCreateSelectDeviceType />} />
                     <Route path="/config/*" element={<Config />} />
                     <Route path="/firmware/edit/:id" element={<FirmwareEdit />} />
+                    <Route
+                        path="/firmware/create/enabledhardwarefiles/:deviceTypeId/:feature"
+                        element={<FirmwareCreateEnabledHardwareFiles />}
+                    />
+                    <Route
+                        path="/firmware/create/enabledhardwarefiles/:deviceTypeId"
+                        element={<FirmwareCreateEnabledHardwareFilesSelectFeature />}
+                    />
+                    <Route
+                        path="/firmware/create/enabledhardwarefiles"
+                        element={<FirmwareCreateEnabledHardwareFilesSelectDeviceType />}
+                    />
                     <Route path="/firmware/create/:deviceTypeId/:feature" element={<FirmwareCreate />} />
                     <Route path="/firmware/create/:deviceTypeId" element={<FirmwareCreateSelectFeature />} />
                     <Route path="/firmware/create" element={<FirmwareCreateSelectDeviceType />} />
                     <Route path="/firmware/*" element={<Firmware />} />
+                    <Route
+                        path="/firmwarehardwarefile/edit/externalurl/:id/"
+                        element={<FirmwareHardwareFileEditExternalUrl />}
+                    />
+                    <Route path="/firmwarehardwarefile/:firmwareId/create" element={<FirmwareHardwareFileCreate />} />
+                    <Route path="/firmwarehardwarefile/:firmwareId/*" element={<FirmwareHardwareFile />} />
                 </Route>
                 <Route path="" element={<RoleChecker adminVpn vpn />}>
                     <Route path="/deviceendpointdevice/details/:id" element={<DeviceEndpointDeviceDetails />} />

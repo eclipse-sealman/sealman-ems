@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class MaintenanceSchedule extends Constraint
 {
-    public $messageBackupEmpty = 'validation.backupEmpty';
-    public $messageDayOfMonthZero = 'validation.dayOfMonthZero';
+    public string $messageBackupEmpty = 'validation.backupEmpty';
+    public string $messageDayOfMonthZero = 'validation.dayOfMonthZero';
 
     public function getTargets(): string|array
     {

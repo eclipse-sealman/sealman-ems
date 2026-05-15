@@ -17,7 +17,6 @@ namespace App\Routing;
 
 use App\Attribute\Areas;
 use App\Service\Helper\FeatureManagerTrait;
-use Doctrine\Common\Annotations\Reader;
 use Nelmio\ApiDocBundle\Util\ControllerReflector;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -26,18 +25,14 @@ final class NelmioRouteCollectionBuilder
 {
     use FeatureManagerTrait;
 
-    /** @var Reader */
-    private $annotationReader;
-
     /** @var ControllerReflector */
     private $controllerReflector;
 
     /** @var string */
     private $area;
 
-    public function __construct(Reader $annotationReader, ControllerReflector $controllerReflector)
+    public function __construct(ControllerReflector $controllerReflector)
     {
-        $this->annotationReader = $annotationReader;
         $this->controllerReflector = $controllerReflector;
     }
 
@@ -121,17 +116,17 @@ final class NelmioRouteCollectionBuilder
             return null;
         }
 
-        $attribute = $this->getAttributesAsAnnotation($reflectionMethod, Areas::class)[0] ?? null;
+        $attribute = $this->getAreasAttribute($reflectionMethod);
         if (null !== $attribute) {
             return $attribute->getAreas();
         }
 
-        $attribute = $this->getAttributesAsAnnotation($reflectionMethod->getDeclaringClass(), Areas::class)[0] ?? null;
+        $attribute = $this->getAreasAttribute($reflectionMethod->getDeclaringClass());
         if (null !== $attribute) {
             return $attribute->getAreas();
         }
 
-        $attribute = $this->annotationReader->getMethodAnnotation($reflectionMethod, Areas::class);
+        $attribute = $this->getAreasAttribute($reflectionMethod);
         if (null !== $attribute) {
             return $attribute->getAreas();
         }
@@ -139,17 +134,15 @@ final class NelmioRouteCollectionBuilder
         return null;
     }
 
-    private function getAttributesAsAnnotation($reflection, string $className): array
+    /**
+     * @param \ReflectionClass|\ReflectionMethod $reflection
+     */
+    private function getAreasAttribute($reflection): ?Areas
     {
-        $annotations = [];
-        if (\PHP_VERSION_ID < 80100) {
-            return $annotations;
+        foreach ($reflection->getAttributes(Areas::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            return $attribute->newInstance();
         }
 
-        foreach ($reflection->getAttributes($className, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-            $annotations[] = $attribute->newInstance();
-        }
-
-        return $annotations;
+        return null;
     }
 }

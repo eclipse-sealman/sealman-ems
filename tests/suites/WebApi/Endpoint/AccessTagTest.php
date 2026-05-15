@@ -21,6 +21,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
 
 #[Group('full')]
 #[Group('smoke')]
+#[Group('WebApi')] // To be used in CI parallel tests
 class AccessTagTest extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

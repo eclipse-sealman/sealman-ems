@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\VariableType;
 use App\Validator\Constraints\Variable as VariableValidator;
 use App\Validator\Constraints\VariableName;
 use App\Validator\Constraints\VariablePredefined as VariablePredefinedValidator;
@@ -38,6 +39,13 @@ class ImportFileRowVariable
     #[VariableName(groups: ['importFileRow:import'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
+
+    /**
+     * Variable type.
+     */
+    #[Groups(['importFileRow:public'])]
+    #[ORM\Column(type: Types::STRING, enumType: VariableType::class)]
+    private ?VariableType $variableType = null;
 
     /**
      * Variable value.
@@ -101,5 +109,15 @@ class ImportFileRowVariable
     public function setRow(?ImportFileRow $row)
     {
         $this->row = $row;
+    }
+
+    public function getVariableType(): ?VariableType
+    {
+        return $this->variableType;
+    }
+
+    public function setVariableType(?VariableType $variableType)
+    {
+        $this->variableType = $variableType;
     }
 }

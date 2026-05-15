@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\UserDeny;
 use App\Entity\User;
 use App\Service\Helper\CertificateManagerTrait;
@@ -30,7 +31,6 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Rest\Route('/usercertificate')]
@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
     denyClass: UserDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'certificate:private', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 class UserCertificateController extends AbstractApiController
 {
@@ -65,7 +65,7 @@ class UserCertificateController extends AbstractApiController
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response200(description: 'CA certificate', content: new OA\MediaType(mediaType: 'application/x-x509-ca-cert', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
     #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
     public function downloadCaAction(Request $request, int $id, int $certificateTypeId)
     {
@@ -78,7 +78,7 @@ class UserCertificateController extends AbstractApiController
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response200(description: 'Certificate', content: new OA\MediaType(mediaType: 'application/x-x509-user-cert', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
     #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
     public function downloadCertificateAction(Request $request, int $id, int $certificateTypeId)
     {
@@ -91,7 +91,7 @@ class UserCertificateController extends AbstractApiController
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response200(description: 'PKCS#12', content: new OA\MediaType(mediaType: 'application/x-pkcs12', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
     #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
     public function downloadPkcs12Action(Request $request, int $id, int $certificateTypeId)
     {
@@ -104,7 +104,7 @@ class UserCertificateController extends AbstractApiController
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response200(description: 'Private key', content: new OA\MediaType(mediaType: 'application/pkcs8', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
     #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
     public function downloadPrivateAction(Request $request, int $id, int $certificateTypeId)
     {

@@ -1,5 +1,3 @@
-<?php
-
 // Copyright (c) 2025 Contributors to the Eclipse Foundation.
 //
 // See the NOTICE file(s) distributed with this work for additional
@@ -11,12 +9,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-declare(strict_types=1);
+import React from "react";
+import { Text, getFields } from "@arteneo/forge";
 
-namespace App\Enum;
+const fields = {
+    name: <Text {...{ required: true }} />,
+    hardwareVersion: <Text {...{ disabled: true, help: true }} />,
+};
 
-enum PkiKeyLength: string
-{
-    case KEY2048 = '2048';
-    case KEY4096 = '4096';
-}
+export default getFields(fields);

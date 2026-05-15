@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\MaintenanceLog;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
@@ -23,7 +24,6 @@ use Carve\ApiBundle\Model\ListQuerySortingInterface;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/maintenancelog')]
 #[Api\Resource(
@@ -32,7 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
     listFormSortingFieldAppend: ['maintenanceId']
 )]
 #[Rest\View(serializerGroups: ['identification', 'maintenanceLog:public', 'logLevel', 'createdAt', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class MaintenanceLogController extends AbstractApiController
 {

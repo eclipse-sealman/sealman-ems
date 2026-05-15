@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\MaintenanceDeny;
 use App\Entity\Maintenance;
 use App\Enum\MaintenanceStatus;
@@ -36,7 +37,6 @@ use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -51,7 +51,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     denyClass: MaintenanceDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'maintenance:public', 'loglevel', 'timestampable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class MaintenanceController extends AbstractApiController
 {

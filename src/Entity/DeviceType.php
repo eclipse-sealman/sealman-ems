@@ -20,8 +20,11 @@ use App\Enum\CommunicationProcedure;
 use App\Enum\ConfigFormat;
 use App\Enum\CredentialsSource;
 use App\Enum\DeviceTypeIcon;
+use App\Enum\Feature;
 use App\Enum\FieldRequirement;
+use App\Enum\FirmwareVersionSchema;
 use App\Enum\MasqueradeType;
+use App\Exception\UnsupportedValueException;
 use App\Model\AuditableInterface;
 use App\Model\FieldRequirementsInterface;
 use App\Validator\Constraints\DeviceType as DeviceTypeValidator;
@@ -53,7 +56,7 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
      * Unique name of Device Type - used for identification and show to user.
      */
     #[Assert\NotBlank(groups: ['deviceType:common'])]
-    #[Groups(['deviceType:public', 'device:public', 'config:public', 'firmware:public', 'template:public', 'templateVersion:public', AuditableInterface::GROUP])]
+    #[Groups(['deviceType:public', 'device:public', 'config:public', 'firmware:public', 'firmwareHardwareFile:public', 'template:public', 'templateVersion:public', AuditableInterface::GROUP])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
 
@@ -109,6 +112,13 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     private ?bool $enabled = true;
 
     /**
+     * Are hardwares supported?
+     */
+    #[Groups(['deviceType:public', 'device:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $hasHardwares = false;
+
+    /**
      * Is primary feature firmware configuration available - check documentation.
      */
     #[Groups(['deviceType:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
@@ -118,7 +128,7 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     /**
      * Primary feature firmware name usefull for user e.g. 'Firmware', 'Device supervisor PySDK package', 'Bootloader'.
      */
-    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
+    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'firmwareHardwareFile:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
     #[Assert\NotBlankOnTrue(propertyPath: 'hasFirmware1', groups: ['deviceType:common'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $nameFirmware1 = 'Firmware';
@@ -131,6 +141,20 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     private ?string $customUrlFirmware1 = null;
 
     /**
+     * Firmware version schema 1 for device firmware validation.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::STRING, enumType: FirmwareVersionSchema::class)]
+    private ?FirmwareVersionSchema $firmwareSchema1 = FirmwareVersionSchema::ANY_SCHEMA;
+
+    /**
+     * Firmware version schema 1 is downgrade allowed.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $allowDowngradeFirmware1 = false;
+
+    /**
      * Is secondary feature firmware configuration available - check documentation.
      */
     #[Groups(['deviceType:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
@@ -140,7 +164,7 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     /**
      * Secondary feature firmware name usefull for user e.g. 'Firmware', 'Device supervisor PySDK package', 'Bootloader'.
      */
-    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
+    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'firmwareHardwareFile:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
     #[Assert\NotBlankOnTrue(propertyPath: 'hasFirmware2', groups: ['deviceType:common'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $nameFirmware2 = 'Firmware2';
@@ -153,6 +177,20 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     private ?string $customUrlFirmware2 = null;
 
     /**
+     * Firmware version schema 2 for device firmware validation.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::STRING, enumType: FirmwareVersionSchema::class)]
+    private ?FirmwareVersionSchema $firmwareSchema2 = FirmwareVersionSchema::ANY_SCHEMA;
+
+    /**
+     * Firmware version schema 2 is downgrade allowed.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $allowDowngradeFirmware2 = false;
+
+    /**
      * Is tertiary feature firmware configuration available - check documentation.
      */
     #[Groups(['deviceType:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
@@ -162,7 +200,7 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     /**
      * Tertiary feature firmware name usefull for user e.g. 'Firmware', 'Device supervisor PySDK package', 'Bootloader'.
      */
-    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
+    #[Groups(['deviceType:public', 'deviceType:firmwareFeatureName', 'firmware:public', 'firmwareHardwareFile:public', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification', AuditableInterface::GROUP])]
     #[Assert\NotBlankOnTrue(propertyPath: 'hasFirmware3', groups: ['deviceType:common'])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $nameFirmware3 = 'Firmware3';
@@ -173,6 +211,20 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     #[Groups(['deviceType:public', AuditableInterface::GROUP])]
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $customUrlFirmware3 = null;
+
+    /**
+     * Firmware version schema 3 for device firmware validation.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::STRING, enumType: FirmwareVersionSchema::class)]
+    private ?FirmwareVersionSchema $firmwareSchema3 = FirmwareVersionSchema::ANY_SCHEMA;
+
+    /**
+     * Firmware version schema 3 is downgrade allowed.
+     */
+    #[Groups(['deviceType:public', 'firmware:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $allowDowngradeFirmware3 = false;
 
     /**
      * Is primary feature config configuration available - check documentation.
@@ -295,6 +347,15 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     #[ORM\ManyToOne(targetEntity: CertificateType::class, inversedBy: 'deviceTypeCertificateTypeCredentials')]
     #[ORM\JoinColumn(nullable: true)]
     private ?CertificateType $deviceTypeCertificateTypeCredential = null;
+
+    /**
+     * Certificate type used for mTLS SCEP authentication.
+     */
+    // Cannot use DeviceTypeCertificateType due to collection issues (no DeviceTypeCertificateType ID in device type form)
+    #[Groups(['deviceType:public', AuditableInterface::GROUP])]
+    #[ORM\ManyToOne(targetEntity: CertificateType::class, inversedBy: 'deviceTypeCertificateTypeMTlsScepAuthentications')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?CertificateType $deviceTypeCertificateTypeMTlsScepAuthentication = null;
 
     /**
      * Route prefix during device communication - check documentation.
@@ -438,6 +499,13 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     private ?bool $hasDeviceToNetworkConnection = false;
 
     /**
+     * Is custom data collection enabled for this device type.
+     */
+    #[Groups(['deviceType:public', 'device:public', AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $hasCustomData = false;
+
+    /**
      * Max reties for Device Commands - check documentation.
      */
     #[Groups(['deviceType:public', AuditableInterface::GROUP])]
@@ -534,6 +602,12 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     private Collection $deviceTypeSecrets;
 
     /**
+     * Device type hardwares.
+     */
+    #[ORM\OneToMany(mappedBy: 'deviceType', targetEntity: DeviceTypeHardware::class)]
+    private Collection $deviceTypeHardwares;
+
+    /**
      * Secret logs.
      */
     #[ORM\OneToMany(mappedBy: 'deviceType', targetEntity: SecretLog::class)]
@@ -561,6 +635,16 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     #[Assert\Valid(groups: ['deviceType:common'])]
     #[ORM\OneToMany(mappedBy: 'deviceType', targetEntity: DeviceTypeCertificateType::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $certificateTypes;
+
+    /**
+     * Custom data mappings that define how to extract custom data from communication payloads.
+     */
+    #[ORM\OneToMany(mappedBy: 'deviceType', targetEntity: DeviceTypeCustomDataMapping::class, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['id' => 'DESC'])]
+    private Collection $deviceTypeCustomDataMappings;
+
+    #[ORM\ManyToMany(mappedBy: 'deviceTypes', targetEntity: DeviceMTlsAuthentication::class)]
+    private Collection $deviceMTlsAuthentications;
 
     #[Groups(['representation', 'identification'])]
     public function getRepresentation(): string
@@ -598,6 +682,20 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     #[Groups(['deviceType:public', 'identification', 'template:public', 'templateVersion:public', 'device:public', 'deviceType:identification'])]
     private ?bool $isAvailable = false;
 
+    public function getFirmwareSchema(Feature $feature)
+    {
+        switch ($feature) {
+            case Feature::PRIMARY:
+                return $this->getFirmwareSchema1();
+            case Feature::SECONDARY:
+                return $this->getFirmwareSchema2();
+            case Feature::TERTIARY:
+                return $this->getFirmwareSchema3();
+            default:
+                throw new UnsupportedValueException($feature);
+        }
+    }
+
     /**
      * This function returns routePrefix which is ready to concatenate with endpoint path.
      * it will not end with '/'.
@@ -624,19 +722,19 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
         return $this->getRoutePrefix();
     }
 
-    public function addUser(User $user)
+    public function addDeviceMTlsAuthentication(DeviceMTlsAuthentication $deviceMTlsAuthentication)
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addDeviceType($this);
+        if (!$this->deviceMTlsAuthentications->contains($deviceMTlsAuthentication)) {
+            $this->deviceMTlsAuthentications->add($deviceMTlsAuthentication);
+            $deviceMTlsAuthentication->addDeviceType($this);
         }
     }
 
-    public function removeUser(User $user)
+    public function removeDeviceMTlsAuthentication(DeviceMTlsAuthentication $deviceMTlsAuthentication)
     {
-        if ($this->users->contains($user)) {
-            $this->users->removeElement($user);
-            $user->removeDeviceType($this);
+        if ($this->deviceMTlsAuthentications->contains($deviceMTlsAuthentication)) {
+            $this->deviceMTlsAuthentications->removeElement($deviceMTlsAuthentication);
+            $deviceMTlsAuthentication->removeDeviceType($this);
         }
     }
 
@@ -674,6 +772,40 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
         }
     }
 
+    public function addDeviceTypeSecret(DeviceTypeSecret $deviceTypeSecret)
+    {
+        if (!$this->deviceTypeSecrets->contains($deviceTypeSecret)) {
+            $this->deviceTypeSecrets[] = $deviceTypeSecret;
+            $deviceTypeSecret->setDeviceType($this);
+        }
+    }
+
+    public function removeDeviceTypeSecret(DeviceTypeSecret $deviceTypeSecret)
+    {
+        if ($this->deviceTypeSecrets->removeElement($deviceTypeSecret)) {
+            if ($deviceTypeSecret->getDeviceType() === $this) {
+                $deviceTypeSecret->setDeviceType(null);
+            }
+        }
+    }
+
+    public function addDeviceTypeCustomDataMapping(DeviceTypeCustomDataMapping $deviceTypeCustomDataMapping)
+    {
+        if (!$this->deviceTypeCustomDataMappings->contains($deviceTypeCustomDataMapping)) {
+            $this->deviceTypeCustomDataMappings->add($deviceTypeCustomDataMapping);
+            $deviceTypeCustomDataMapping->setDeviceType($this);
+        }
+    }
+
+    public function removeDeviceTypeCustomDataMapping(DeviceTypeCustomDataMapping $deviceTypeCustomDataMapping)
+    {
+        if ($this->deviceTypeCustomDataMappings->removeElement($deviceTypeCustomDataMapping)) {
+            if ($deviceTypeCustomDataMapping->getDeviceType() === $this) {
+                $deviceTypeCustomDataMapping->setDeviceType(null);
+            }
+        }
+    }
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
@@ -685,6 +817,9 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
         $this->templates = new ArrayCollection();
         $this->templateVersions = new ArrayCollection();
         $this->certificateTypes = new ArrayCollection();
+        $this->deviceTypeHardwares = new ArrayCollection();
+        $this->deviceTypeCustomDataMappings = new ArrayCollection();
+        $this->deviceMTlsAuthentications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -895,6 +1030,66 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     public function setAuthenticationMethod(?AuthenticationMethod $authenticationMethod)
     {
         $this->authenticationMethod = $authenticationMethod;
+    }
+
+    public function getFirmwareSchema1(): ?FirmwareVersionSchema
+    {
+        return $this->firmwareSchema1;
+    }
+
+    public function setFirmwareSchema1(?FirmwareVersionSchema $firmwareSchema1): void
+    {
+        $this->firmwareSchema1 = $firmwareSchema1;
+    }
+
+    public function getFirmwareSchema2(): ?FirmwareVersionSchema
+    {
+        return $this->firmwareSchema2;
+    }
+
+    public function setFirmwareSchema2(?FirmwareVersionSchema $firmwareSchema2): void
+    {
+        $this->firmwareSchema2 = $firmwareSchema2;
+    }
+
+    public function getFirmwareSchema3(): ?FirmwareVersionSchema
+    {
+        return $this->firmwareSchema3;
+    }
+
+    public function setFirmwareSchema3(?FirmwareVersionSchema $firmwareSchema3): void
+    {
+        $this->firmwareSchema3 = $firmwareSchema3;
+    }
+
+    public function getAllowDowngradeFirmware1(): ?bool
+    {
+        return $this->allowDowngradeFirmware1;
+    }
+
+    public function setAllowDowngradeFirmware1(?bool $allowDowngradeFirmware1): void
+    {
+        $this->allowDowngradeFirmware1 = $allowDowngradeFirmware1;
+    }
+
+    public function getAllowDowngradeFirmware2(): ?bool
+    {
+        return $this->allowDowngradeFirmware2;
+    }
+
+    public function setAllowDowngradeFirmware2(?bool $allowDowngradeFirmware2): void
+    {
+        $this->allowDowngradeFirmware2 = $allowDowngradeFirmware2;
+    }
+
+    public function getAllowDowngradeFirmware3(): ?bool
+    {
+        return $this->allowDowngradeFirmware3;
+    }
+
+    public function setAllowDowngradeFirmware3(?bool $allowDowngradeFirmware3): void
+    {
+        $this->allowDowngradeFirmware3 = $allowDowngradeFirmware3;
     }
 
     public function getRoutePrefix(): ?string
@@ -1217,6 +1412,16 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
         $this->hasDeviceToNetworkConnection = $hasDeviceToNetworkConnection;
     }
 
+    public function getHasCustomData(): ?bool
+    {
+        return $this->hasCustomData;
+    }
+
+    public function setHasCustomData(?bool $hasCustomData)
+    {
+        $this->hasCustomData = $hasCustomData;
+    }
+
     public function getVirtualSubnetCidr(): ?int
     {
         return $this->virtualSubnetCidr;
@@ -1455,5 +1660,55 @@ class DeviceType implements DenyInterface, FieldRequirementsInterface, Auditable
     public function setDeviceTypeCertificateTypeCredential(?CertificateType $deviceTypeCertificateTypeCredential)
     {
         $this->deviceTypeCertificateTypeCredential = $deviceTypeCertificateTypeCredential;
+    }
+
+    public function getDeviceTypeHardwares(): Collection
+    {
+        return $this->deviceTypeHardwares;
+    }
+
+    public function setDeviceTypeHardwares(Collection $deviceTypeHardwares)
+    {
+        $this->deviceTypeHardwares = $deviceTypeHardwares;
+    }
+
+    public function getHasHardwares(): ?bool
+    {
+        return $this->hasHardwares;
+    }
+
+    public function setHasHardwares(?bool $hasHardwares)
+    {
+        $this->hasHardwares = $hasHardwares;
+    }
+
+    public function getDeviceTypeCustomDataMappings(): Collection
+    {
+        return $this->deviceTypeCustomDataMappings;
+    }
+
+    public function setDeviceTypeCustomDataMappings(Collection $deviceTypeCustomDataMappings)
+    {
+        $this->deviceTypeCustomDataMappings = $deviceTypeCustomDataMappings;
+    }
+
+    public function getDeviceTypeCertificateTypeMTlsScepAuthentication(): ?CertificateType
+    {
+        return $this->deviceTypeCertificateTypeMTlsScepAuthentication;
+    }
+
+    public function setDeviceTypeCertificateTypeMTlsScepAuthentication(?CertificateType $deviceTypeCertificateTypeMTlsScepAuthentication)
+    {
+        $this->deviceTypeCertificateTypeMTlsScepAuthentication = $deviceTypeCertificateTypeMTlsScepAuthentication;
+    }
+
+    public function getDeviceMTlsAuthentications(): Collection
+    {
+        return $this->deviceMTlsAuthentications;
+    }
+
+    public function setDeviceMTlsAuthentications(Collection $deviceMTlsAuthentications)
+    {
+        $this->deviceMTlsAuthentications = $deviceMTlsAuthentications;
     }
 }

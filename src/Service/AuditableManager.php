@@ -106,7 +106,6 @@ class AuditableManager
             $parameterMappings = $parserResult->getParameterMappings();
             $reflection = new \ReflectionClass(get_class($query));
             $method = $reflection->getMethod('processParameterMappings');
-            $method->setAccessible(true);
             [$sqlParams, $types] = $method->invokeArgs($query, [$parameterMappings]);
 
             $auditLogChangeTableName = $this->entityManager->getClassMetadata(AuditLogChange::class)->getTableName();
@@ -139,7 +138,6 @@ class AuditableManager
             $parameterMappings = $parserResult->getParameterMappings();
             $reflection = new \ReflectionClass(get_class($querySelectAuditLogChange));
             $method = $reflection->getMethod('processParameterMappings');
-            $method->setAccessible(true);
             [$sqlParams, $types] = $method->invokeArgs($querySelectAuditLogChange, [$parameterMappings]);
 
             $auditLogChangeValuesTableName = $this->entityManager->getClassMetadata(AuditLogChangeValues::class)->getTableName();
@@ -151,12 +149,12 @@ class AuditableManager
 
             // ! Updating AuditLogChange records
             $updateAuditLogChangeSql = 'UPDATE '.$auditLogChangeTableName.' alc JOIN '.$auditLogChangeValuesTableName.' alcv ON alc.id = alcv.audit_log_change_id ';
-            $updateAuditLogChangeSql .= 'SET alc.audit_log_change_values_id = alcv.id, alc.entity_name = :entityName WHERE alc.entity_name = :entityNameUniqueId';
+            $updateAuditLogChangeSql .= 'SET alc.entity_name = :entityName WHERE alc.entity_name = :entityNameUniqueId';
 
             $statement = $connection->prepare($updateAuditLogChangeSql);
             $statement->bindValue('entityName', $entityName);
             $statement->bindValue('entityNameUniqueId', $entityNameUniqueId);
-            $statement->execute();
+            $statement->executeStatement();
             // After this statement AuditLogChange and AuditLogChangeValues records are updated and have correct values
 
             $connection->commit();

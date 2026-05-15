@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\VpnCloseConnectionDenyInterface;
 use App\Entity\VpnConnection;
 use App\Security\SecurityHelperTrait;
@@ -24,7 +25,6 @@ use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Exception\RequestExecutionException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -41,7 +41,7 @@ trait ApiVpnCloseConnectionTrait
     #[Api\ParameterPathId('ID of vpn connection to close')]
     #[Api\Response200Groups(description: 'Returns vpn connection', content: new NA\Model(type: VpnConnection::class))]
     #[Api\Response404Id('Vpn connection with specified ID was not found')]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function vpnCloseConnectionAction(Request $request, int $id)
     {

@@ -100,6 +100,14 @@ class User implements UserInterface, DenyInterface, TimestampableEntityInterface
 
     #[Groups([AuditableInterface::GROUP])]
     #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $roleDeviceMTlsCredential = false;
+
+    #[Groups([AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $roleDeviceMTlsScepCredential = false;
+
+    #[Groups([AuditableInterface::GROUP])]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $roleSystem = false;
 
     #[Groups([AuditableInterface::GROUP])]
@@ -300,6 +308,14 @@ class User implements UserInterface, DenyInterface, TimestampableEntityInterface
         }
 
         if ($this->getRoleDeviceX509Credential()) {
+            return 'no_password_hasher';
+        }
+
+        if ($this->getRoleDeviceMTlsCredential()) {
+            return 'no_password_hasher';
+        }
+
+        if ($this->getRoleDeviceMTlsScepCredential()) {
             return 'no_password_hasher';
         }
 
@@ -802,5 +818,25 @@ class User implements UserInterface, DenyInterface, TimestampableEntityInterface
     public function setRoleVpnEndpointDevices(?bool $roleVpnEndpointDevices)
     {
         $this->roleVpnEndpointDevices = $roleVpnEndpointDevices;
+    }
+
+    public function getRoleDeviceMTlsScepCredential(): ?bool
+    {
+        return $this->roleDeviceMTlsScepCredential;
+    }
+
+    public function setRoleDeviceMTlsScepCredential(?bool $roleDeviceMTlsScepCredential)
+    {
+        $this->roleDeviceMTlsScepCredential = $roleDeviceMTlsScepCredential;
+    }
+
+    public function getRoleDeviceMTlsCredential(): ?bool
+    {
+        return $this->roleDeviceMTlsCredential;
+    }
+
+    public function setRoleDeviceMTlsCredential(?bool $roleDeviceMTlsCredential)
+    {
+        $this->roleDeviceMTlsCredential = $roleDeviceMTlsCredential;
     }
 }

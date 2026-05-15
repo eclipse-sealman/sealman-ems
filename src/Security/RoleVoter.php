@@ -37,7 +37,7 @@ class RoleVoter extends Voter
     use TotpManagerTrait;
     use ConfigurationManagerTrait;
 
-    protected function supports($attribute, $subject): bool
+    protected function supports(string $attribute, $subject): bool
     {
         if (in_array($attribute, [
             'ROLE_ADMIN',
@@ -69,7 +69,7 @@ class RoleVoter extends Voter
         return false;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -101,6 +101,18 @@ class RoleVoter extends Voter
 
             if (AuthenticationMethod::X509 == $deviceType->getAuthenticationMethod()) {
                 if ($user->getRoleDeviceX509Credential() && $deviceType->getDeviceTypeCertificateTypeCredential()) {
+                    return true;
+                }
+            }
+
+            if (AuthenticationMethod::MTLS_SCEP == $deviceType->getAuthenticationMethod()) {
+                if ($user->getRoleDeviceMTlsScepCredential() && $deviceType->getDeviceTypeCertificateTypeMTlsScepAuthentication()) {
+                    return true;
+                }
+            }
+
+            if (AuthenticationMethod::MTLS == $deviceType->getAuthenticationMethod()) {
+                if ($user->getRoleDeviceMTlsCredential()) {
                     return true;
                 }
             }
@@ -162,7 +174,7 @@ class RoleVoter extends Voter
 
         // Even in maintenance mode devices should be able to connect - access limitations is done on controller level to provide correct response
         if ('ROLE_DEVICE' === $attribute) {
-            return $user->getRoleDevice() || $user->getRoleDeviceSecretCredential() || $user->getRoleDeviceX509Credential();
+            return $user->getRoleDevice() || $user->getRoleDeviceSecretCredential() || $user->getRoleDeviceX509Credential() || $user->getRoleDeviceMTlsScepCredential() || $user->getRoleDeviceMTlsCredential();
         }
 
         // When maintenance mode is enabled only Administrators can access the system

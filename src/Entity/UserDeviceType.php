@@ -15,14 +15,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Traits\BlameableEntityTrait;
 use App\Entity\Traits\BlameableEntityInterface;
-use App\Entity\Traits\TimestampableEntityTrait;
+use App\Entity\Traits\BlameableEntityTrait;
 use App\Entity\Traits\TimestampableEntityInterface;
+use App\Entity\Traits\TimestampableEntityTrait;
 use App\Enum\UserRole;
 use App\Model\AuditableInterface;
 use Carve\ApiBundle\Deny\DenyInterface;
 use Carve\ApiBundle\Deny\DenyTrait;
+use Carve\ApiBundle\Validator\Constraints\UniqueEntity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;

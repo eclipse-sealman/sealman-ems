@@ -20,10 +20,10 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class CertificateType extends Constraint
 {
-    public $messageRequired = 'validation.required';
-    public $messageDeleteRequiresUpload = 'validation.certificateType.deleteRequiresUpload';
-    public $messagePkiProtocolRequired = 'validation.certificateType.pkiProtocolRequired';
-    public $messagePkiProtocolRequiredByAutomaticBehavior = 'validation.certificateType.pkiProtocolRequiredByAutomaticBehavior';
+    public string $messageRequired = 'validation.required';
+    public string $messageDeleteRequiresUpload = 'validation.certificateType.deleteRequiresUpload';
+    public string $messagePkiProtocolRequired = 'validation.certificateType.pkiProtocolRequired';
+    public string $messagePkiProtocolRequiredByAutomaticBehavior = 'validation.certificateType.pkiProtocolRequiredByAutomaticBehavior';
 
     public function getTargets(): string|array
     {

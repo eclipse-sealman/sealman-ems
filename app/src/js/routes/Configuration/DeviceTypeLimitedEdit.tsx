@@ -111,6 +111,9 @@ const DeviceTypeLimitedEdit = () => {
                             initialValues.hasDeviceCommands,
                             initialValues.hasConfig1 || initialValues.hasConfig2 || initialValues.hasConfig3,
                             initialValues.hasFirmware1 || initialValues.hasFirmware2 || initialValues.hasFirmware3,
+                            initialValues.hasFirmware1,
+                            initialValues.hasFirmware2,
+                            initialValues.hasFirmware3,
                             hasNoneCommunicationProcedure(initialValues.communicationProcedure)
                         ),
                     onSubmitSuccess: (defaultOnSubmitSuccess) => {

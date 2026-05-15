@@ -67,7 +67,7 @@ const DeviceTypeSecretCreate = () => {
 
     const titleProps: SurfaceTitleProps = {
         title: "route.title.configuration.deviceTypeSecret",
-        titleTo: "/configuration/devicetypesecret/list",
+        titleTo: "/configuration/devicetypesecret/" + deviceTypeId + "/list",
         subtitle: "route.subtitle.create",
         icon: <VpnKeyOutlined />,
     };
