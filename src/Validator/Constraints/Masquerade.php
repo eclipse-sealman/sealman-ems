@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Masquerade extends Constraint
 {
-    public $messageSubnetNotUnique = 'validation.masquerade.subnetNotUnique';
+    public string $messageSubnetNotUnique = 'validation.masquerade.subnetNotUnique';
 
     public function getTargets(): string|array
     {

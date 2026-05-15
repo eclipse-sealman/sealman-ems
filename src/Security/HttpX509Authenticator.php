@@ -15,57 +15,19 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\Service\Helper\DeviceAuthenticationManagerTrait;
 use Carve\ApiBundle\Helper\Arr;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
-use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class HttpX509Authenticator implements AuthenticatorInterface, InteractiveAuthenticatorInterface
+class HttpX509Authenticator extends AbstractHttpX509Authenticator
 {
     use DeviceAuthenticatorHelperTrait;
-    use DeviceAuthenticationManagerTrait;
-
-    private string $httpX509CertificateParameterName;
 
     /**
-     * @var LoggerInterface
+     * Method should return username for UserBadge (in SelfValidatingPassport) or throw BadCredentialsException.
      */
-    protected $logger;
-
-    public function __construct(string $httpX509CertificateParameterName, LoggerInterface $logger = null)
+    protected function authenticateX509(Request $request, string $requestCertificateContent, array $requestCertificateArray): string
     {
-        $this->httpX509CertificateParameterName = $httpX509CertificateParameterName;
-        $this->logger = $logger;
-    }
-
-    public function supports(Request $request): ?bool
-    {
-        return null !== $this->getCertificateContent($request);
-    }
-
-    public function authenticate(Request $request): Passport
-    {
-        $requestCertificateContent = $this->getCertificateContent($request);
-        if (!$requestCertificateContent) {
-            throw new BadCredentialsException('Certificate missing.');
-        }
-
-        $requestCertificateArray = openssl_x509_parse($requestCertificateContent);
-        if ($requestCertificateArray) {
-            // Making sure device failed login attempts has user identifier data if during authentication process exception is thrown (e.g. invalid credentials exception)
-            $this->deviceAuthenticationManager->setUserIdentifier(Arr::get($requestCertificateArray, 'subject.CN', null));
-        }
-
         $deviceCertificateContent = $this->getCredentialsDeviceCertificateContent($request);
 
         if (!$deviceCertificateContent) {
@@ -77,42 +39,7 @@ class HttpX509Authenticator implements AuthenticatorInterface, InteractiveAuthen
             throw new BadCredentialsException('Invalid certificate.');
         }
 
-        return new SelfValidatingPassport(new UserBadge($username));
-    }
-
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        // on success, let the request continue
-        return null;
-    }
-
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {
-        $data = [
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ];
-
-        if (null !== $this->logger) {
-            $this->logger->error(sprintf('Authentication exception "%s"', strtr($exception->getMessageKey(), $exception->getMessageData())));
-        }
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
-    }
-
-    // It't interactive login because client have to choose to provide x509 authentication like in login form (unlike basic or digest where credentials are required)
-    public function isInteractive(): bool
-    {
-        return true;
-    }
-
-    protected function getCertificateContent(Request $request): ?string
-    {
-        $certificateContent = $request->server->get($this->httpX509CertificateParameterName);
-        if (null === $certificateContent || '' === $certificateContent) {
-            return null;
-        }
-
-        return trim(\urldecode($certificateContent));
+        return $username;
     }
 
     /**

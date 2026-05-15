@@ -52,6 +52,10 @@ class CertificateTypeDeny extends AbstractApiObjectDeny
             return 'certificateTypeInUseByDeviceType';
         }
 
+        if ($object->getDeviceTypeCertificateTypeMTlsScepAuthentications()->count() > 0) {
+            return 'certificateTypeInUseByDeviceType';
+        }
+
         return null;
     }
 }

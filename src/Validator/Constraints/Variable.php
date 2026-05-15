@@ -20,7 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Variable extends Constraint
 {
-    public $messageVariableNameNotUnique = 'validation.variable.variableNameNotUnique';
+    public string $messageVariableNameNotUnique = 'validation.variable.variableNameNotUnique';
+    public string $messageVariableValueInvalidType = 'validation.variable.variableValueInvalidType';
 
     public function getTargets(): string|array
     {

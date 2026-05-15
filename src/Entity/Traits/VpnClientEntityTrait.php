@@ -18,6 +18,7 @@ namespace App\Entity\Traits;
 use App\Model\AuditableInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait VpnClientEntityTrait
@@ -29,6 +30,7 @@ trait VpnClientEntityTrait
     private ?string $vpnIp = null;
 
     #[Groups(['device:openVpnPublic', 'user:openVpnPublic', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $vpnIpSortable = null;
 

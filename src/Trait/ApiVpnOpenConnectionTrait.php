@@ -16,11 +16,11 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\VpnOpenConnectionDenyInterface;
 use App\Service\Helper\VpnManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 trait ApiVpnOpenConnectionTrait
@@ -35,7 +35,7 @@ trait ApiVpnOpenConnectionTrait
     #[Api\ParameterPathId('ID of {{ subjectLower }} to open vpn connection')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function vpnOpenConnectionAction(Request $request, int $id)
     {

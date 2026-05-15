@@ -18,7 +18,9 @@ namespace App\DeviceCommunication\Trait;
 use App\Entity\Device;
 use App\Entity\DeviceCommand;
 use App\Entity\DeviceType;
+use App\Entity\DeviceTypeCustomDataMapping;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\Traits\CommunicationEntityInterface;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
 use App\Entity\Traits\GsmEntityInterface;
@@ -30,6 +32,8 @@ use App\Enum\EdgeGatewayCommandName;
 use App\Enum\EdgeGatewayCommandStatus;
 use App\Enum\Feature;
 use App\Enum\FieldRequirement;
+use App\Enum\VariableType;
+use App\Exception\UnsupportedValueException;
 use App\Form\DeviceCommunication\EdgeGatewayConfigurationAuthenticationType;
 use App\Model\ConfigDevice;
 use App\Model\EdgeGatewayModel;
@@ -111,6 +115,8 @@ trait EdgeGatewayCommunicationTrait
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
             CommunicationProcedureRequirement::HAS_VARIABLES,
             CommunicationProcedureRequirement::HAS_VPN,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
+            CommunicationProcedureRequirement::HAS_CUSTOM_DATA,
         ];
     }
 
@@ -157,6 +163,109 @@ trait EdgeGatewayCommunicationTrait
             CertificateCategory::EDGE_CA,
             CertificateCategory::CUSTOM,
         ];
+    }
+
+    /**
+     * Returns array of default custom data mapping objects for this communication procedure.
+     * Each mapping defines a JSON path in the communication payload and the corresponding variable name.
+     * Returned objects are not persisted to database - objects should be used as a template - copied to new object and saved in database.
+     *
+     * @return array<DeviceTypeCustomDataMapping>
+     */
+    public function getDefaultCustomDataMappings(): array
+    {
+        $defaultCustomDataMappings = [];
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.connectionStatus.status');
+        $customDataMapping->setName('Connection status');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.connectionStatus.failedReason');
+        $customDataMapping->setName('Failed reason');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.connectionStatus.accessTechnology');
+        $customDataMapping->setName('Access technology');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.connectionStatus.registration');
+        $customDataMapping->setName('Registration');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.signal.rssi');
+        $customDataMapping->setName('Signal RSSI');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::INTEGER);
+        $customDataMapping->setVariableName('data_rssi');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.signal.rsrq');
+        $customDataMapping->setName('Signal RSRQ');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::INTEGER);
+        $customDataMapping->setVariableName('data_rsrq');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.signal.rsrp');
+        $customDataMapping->setName('Signal RSRP');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::INTEGER);
+        $customDataMapping->setVariableName('data_rsrp');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.operatorInformation.operatorName');
+        $customDataMapping->setName('Operator name');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::STRING);
+        $customDataMapping->setVariableName('data_operatorName');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.operatorInformation.operatorId');
+        $customDataMapping->setName('Operator ID');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::STRING);
+        $customDataMapping->setVariableName('data_operatorId');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.equipment.modem.imei');
+        $customDataMapping->setName('Modem IMEI');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::STRING);
+        $customDataMapping->setVariableName('data_imei');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.equipment.sim.iccid');
+        $customDataMapping->setName('SIM ICCID');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::STRING);
+        $customDataMapping->setVariableName('data_iccid');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.equipment.sim.imsi');
+        $customDataMapping->setName('SIM IMSI');
+        $customDataMapping->setVariableEnabled(true);
+        $customDataMapping->setType(VariableType::STRING);
+        $customDataMapping->setVariableName('data_imsi');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        $customDataMapping = new DeviceTypeCustomDataMapping();
+        $customDataMapping->setPath('cellularStatus.equipment.sim.lockState');
+        $customDataMapping->setName('SIM lock state');
+        $defaultCustomDataMappings[] = $customDataMapping;
+
+        return $defaultCustomDataMappings;
     }
 
     public function generateIdentifier(Device $device): string
@@ -247,7 +356,7 @@ trait EdgeGatewayCommunicationTrait
         return null;
     }
 
-    public function processEdgeGatewayRequest(DeviceType $deviceType, Request $request, EdgeGatewayModel $edgeGatewayModel): ResponseModel
+    public function processEdgeGatewayRequest(DeviceType $deviceType, Request $request, EdgeGatewayModel $edgeGatewayModel, array $data = []): ResponseModel
     {
         $initilizeResponse = $this->initilizeEdgeGatewayEndpoint($deviceType, $request, $edgeGatewayModel);
         if ($initilizeResponse) {
@@ -276,23 +385,29 @@ trait EdgeGatewayCommunicationTrait
         }
 
         $this->updateEdgeGatewayLastDataInformation();
-        $this->processReceivedCommand();
+        $this->updateCustomData($data);
 
         if (!$this->getDevice()->getEnabled()) {
+            $this->entityManager->flush();
+
             $communicationLog = $this->communicationLogManager->createLogWarning('log.deviceDisabled');
             $this->getResponse()->setError($communicationLog->getMessage());
 
             return $this->getResponse();
         }
 
-        $incrementConnections = true;
+        $this->processReceivedCommand();
 
-        if ($this->processFirmware(Feature::PRIMARY, $this->getEdgeGatewayModel()->getFirmwareVersion())) {
+        if ($this->processFirmware(Feature::PRIMARY, $this->getEdgeGatewayModel()->getFirmwareVersion(), $this->getReceivedDeviceHardwareVersion())) {
             $this->getDevice()->setReinstallFirmware1(true);
         }
 
         // Firmware operations
-        $reinstallingFirmware = $this->processReinstallFirmware(Feature::PRIMARY);
+        $reinstallingFirmware = $this->processReinstallFirmware(
+            feature: Feature::PRIMARY,
+            receivedFirmwareVersion: $this->getEdgeGatewayModel()->getFirmwareVersion(),
+            receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+        );
 
         if (!$reinstallingFirmware) {
             // Check if config will be sent if certificate or deviceSecret will renew or generate
@@ -316,17 +431,16 @@ trait EdgeGatewayCommunicationTrait
 
         $this->entityManager->flush();
 
-        if ($incrementConnections) {
-            $this->incrementDeviceConnections();
-            $this->entityManager->flush();
-        }
+        // Increment device connections only if device is enabled (and set in class property)
+        $this->incrementDeviceConnections();
+        $this->entityManager->flush();
 
         $this->getResponse()->setSerialNumber($this->getDevice()->getSerialNumber());
 
         return $this->getResponse();
     }
 
-    protected function processFirmware(Feature $feature, string $receivedFirmwareVersion, bool $createLogs = true): bool
+    protected function processFirmware(Feature $feature, string $receivedFirmwareVersion, ?string $receivedDeviceHardwareVersion = null, bool $createLogs = true): bool
     {
         if ($this->getDevice()->getReinstallFirmware1()) {
             $this->communicationLogManager->createLogDebug('log.deviceReinstallFirmware1AlreadySet');
@@ -339,7 +453,7 @@ trait EdgeGatewayCommunicationTrait
             return false;
         }
 
-        if (!parent::processFirmware($feature, $receivedFirmwareVersion, $createLogs)) {
+        if (!parent::processFirmware($feature, $receivedFirmwareVersion, $receivedDeviceHardwareVersion, $createLogs)) {
             return false;
         }
         if ($this->getDevice()->getCommandRetryCount() > $this->getDeviceType()->getDeviceCommandMaxRetries()) {
@@ -367,11 +481,11 @@ trait EdgeGatewayCommunicationTrait
         $this->entityManager->flush();
     }
 
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
         $commandName = EdgeGatewayCommandName::UPDATEFIRMWARE;
         $this->getResponse()->setCommandName($commandName->value);
-        $this->getResponse()->setFirmwareUrl($this->getFirmwareUrl($feature, $firmware));
+        $this->getResponse()->setFirmwareUrl($this->getFirmwareUrl($feature, $firmware, $firmwareHardwareFile));
 
         $command = $this->createCommand($commandName->value);
         $this->getResponse()->setCommandTransactionId($command->getCommandTransactionId());
@@ -594,7 +708,17 @@ trait EdgeGatewayCommunicationTrait
             return;
         }
 
-        $this->processReceivedConfigLog(json_encode($this->getEdgeGatewayModel()->getConfig()));
+        $formatConfig1 = $this->getDeviceType()->getFormatConfig1();
+        switch ($formatConfig1) {
+            case ConfigFormat::PLAIN:
+                $this->processReceivedConfigLog($this->getEdgeGatewayModel()->getConfig());
+                break;
+            case ConfigFormat::JSON:
+                $this->processReceivedConfigLog(json_encode($this->getEdgeGatewayModel()->getConfig()));
+                break;
+            default:
+                throw new UnsupportedValueException($formatConfig1);
+        }
 
         if (DeviceCommandStatus::ERROR === $command->getCommandStatus()) {
             if ($this->getDevice()->getCommandRetryCount() <= $this->getDeviceType()->getDeviceCommandMaxRetries()) {
@@ -646,8 +770,6 @@ trait EdgeGatewayCommunicationTrait
         $this->communicationLogManager->createLogInfo('log.deviceCreate');
 
         $this->entityManager->persist($this->getDevice());
-
-        $this->incrementDeviceConnections();
 
         $this->entityManager->flush();
     }
@@ -727,6 +849,20 @@ trait EdgeGatewayCommunicationTrait
             VariableInterface::VARIABLE_NAME_HARDWAREVERSION => $this->getDevice()?->getHardwareVersion(),
             VariableInterface::VARIABLE_NAME_FIRMWAREVERSION => $this->getDevice()?->getFirmwareVersion1(),
         ];
+    }
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        if ($this->getEdgeGatewayModel()) {
+            if ($this->getEdgeGatewayModel()->getHardwareVersion()) {
+                return $this->getEdgeGatewayModel()->getHardwareVersion();
+            }
+        }
+
+        return null;
     }
 
     protected function setLastCommandCriticalTrue(): void

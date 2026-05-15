@@ -20,6 +20,8 @@ import ResultEdit from "~app/components/Table/actions/ResultEdit";
 import ResultDeviceTypeDisable from "~app/components/Table/actions/ResultDeviceTypeDisable";
 import ResultDeviceTypeEnable from "~app/components/Table/actions/ResultDeviceTypeEnable";
 import RedirectDeviceTypeSecrets from "~app/entities/DeviceType/actions/RedirectDeviceTypeSecrets";
+import RedirectDeviceTypeHardwares from "~app/entities/DeviceType/actions/RedirectDeviceTypeHardwares";
+import RedirectDeviceTypeCustomDataMappings from "~app/entities/DeviceType/actions/RedirectDeviceTypeCustomDataMappings";
 
 const columns = {
     name: <DeviceTypeColumn {...{ path: "." }} />,
@@ -41,6 +43,8 @@ const columns = {
                         <ResultDeviceTypeDisable />
                         <ResultDeviceTypeEnable />
                         <RedirectDeviceTypeSecrets />
+                        <RedirectDeviceTypeHardwares />
+                        <RedirectDeviceTypeCustomDataMappings />
                         {deleteAction}
                     </>
                 ),

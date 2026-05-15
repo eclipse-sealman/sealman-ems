@@ -27,6 +27,7 @@ import {
     certificateEncoding,
     authenticationMethod,
     credentialsSource,
+    firmwareVersionSchema,
 } from "~app/entities/DeviceType/enums";
 import { collectionShowAndRequireOnTrue, collectionShowOnTrue, showAndRequireOnTrue } from "~app/utilities/fields";
 import { CommunicationProcedureRequirements } from "~app/entities/DeviceType/definitions";
@@ -38,7 +39,10 @@ import CertificateTypeCollectionDeviceType from "~app/components/Form/fields/Cer
 import EntityInterface from "~app/definitions/EntityInterface";
 import DeviceTypeCertificateTypeCredentialSelect from "~app/entities/DeviceType/fields/DeviceTypeCertificateTypeCredentialSelect";
 import {
+    getIsEnableFieldValue,
+    hasFirmwareSpecificSchema,
     isCertificateTypeCredentialUsed,
+    isCertificateTypeMTlsScepAuthenticationUsed,
     isCredentialsSourceUsed,
     isDeviceSecretCredentialUsed,
 } from "~app/entities/DeviceType/utilities";
@@ -165,6 +169,44 @@ const getDeviceTypeCertificateTypeCredentialProps = (): FieldInterface => {
         help: true,
     };
 };
+
+const getDeviceTypeCertificateTypeMTlsScepAuthenticationProps = (): FieldInterface => {
+    return {
+        hidden: (values: FormikValues) => (isCertificateTypeMTlsScepAuthenticationUsed(values) ? false : true),
+        required: (values: FormikValues) => (isCertificateTypeMTlsScepAuthenticationUsed(values) ? true : false),
+        help: true,
+    };
+};
+
+const getHasHardwareProps = (
+    requirements: CommunicationProcedureRequirements,
+    initialValues: FormikValues
+): FieldInterface => {
+    const name = "hasHardwares";
+    const fieldNamePrefix = "hasFirmware";
+    if (requirements.communicationProcedureRequirementsRequired.includes(name)) {
+        return {
+            required: true,
+            disabled: true,
+        };
+    }
+    if (requirements.communicationProcedureRequirementsOptional.includes(name)) {
+        return {
+            required: false,
+            disabled: () => !getIsEnableFieldValue(initialValues, fieldNamePrefix),
+            hidden: () => !getIsEnableFieldValue(initialValues, fieldNamePrefix),
+        };
+    }
+    return {
+        required: false,
+        disabled: true,
+        hidden: true,
+    };
+};
+const showAndRequireOnInitialValueTrue = (initialValues: FormikValues, fieldName: string) => ({
+    hidden: initialValues?.[fieldName] ? false : true,
+    required: initialValues?.[fieldName] ? true : false,
+});
 
 const composeGetFields = (
     requirements: CommunicationProcedureRequirements,
@@ -297,11 +339,71 @@ const composeGetFields = (
                 }}
             />
         ),
+        firmwareSchema1: (
+            <SelectEnum
+                {...{
+                    enum: firmwareVersionSchema,
+                    help: true,
+                    ...showAndRequireOnInitialValueTrue(initialValues, "hasFirmware1"),
+                }}
+            />
+        ),
+        allowDowngradeFirmware1: (
+            <Checkbox
+                {...{
+                    help: true,
+                    hidden: (values) => !hasFirmwareSpecificSchema(Object.assign(initialValues, values), "1"),
+                }}
+            />
+        ),
+        firmwareSchema2: (
+            <SelectEnum
+                {...{
+                    enum: firmwareVersionSchema,
+                    help: true,
+                    ...showAndRequireOnInitialValueTrue(initialValues, "hasFirmware2"),
+                }}
+            />
+        ),
+        allowDowngradeFirmware2: (
+            <Checkbox
+                {...{
+                    help: true,
+                    hidden: (values) => !hasFirmwareSpecificSchema(Object.assign(initialValues, values), "2"),
+                }}
+            />
+        ),
+        firmwareSchema3: (
+            <SelectEnum
+                {...{
+                    enum: firmwareVersionSchema,
+                    help: true,
+                    ...showAndRequireOnInitialValueTrue(initialValues, "hasFirmware3"),
+                }}
+            />
+        ),
+        allowDowngradeFirmware3: (
+            <Checkbox
+                {...{
+                    help: true,
+                    hidden: (values) => !hasFirmwareSpecificSchema(Object.assign(initialValues, values), "3"),
+                }}
+            />
+        ),
         credentialsSource: <RadioEnum {...{ enum: credentialsSource, ...getCredentialsSourceProps() }} />,
         deviceTypeSecretCredential: <SelectApi {...getDeviceTypeSecretCredentialProps(initialValues["id"])} />,
         deviceTypeCertificateTypeCredential: (
             <DeviceTypeCertificateTypeCredentialSelect
                 {...{ certificateTypes: certificateTypes, ...getDeviceTypeCertificateTypeCredentialProps() }}
+            />
+        ),
+
+        deviceTypeCertificateTypeMTlsScepAuthentication: (
+            <SelectApi
+                {...{
+                    endpoint: "/options/available/mtls/scep/certificate/types",
+                    ...getDeviceTypeCertificateTypeMTlsScepAuthenticationProps(),
+                }}
             />
         ),
 
@@ -311,6 +413,8 @@ const composeGetFields = (
         firmwareMinRsrp: <Text {...{ ...showAndRequireOnTrue("enableFirmwareMinRsrp") }} />,
 
         enableConfigLogs: <Checkbox />,
+
+        hasHardwares: <Checkbox {...{ ...getHasHardwareProps(requirements, initialValues) }} />,
 
         hasCertificates: <Checkbox {...{ ...getFieldProps(requirements, "hasCertificates") }} disabled />,
         hasVpn: <Checkbox {...{ ...getFieldProps(requirements, "hasVpn") }} disabled />,
@@ -337,6 +441,8 @@ const composeGetFields = (
         hasDeviceCommands: <Checkbox {...{ ...getFieldProps(requirements, "hasDeviceCommands") }} disabled />,
         deviceCommandMaxRetries: <Text {...{ ...showAndRequireOnTrue("hasDeviceCommands") }} />,
         deviceCommandExpireDuration: <Text {...{ ...showAndRequireOnTrue("hasDeviceCommands") }} />,
+
+        hasCustomData: <Checkbox {...{ ...getFieldProps(requirements, "hasCustomData") }} />,
 
         //This collection handles hasCertificateType field in same place as other hasX fields
         hasCertificateTypesCollection: (

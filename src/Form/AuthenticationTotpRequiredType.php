@@ -36,7 +36,7 @@ class AuthenticationTotpRequiredType extends AbstractType
         $builder->add('totp', TextType::class, [
             'constraints' => [
                 new NotBlank(),
-                new Length(['max' => 255]),
+                new Length(max: 255),
                 new Callback([$this, 'validateTotp']),
             ],
         ]);

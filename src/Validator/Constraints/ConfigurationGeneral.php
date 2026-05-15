@@ -20,10 +20,10 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ConfigurationGeneral extends Constraint
 {
-    public $messageGeneratorAtLeastOne = 'validation.generatorAtLeastOne';
-    public $messageGeneratorUsed = 'validation.generatorUsed';
-    public $messageDeviceExists = 'validation.deviceExists';
-    public $messageDeviceTypeRequiredWithHasImsi = 'validation.deviceTypeRequiredWithHasImsi';
+    public string $messageGeneratorAtLeastOne = 'validation.generatorAtLeastOne';
+    public string $messageGeneratorUsed = 'validation.generatorUsed';
+    public string $messageDeviceExists = 'validation.deviceExists';
+    public string $messageDeviceTypeRequiredWithHasImsi = 'validation.deviceTypeRequiredWithHasImsi';
 
     public function getTargets(): string|array
     {

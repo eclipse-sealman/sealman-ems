@@ -34,7 +34,6 @@ use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
 use Carve\ApiBundle\Helper\Arr;
 use Doctrine\DBAL\ParameterType;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -316,7 +315,7 @@ class LogsCleanupCommand extends Command
         $classMetadataFactory = $this->entityManager->getMetadataFactory();
         $metadataClass = $classMetadataFactory->getMetadataFor($entityClass);
 
-        if (ClassMetadataInfo::MANY_TO_MANY === Arr::get($metadataClass->associationMappings, $fieldName.'.type')) {
+        if (Arr::get($metadataClass->associationMappings, $fieldName)->isManyToMany()) {
             if (Arr::has($metadataClass->associationMappings, $fieldName.'.joinTable.name')) {
                 return Arr::get($metadataClass->associationMappings, $fieldName.'.joinTable.name');
             }
@@ -334,22 +333,21 @@ class LogsCleanupCommand extends Command
         $databaseName = $connection->getDatabase();
 
         $query = '
-                SELECT table_name AS `table`,
-                round(((data_length + index_length) / 1024 / 1024), 2) AS `size`
+                SELECT round(((data_length + index_length) / 1024 / 1024), 2) AS `size`
                 FROM information_schema.TABLES 
                 WHERE table_schema = :databaseName
                 AND table_name = :tableName
                 ';
 
         $stmt = $connection->prepare($query);
-        $stmt->bindParam('databaseName', $databaseName);
-        $stmt->bindParam('tableName', $tableName);
-        $result = $stmt->executeQuery()->fetch();
+        $stmt->bindValue('databaseName', $databaseName);
+        $stmt->bindValue('tableName', $tableName);
+        $sizeAsString = $stmt->executeQuery()->fetchOne();
 
-        if (!isset($result['size'])) {
+        if (false === $sizeAsString) {
             return null;
         }
 
-        return (float) $result['size'];
+        return (float) $sizeAsString;
     }
 }

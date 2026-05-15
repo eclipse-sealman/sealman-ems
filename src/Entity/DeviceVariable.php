@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\VariableType;
 use App\Model\AuditableInterface;
 use App\Validator\Constraints\Variable as VariableValidator;
 use App\Validator\Constraints\VariableName;
@@ -41,6 +42,14 @@ class DeviceVariable implements AuditableInterface
     #[VariableName(groups: ['device:common'])]
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
+
+    /**
+     * Variable type.
+     */
+    #[Groups(['variables:public', 'device:public', AuditableInterface::GROUP])]
+    #[Assert\NotBlank(groups: ['device:common'])]
+    #[ORM\Column(type: Types::STRING, enumType: VariableType::class)]
+    private ?VariableType $variableType = null;
 
     /**
      * Variable value.
@@ -106,5 +115,15 @@ class DeviceVariable implements AuditableInterface
     public function setDevice(?Device $device)
     {
         $this->device = $device;
+    }
+
+    public function getVariableType(): ?VariableType
+    {
+        return $this->variableType;
+    }
+
+    public function setVariableType(?VariableType $variableType)
+    {
+        $this->variableType = $variableType;
     }
 }

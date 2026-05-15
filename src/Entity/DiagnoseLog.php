@@ -63,7 +63,6 @@ class DiagnoseLog implements DenyInterface, CreatedAtEntityInterface, LogLevelIn
     private ?DeviceType $deviceType = null;
 
     #[ORM\OneToOne(targetEntity: DiagnoseLogContent::class, mappedBy: 'diagnoseLog')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?DiagnoseLogContent $diagnoseLogContent = null;
 
     #[Groups(['diagnoseLog:content'])]

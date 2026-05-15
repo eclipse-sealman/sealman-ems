@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Template extends Constraint
 {
-    public $messageDeviceTypeTemplatesNotSupported = 'validation.template.deviceTypeTemplatesNotSupported';
+    public string $messageDeviceTypeTemplatesNotSupported = 'validation.template.deviceTypeTemplatesNotSupported';
 
     public function getTargets(): string|array
     {

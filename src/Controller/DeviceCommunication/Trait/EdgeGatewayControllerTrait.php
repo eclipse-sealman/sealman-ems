@@ -70,12 +70,16 @@ trait EdgeGatewayControllerTrait
             $this->getDeviceCommunication()->getDeviceTypeValidationGroups($this->getDeviceType())
         );
 
-        $form = $this->createForm(EdgeGatewayConfigurationType::class, null, ['allow_extra_fields' => true, 'validation_groups' => $validationGroups]);
+        $form = $this->createForm(EdgeGatewayConfigurationType::class, null, [
+            'allow_extra_fields' => true,
+            'validation_groups' => $validationGroups,
+            'formatConfig1' => $this->getDeviceType()->getFormatConfig1(),
+        ]);
         $data = json_decode($request->getContent(), true);
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $response = $this->getDeviceCommunication()->processEdgeGatewayRequest($this->getDeviceType(), $request, $form->getData());
+            $response = $this->getDeviceCommunication()->processEdgeGatewayRequest($this->getDeviceType(), $request, $form->getData(), $data);
         } else {
             $response = $this->getDeviceCommunication()->prepareErrorResponse($this->getDeviceType(), $request, $form);
         }

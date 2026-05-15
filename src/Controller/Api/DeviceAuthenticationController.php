@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\User;
 use App\Entity\UserDeviceType;
 use App\Enum\UserRole;
@@ -29,7 +30,6 @@ use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -45,7 +45,7 @@ use Symfony\Contracts\Service\Attribute\Required;
     listFormFilterByAppend: ['userDeviceTypes.deviceType']
 )]
 #[Rest\View(serializerGroups: ['identification', 'deviceAuthentication:public', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class DeviceAuthenticationController extends AbstractApiController
 {

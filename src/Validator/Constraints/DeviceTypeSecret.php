@@ -17,11 +17,11 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-#[\Attribute(\Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class DeviceTypeSecret extends Constraint
 {
-    public $messageRequired = 'validation.required';
-    public $messageCreateNotPossible = 'validation.deviceTypeSecret.createNotPossible';
+    public string $messageRequired = 'validation.required';
+    public string $messageCreateNotPossible = 'validation.deviceTypeSecret.createNotPossible';
 
     public function getTargets(): string|array
     {

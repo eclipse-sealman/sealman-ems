@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\UserTable;
 use App\Entity\UserTableColumn;
 use App\Form\UserTableEditType;
@@ -24,7 +25,6 @@ use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Rest\Route('/usertable')]
@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 )]
 // 'identification' serializer group is not needed here
 #[Rest\View(serializerGroups: ['userTable:public'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 class UserTableController extends AbstractApiController
 {

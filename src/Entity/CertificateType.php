@@ -23,7 +23,7 @@ use App\Enum\CertificateBehavior;
 use App\Enum\CertificateCategory;
 use App\Enum\CertificateEntity;
 use App\Enum\PkiHashAlgorithm;
-use App\Enum\PkiKeyLength;
+use App\Enum\PkiKeyType;
 use App\Enum\PkiType;
 use App\Model\AuditableInterface;
 use App\Repository\CertificateTypeRepository;
@@ -217,8 +217,8 @@ class CertificateType implements DenyInterface, TimestampableEntityInterface, Bl
      * SCEP hash function ("2048", "4096").
      */
     #[Groups(['certificateType:public', AuditableInterface::GROUP])]
-    #[ORM\Column(type: Types::STRING, enumType: PkiKeyLength::class)]
-    private ?PkiKeyLength $scepKeyLength = PkiKeyLength::KEY4096;
+    #[ORM\Column(type: Types::STRING, enumType: PkiKeyType::class)]
+    private ?PkiKeyType $scepKeyType = PkiKeyType::RSA4096;
 
     #[ORM\OneToMany(mappedBy: 'certificateType', targetEntity: DeviceTypeCertificateType::class)]
     private Collection $deviceTypeCertificateTypes;
@@ -228,6 +228,9 @@ class CertificateType implements DenyInterface, TimestampableEntityInterface, Bl
 
     #[ORM\OneToMany(mappedBy: 'deviceTypeCertificateTypeCredential', targetEntity: DeviceType::class)]
     private Collection $deviceTypeCertificateTypeCredentials;
+
+    #[ORM\OneToMany(mappedBy: 'deviceTypeCertificateTypeMTlsScepAuthentication', targetEntity: DeviceType::class)]
+    private Collection $deviceTypeCertificateTypeMTlsScepAuthentications;
 
     /**
      * Helper field used to provide information if certificate type enabled and available (depending on license and system state).
@@ -246,6 +249,7 @@ class CertificateType implements DenyInterface, TimestampableEntityInterface, Bl
         $this->deviceTypeCertificateTypes = new ArrayCollection();
         $this->certificates = new ArrayCollection();
         $this->deviceTypeCertificateTypeCredentials = new ArrayCollection();
+        $this->deviceTypeCertificateTypeMTlsScepAuthentications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -418,14 +422,14 @@ class CertificateType implements DenyInterface, TimestampableEntityInterface, Bl
         $this->scepHashFunction = $scepHashFunction;
     }
 
-    public function getScepKeyLength(): ?PkiKeyLength
+    public function getScepKeyType(): ?PkiKeyType
     {
-        return $this->scepKeyLength;
+        return $this->scepKeyType;
     }
 
-    public function setScepKeyLength(?PkiKeyLength $scepKeyLength)
+    public function setScepKeyType(?PkiKeyType $scepKeyType)
     {
-        $this->scepKeyLength = $scepKeyLength;
+        $this->scepKeyType = $scepKeyType;
     }
 
     public function getDeviceTypeCertificateTypes(): Collection
@@ -516,5 +520,15 @@ class CertificateType implements DenyInterface, TimestampableEntityInterface, Bl
     public function setScepTimeout(?int $scepTimeout)
     {
         $this->scepTimeout = $scepTimeout;
+    }
+
+    public function getDeviceTypeCertificateTypeMTlsScepAuthentications(): Collection
+    {
+        return $this->deviceTypeCertificateTypeMTlsScepAuthentications;
+    }
+
+    public function setDeviceTypeCertificateTypeMTlsScepAuthentications(Collection $deviceTypeCertificateTypeMTlsScepAuthentications)
+    {
+        $this->deviceTypeCertificateTypeMTlsScepAuthentications = $deviceTypeCertificateTypeMTlsScepAuthentications;
     }
 }

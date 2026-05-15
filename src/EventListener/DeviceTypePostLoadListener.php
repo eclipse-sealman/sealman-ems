@@ -19,7 +19,7 @@ use App\Entity\DeviceType;
 use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::postLoad, method: 'postLoad', entity: DeviceType::class)]
@@ -28,7 +28,7 @@ class DeviceTypePostLoadListener
     use ConfigurationManagerTrait;
     use DeviceCommunicationFactoryTrait;
 
-    public function postLoad(DeviceType $deviceType, LifecycleEventArgs $event): void
+    public function postLoad(DeviceType $deviceType, PostLoadEventArgs $event): void
     {
         $deviceType->setIsVpnAvailable($deviceType->getHasVpn() && $this->configurationManager->isVpnSecuritySuiteAvailable());
         $deviceType->setIsMasqueradeAvailable($deviceType->getHasMasquerade() && $this->configurationManager->isVpnSecuritySuiteAvailable());

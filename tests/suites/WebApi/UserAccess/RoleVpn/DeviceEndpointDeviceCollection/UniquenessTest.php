@@ -49,6 +49,7 @@ use Tests\Utilities\WebApi\UserAccess\UniquenessTestCase;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('WebApi')] // To be used in CI parallel tests
 class UniquenessTest extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

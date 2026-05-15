@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\VpnConfigDenyInterface;
 use App\Service\Helper\VpnManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +35,7 @@ trait ApiVpnDownloadConfigurationTrait
     #[Api\ParameterPathId('ID of {{ subjectLower }} to download OpenVPN configuration')]
     #[Api\Response200(description: 'OpenVPN configuration', content: new OA\MediaType(mediaType: 'application/x-openvpn-profile', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function downloadVpnConfigurationAction(Request $request, int $id)
     {

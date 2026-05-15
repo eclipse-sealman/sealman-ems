@@ -18,6 +18,7 @@ namespace App\DataFixtures;
 use App\Entity\CertificateType;
 use App\Entity\DeviceType;
 use App\Entity\DeviceTypeCertificateType;
+use App\Entity\DeviceTypeHardware;
 use App\Enum\AuthenticationMethod;
 use App\Enum\CertificateEncoding;
 use App\Enum\CommunicationProcedure;
@@ -236,6 +237,7 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
         $deviceType->setHasConfig1(true);
         $deviceType->setNameConfig1('Startup config');
         $deviceType->setAuthenticationMethod(AuthenticationMethod::DIGEST);
+        $deviceType->setCredentialsSource(CredentialsSource::USER);
         $deviceType->setRoutePrefix('/router/tk500-v3');
         $deviceType->setCommunicationProcedure(CommunicationProcedure::ROUTER_ONE_CONFIG);
         $deviceType->setHasCertificates(true);
@@ -347,6 +349,7 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
         $deviceTypeEdgeGateway->setCredentialsSource(CredentialsSource::USER);
         $deviceTypeEdgeGateway->setRoutePrefix('/api/edgegateway');
         $deviceTypeEdgeGateway->setCommunicationProcedure(CommunicationProcedure::EDGEGATEWAY);
+        $deviceTypeEdgeGateway->setHasHardwares(true);
         $deviceTypeEdgeGateway->setHasTemplates(true);
         $deviceTypeEdgeGateway->setHasCertificates(true);
         $deviceTypeEdgeGateway->setHasVpn(true);
@@ -362,6 +365,7 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
         $deviceTypeEdgeGateway->setDeviceCommandMaxRetries(3);
         $deviceTypeEdgeGateway->setEnableConnectionAggregation(true);
         $this->addDeviceTypeCertificateType($manager, $deviceTypeEdgeGateway, $deviceVpnCertificateType);
+        $this->addEdgeGatewayModels($manager, $deviceTypeEdgeGateway);
         $manager->persist($deviceTypeEdgeGateway);
 
         $deviceType = new DeviceType();
@@ -379,6 +383,7 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
         $deviceType->setCredentialsSource(CredentialsSource::USER);
         $deviceType->setRoutePrefix('/api/edgegatewayvcc');
         $deviceType->setCommunicationProcedure(CommunicationProcedure::EDGEGATEWAY_WITH_VPNCONTAINERCLIENT);
+        $deviceType->setHasHardwares(true);
         $deviceType->setHasTemplates(true);
         $deviceType->setHasCertificates(true);
         $deviceType->setHasVpn(true);
@@ -397,6 +402,7 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
         $deviceType->setHasMasquerade(true);
         $deviceType->setVirtualSubnetCidr(30);
         $this->addDeviceTypeCertificateType($manager, $deviceType, $deviceVpnCertificateType);
+        $this->addEdgeGatewayModels($manager, $deviceType);
         $manager->persist($deviceType);
 
         $deviceType = new DeviceType();
@@ -445,6 +451,24 @@ class DeviceTypeFixtures extends AbstractFixtureGroupProd implements DependentFi
 
         $deviceType->addCertificateType($deviceTypeCertificateType);
         $manager->persist($deviceTypeCertificateType);
+    }
+
+    protected function addEdgeGatewayModels(ObjectManager $manager, DeviceType $deviceType)
+    {
+        $edgeGatewayModels = [
+            'EG500',
+            'EG600',
+            'EG800',
+        ];
+
+        foreach ($edgeGatewayModels as $edgeGatewayModel) {
+            $deviceTypeHardware = new DeviceTypeHardware();
+            $deviceTypeHardware->setName($edgeGatewayModel);
+            $deviceTypeHardware->setHardwareVersion($edgeGatewayModel);
+            $deviceTypeHardware->setDeviceType($deviceType);
+            $deviceType->getDeviceTypeHardwares()->add($deviceTypeHardware);
+            $manager->persist($deviceTypeHardware);
+        }
     }
 
     public function getDependencies(): array

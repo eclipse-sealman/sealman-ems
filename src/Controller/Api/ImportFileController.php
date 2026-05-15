@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\ImportFileDeny;
 use App\Entity\ImportFile;
 use App\Enum\ImportFileStatus;
@@ -31,7 +32,6 @@ use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 
 #[Rest\Route('/importfile')]
@@ -42,7 +42,7 @@ use Symfony\Component\Form\FormInterface;
     denyClass: ImportFileDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'importFile:public', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class ImportFileController extends AbstractApiController
 {

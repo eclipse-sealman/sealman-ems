@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\OpenSourceLicense;
 use App\Service\Helper\OpenSourceLicenseManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
@@ -25,7 +26,6 @@ use Carve\ApiBundle\Trait\ApiExportExcelTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -36,7 +36,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     class: OpenSourceLicense::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'openSourceLicense:public', 'timestampable'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class OpenSourceLicenseController extends AbstractApiController
 {

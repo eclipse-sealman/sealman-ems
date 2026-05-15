@@ -141,6 +141,7 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
      * Command retry counter.
      */
     #[Groups(['device:admin', 'device:smartems', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT)]
     private ?int $commandRetryCount = 0;
 
@@ -155,6 +156,7 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
      * Connection amount established from connectionAmountFrom timestamp.
      */
     #[Groups(['device:admin', 'device:smartems', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $connectionAmount = 0;
 
@@ -340,6 +342,13 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
     private Collection $ownedVpnConnections;
 
     /**
+     * Custom data values extracted from communication payloads for this device.
+     */
+    #[ORM\OneToMany(mappedBy: 'device', targetEntity: DeviceCustomData::class, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['id' => 'DESC'])]
+    private Collection $deviceCustomData;
+
+    /**
      * Helper field for certificates deny handling. Using UsableCertificate model.
      */
     #[Groups(['certificate:admin', 'certificate:vpn', 'certificate:smartems'])]
@@ -511,6 +520,23 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
         }
     }
 
+    public function addDeviceCustomData(DeviceCustomData $deviceCustomData)
+    {
+        if (!$this->deviceCustomData->contains($deviceCustomData)) {
+            $this->deviceCustomData->add($deviceCustomData);
+            $deviceCustomData->setDevice($this);
+        }
+    }
+
+    public function removeDeviceCustomData(DeviceCustomData $deviceCustomData)
+    {
+        if ($this->deviceCustomData->removeElement($deviceCustomData)) {
+            if ($deviceCustomData->getDevice() === $this) {
+                $deviceCustomData->setDevice(null);
+            }
+        }
+    }
+
     public function __construct()
     {
         $this->masquerades = new ArrayCollection();
@@ -530,6 +556,7 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
         $this->useableCertificates = new ArrayCollection();
         $this->certificateBehaviours = new ArrayCollection();
         $this->ownedVpnConnections = new ArrayCollection();
+        $this->deviceCustomData = new ArrayCollection();
         $this->template = null;
     }
 
@@ -961,5 +988,15 @@ class Device implements DenyInterface, TimestampableEntityInterface, BlameableEn
     public function setLock(?DeviceLock $lock)
     {
         $this->lock = $lock;
+    }
+
+    public function getDeviceCustomData(): Collection
+    {
+        return $this->deviceCustomData;
+    }
+
+    public function setDeviceCustomData(Collection $deviceCustomData)
+    {
+        $this->deviceCustomData = $deviceCustomData;
     }
 }

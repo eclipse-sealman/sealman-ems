@@ -20,15 +20,15 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class CertificateBehavior extends Constraint
 {
-    public $messageGenerateCertificateRoleSmartemsNotSupported = 'validation.certificateBehavior.generateCertificateRoleSmartemsNotSupported';
-    public $messageRevokeCertificateRoleSmartemsNotSupported = 'validation.certificateBehavior.revokeCertificateRoleSmartemsNotSupported';
-    public $messageGenerateCertificateEnabledRequired = 'validation.certificateBehavior.generateCertificateEnabledRequired';
-    public $messageRevokeCertificateDisabledRequired = 'validation.certificateBehavior.revokeCertificateDisabledRequired';
-    public $messageNotSupportedByCertificateBehavior = 'validation.certificateBehavior.notSupportedByCertificateBehavior';
-    public $messagePkiNotAvailable = 'validation.certificateBehavior.pkiNotAvailable';
-    public $messageVpnNotAvailable = 'validation.certificateBehavior.vpnNotAvailable';
-    public $messageCertificateNotGenerated = 'validation.certificateBehavior.certificateNotGenerated';
-    public $messageInvalid = 'validation.certificateBehavior.certificateTypeNotAvailable';
+    public string $messageGenerateCertificateRoleSmartemsNotSupported = 'validation.certificateBehavior.generateCertificateRoleSmartemsNotSupported';
+    public string $messageRevokeCertificateRoleSmartemsNotSupported = 'validation.certificateBehavior.revokeCertificateRoleSmartemsNotSupported';
+    public string $messageGenerateCertificateEnabledRequired = 'validation.certificateBehavior.generateCertificateEnabledRequired';
+    public string $messageRevokeCertificateDisabledRequired = 'validation.certificateBehavior.revokeCertificateDisabledRequired';
+    public string $messageNotSupportedByCertificateBehavior = 'validation.certificateBehavior.notSupportedByCertificateBehavior';
+    public string $messagePkiNotAvailable = 'validation.certificateBehavior.pkiNotAvailable';
+    public string $messageVpnNotAvailable = 'validation.certificateBehavior.vpnNotAvailable';
+    public string $messageCertificateNotGenerated = 'validation.certificateBehavior.certificateNotGenerated';
+    public string $messageInvalid = 'validation.certificateBehavior.certificateTypeNotAvailable';
 
     public function getTargets(): string|array
     {

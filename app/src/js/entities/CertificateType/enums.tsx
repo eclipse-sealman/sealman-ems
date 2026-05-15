@@ -14,8 +14,8 @@ import { Enum } from "@arteneo/forge";
 const pkiHashAlgorithm = new Enum(["SHA256", "SHA384", "SHA512"], "enum.configuration.pkiHashAlgorithm.");
 export { pkiHashAlgorithm };
 
-const pkiKeyLength = new Enum(["2048", "4096"], "enum.configuration.pkiKeyLength.");
-export { pkiKeyLength };
+const pkiKeyType = new Enum(["RSA2048", "RSA4096", "EC_P_521", "ED448", "ED25519"], "enum.configuration.pkiKeyType.");
+export { pkiKeyType };
 
 const pkiType = new Enum(["none", "scep"], "enum.configuration.pkiType.");
 export { pkiType };

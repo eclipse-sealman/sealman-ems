@@ -76,7 +76,7 @@ class VpnConnection implements DenyInterface, CreatedAtEntityInterface, Blameabl
     private ?\DateTime $connectionEndAt = null;
 
     #[Groups([AuditableInterface::GROUP])]
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $connectionFirewallRules = null;
 
     #[Groups(['representation', 'identification'])]

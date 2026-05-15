@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\MaintenanceSchedule;
 use App\Form\MaintenanceScheduleType;
 use App\Service\Helper\EncryptionManagerTrait;
@@ -28,7 +29,6 @@ use Carve\ApiBundle\Trait\ApiEditTrait;
 use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 
 #[Rest\Route('/maintenanceschedule')]
@@ -38,7 +38,7 @@ use Symfony\Component\Form\FormInterface;
     editFormClass: MaintenanceScheduleType::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'maintenanceSchedule:public',  'timestampable'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class MaintenanceScheduleController extends AbstractApiController
 {

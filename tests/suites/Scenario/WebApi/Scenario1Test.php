@@ -37,6 +37,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Scenario')] // To be used in CI parallel tests
 class Scenario1Test extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

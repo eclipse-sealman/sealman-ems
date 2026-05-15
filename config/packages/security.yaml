@@ -33,6 +33,10 @@ security:
                     - radius_provider
         device_x509_provider:
             id: App\Security\UserProvider\DeviceX509UserProvider
+        device_mtls_scep_provider:
+            id: App\Security\UserProvider\DeviceMTlsScepUserProvider
+        device_mtls_provider:
+            id: App\Security\UserProvider\DeviceMTlsUserProvider
         device_secret_provider:
             id: App\Security\UserProvider\DeviceSecretUserProvider
         device_user_provider:
@@ -163,6 +167,22 @@ security:
             user_checker: App\Security\UserChecker
             custom_authenticators:
                 - App\Security\HttpX509Authenticator
+
+        communication_mtls_scep:
+            stateless: true
+            request_matcher: App\Security\MTlsScepRequestMatcher
+            provider: device_mtls_scep_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpMTlsScepAuthenticator
+
+        communication_mtls:
+            stateless: true
+            request_matcher: App\Security\MTlsRequestMatcher
+            provider: device_mtls_provider
+            user_checker: App\Security\UserChecker
+            custom_authenticators:
+                - App\Security\HttpMTlsAuthenticator
 
         api:
             provider: all_users_provider

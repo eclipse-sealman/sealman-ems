@@ -21,6 +21,7 @@ use App\Entity\Config;
 use App\Entity\Device;
 use App\Entity\DeviceType;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\Traits\CommunicationEntityInterface;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
 use App\Entity\Traits\GsmEntityInterface;
@@ -113,6 +114,7 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
             CommunicationProcedureRequirement::HAS_REQUEST_DIAGNOSE,
             CommunicationProcedureRequirement::HAS_VPN,
             CommunicationProcedureRequirement::HAS_ENDPOINT_DEVICES,
+            CommunicationProcedureRequirement::HAS_HARDWARES,
         ];
 
         return $requirements;
@@ -288,8 +290,6 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
 
         $this->communicationLogManager->createLogInfo('log.incomingRequest');
 
-        $incrementConnections = false;
-
         if (!$this->getDevice()) {
             $this->processMissingRouter();
         } else {
@@ -299,16 +299,14 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
                 return $this->getResponse();
             }
             $this->processRouter();
-            $incrementConnections = true;
         }
         $this->communicationLogManager->createLogDebug('log.requestProcessed', [], $this->getResponse()->__toString());
 
         $this->entityManager->flush();
 
-        if ($incrementConnections) {
-            $this->incrementDeviceConnections();
-            $this->entityManager->flush();
-        }
+        // Increment device connections only if device is enabled (and set in class property)
+        $this->incrementDeviceConnections();
+        $this->entityManager->flush();
 
         $this->communicationLogManager->clearRequest();
 
@@ -353,7 +351,7 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
     /**
      * Processing existing Router.
      */
-    protected function processRouter()
+    protected function processRouter(): void
     {
         $this->updateLastDataInformation();
 
@@ -364,13 +362,17 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
             $this->processRouterImei();
             $this->processRouterImsi();
 
-            if ($this->processFirmware(Feature::PRIMARY, $this->normalizeFirmwareVersion($this->getRouterModel()->getFirmware()))) {
+            if ($this->processFirmware(Feature::PRIMARY, $this->normalizeFirmwareVersion($this->getRouterModel()->getFirmware()), $this->getReceivedDeviceHardwareVersion())) {
                 $this->getDevice()->setReinstallFirmware1(true);
             }
 
             if (!$this->processRequestDiagnoseData()) {
                 // Firmware operations
-                $reinstallingFirmware = $this->processReinstallFirmware(Feature::PRIMARY);
+                $reinstallingFirmware = $this->processReinstallFirmware(
+                    feature: Feature::PRIMARY,
+                    receivedFirmwareVersion: $this->getRouterModel()->getFirmware(),
+                    receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+                );
 
                 // If not reinstalling firmware, try to send StartupConfig
                 if (!$reinstallingFirmware) {
@@ -614,8 +616,6 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
         $this->communicationLogManager->createLogInfo('log.deviceCreate');
 
         $this->entityManager->persist($this->getDevice());
-
-        $this->incrementDeviceConnections();
     }
 
     // this function is used in controller directly
@@ -730,10 +730,16 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
         $this->getResponse()->setContent($generatedConfigDevice->getConfigGenerated());
     }
 
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
-        $this->getResponse()->headers->set('Content-Type', $this->normalizeContentType(self::RESPONSE_FIRMWARE_HEADER, $this->normalizeFirmwareVersion($firmware->getVersion())));
-        $this->getResponse()->setContent('URL="'.$this->getFirmwareUrl($feature, $firmware)."\"\r\nBooloader=Ture\r\nMD5=".$firmware->getMd5()."\r\n");
+        $this->getResponse()->headers->set(
+            'Content-Type',
+            $this->normalizeContentType(self::RESPONSE_FIRMWARE_HEADER, $this->normalizeFirmwareVersion($firmware->getVersion())),
+        );
+
+        $md5 = null !== $firmwareHardwareFile ? $firmwareHardwareFile->getMd5() : $firmware->getMd5();
+
+        $this->getResponse()->setContent('URL="'.$this->getFirmwareUrl($feature, $firmware, $firmwareHardwareFile)."\"\r\nBooloader=Ture\r\nMD5=".$md5."\r\n");
         // todo update TURE? - Awaiting customer decision
 
         $this->getDevice()->setReinstallFirmware1(false);
@@ -818,5 +824,19 @@ class RouterOneConfigCommunication extends AbstractDeviceCommunication implement
         parent::fillCommunicationData($entity);
 
         return $entity;
+    }
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        if ($this->getRouterModel()) {
+            if ($this->getRouterModel()->getModel()) {
+                return $this->getRouterModel()->getModel();
+            }
+        }
+
+        return null;
     }
 }

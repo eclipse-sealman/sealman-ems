@@ -33,6 +33,7 @@ use App\Enum\ImportFileRowImportStatus;
 use App\Enum\ImportFileRowParseStatus;
 use App\Enum\ImportFileStatus;
 use App\Enum\LogLevel;
+use App\Enum\VariableType;
 use App\Exception\LogsException;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use App\Service\Helper\EntityManagerTrait;
@@ -212,6 +213,7 @@ class ImportDeviceManager
                 foreach ($templateVersion->getVariables() as $templateVersionVariable) {
                     $deviceVariable = new DeviceVariable();
                     $deviceVariable->setName($templateVersionVariable->getName());
+                    $deviceVariable->setVariableType($templateVersionVariable->getVariableType());
                     $deviceVariable->setVariableValue($templateVersionVariable->getVariableValue());
                     $device->addVariable($deviceVariable);
                 }
@@ -219,6 +221,7 @@ class ImportDeviceManager
                 foreach ($row->getVariables() as $rowVariable) {
                     $deviceVariable = new DeviceVariable();
                     $deviceVariable->setName($rowVariable->getName());
+                    $deviceVariable->setVariableType($rowVariable->getVariableType());
                     $deviceVariable->setVariableValue($rowVariable->getVariableValue());
                     $device->addVariable($deviceVariable);
                 }
@@ -536,6 +539,7 @@ class ImportDeviceManager
 
             $variable = new ImportFileRowVariable();
             $variable->setName($variableName);
+            $variable->setVariableType(VariableType::STRING);
             $variable->setVariableValue($variableValue);
             $row->addVariable($variable);
 

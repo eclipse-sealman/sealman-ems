@@ -18,7 +18,7 @@ import {
     certificateEntity,
     pkiType,
     pkiHashAlgorithm,
-    pkiKeyLength,
+    pkiKeyType,
 } from "~app/entities/CertificateType/enums";
 import { showOnEqual, showAndRequireOnEqual, showOnTrue } from "~app/utilities/fields";
 import TextWithObfuscatedValue from "~app/components/Form/fields/TextWithObfuscatedValue";
@@ -102,10 +102,10 @@ const composeGetFields = (predefinedCertificateCategory: boolean, editAction: bo
                 }}
             />
         ),
-        scepKeyLength: (
+        scepKeyType: (
             <RadioEnum
                 {...{
-                    enum: pkiKeyLength,
+                    enum: pkiKeyType,
                     ...showAndRequireOnEqual("pkiType", "scep"),
                     help: true,
                 }}

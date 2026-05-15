@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Enum\VariableType;
 use App\Validator\Constraints\VariableName;
 use Carve\ApiBundle\Form\BatchQueryType;
 use Carve\ApiBundle\Validator\Constraints\NotBlank;
@@ -36,6 +37,17 @@ class BatchVariableAddType extends BatchQueryType
             'required' => true,
             'documentation' => [
                 'description' => 'Variable name',
+            ],
+        ]);
+        $builder->add('variableType', null, [
+            'mapped' => false,
+            'trim' => false,
+            'empty_data' => VariableType::STRING->value,
+            // Mark this as not required for OpenAPI documentation
+            'required' => false,
+            'documentation' => [
+                'default' => VariableType::STRING->value,
+                'description' => 'Variable type',
             ],
         ]);
 

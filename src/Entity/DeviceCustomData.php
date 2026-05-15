@@ -1,0 +1,76 @@
+<?php
+
+// Copyright (c) 2025 Contributors to the Eclipse Foundation.
+//
+// See the NOTICE file(s) distributed with this work for additional
+// information regarding copyright ownership.
+//
+// This program and the accompanying materials are made available under the
+// terms of the Apache License, Version 2.0 which is available at
+// https://www.apache.org/licenses/LICENSE-2.0
+//
+// SPDX-License-Identifier: Apache-2.0
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use App\Entity\Traits\CreatedAtEntityInterface;
+use App\Entity\Traits\CreatedAtEntityTrait;
+use App\Entity\Traits\CustomDataValuesInterface;
+use App\Entity\Traits\CustomDataValuesTrait;
+use App\Model\AuditableInterface;
+use Carve\ApiBundle\Deny\DenyInterface;
+use Carve\ApiBundle\Deny\DenyTrait;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+/**
+ * DeviceCustomData entity stores custom data values extracted from communication payloads for devices.
+ *
+ * Each record represents a custom data value associated with a device, including the value itself
+ * and metadata about how it was extracted (name, type, variable name).
+ */
+#[ORM\Entity]
+class DeviceCustomData implements DenyInterface, CreatedAtEntityInterface, CustomDataValuesInterface, AuditableInterface
+{
+    use DenyTrait;
+    use CreatedAtEntityTrait;
+    use CustomDataValuesTrait;
+
+    #[Groups(['id', 'identification', AuditableInterface::GROUP])]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
+
+    #[Groups(['deviceCustomData:public', 'device:identification', AuditableInterface::GROUP])]
+    #[ORM\ManyToOne(targetEntity: Device::class, inversedBy: 'deviceCustomData')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Device $device = null;
+
+    #[Groups(['representation', 'identification'])]
+    public function getRepresentation(): string
+    {
+        return (string) $this->getName();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id)
+    {
+        $this->id = $id;
+    }
+
+    public function getDevice(): ?Device
+    {
+        return $this->device;
+    }
+
+    public function setDevice(?Device $device)
+    {
+        $this->device = $device;
+    }
+}

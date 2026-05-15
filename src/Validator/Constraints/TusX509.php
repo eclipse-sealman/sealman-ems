@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class TusX509 extends Constraint
 {
-    public $messageFileMissing = 'validation.tusX509.fileMissing';
-    public $messageFileEmpty = 'validation.tusX509.fileEmpty';
-    public $messageInvalid = 'validation.tusX509.invalid';
+    public string $messageFileMissing = 'validation.tusX509.fileMissing';
+    public string $messageFileEmpty = 'validation.tusX509.fileEmpty';
+    public string $messageInvalid = 'validation.tusX509.invalid';
 }

@@ -45,6 +45,7 @@ use Tests\Utilities\Mock\VpnProvider\MockVpnProvider;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 #[AllowMockObjectsWithoutExpectations]
 class SerializableJsonTest extends AbstractTestCase
 {

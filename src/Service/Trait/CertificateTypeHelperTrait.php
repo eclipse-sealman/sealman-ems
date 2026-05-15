@@ -51,6 +51,18 @@ trait CertificateTypeHelperTrait
         return $queryBuilder->getQuery()->getResult();
     }
 
+    protected function getMTlsScepCertificateTypes(): array|Collection
+    {
+        $mTlsScepCertificateTypes = [];
+        foreach ($this->getRepository(CertificateType::class)->findAll() as $certificateType) {
+            if ($this->isCertificateTypePkiAvailable($certificateType) && $certificateType->getIsAvailable()) {
+                $mTlsScepCertificateTypes[] = $certificateType;
+            }
+        }
+
+        return $mTlsScepCertificateTypes;
+    }
+
     protected function getCertificateTypeByCertificateCategory(CertificateCategory $certificateCategory, CertificateEntity $certificateEntity): ?CertificateType
     {
         $queryBuilder = $this->getRepository(CertificateType::class)->createQueryBuilder('ct');

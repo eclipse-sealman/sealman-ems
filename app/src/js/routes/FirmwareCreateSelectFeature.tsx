@@ -11,80 +11,55 @@
 
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import { AXIOS_CANCELLED_UNMOUNTED, OptionInterface, useHandleCatch, useLoader } from "@arteneo/forge";
+import { OptionInterface } from "@arteneo/forge";
 import { MemoryOutlined } from "@mui/icons-material";
 import { DeviceTypeInterface } from "~app/entities/DeviceType/definitions";
 import SelectTiles from "~app/components/Page/SelectTiles";
 import Tile from "~app/components/Common/Tile";
 import { SurfaceTitleProps } from "~app/components/Common/SurfaceTitle";
+import useEndpoint from "~app/hooks/useEndpoint";
 
 const FirmwareCreateSelectFeature = () => {
     const { deviceTypeId } = useParams();
     const navigate = useNavigate();
-    const handleCatch = useHandleCatch();
-    const { showLoader, hideLoader } = useLoader();
 
-    const [deviceType, setDeviceType] = React.useState<undefined | DeviceTypeInterface>(undefined);
-    const [tiles, setTiles] = React.useState<OptionInterface[]>([]);
+    const { object: deviceType, loading } = useEndpoint<DeviceTypeInterface>("/options/devicetype/" + deviceTypeId);
+    const [tiles, setTiles] = React.useState<undefined | OptionInterface[]>(undefined);
 
-    React.useEffect(() => load(), [deviceTypeId]);
-
-    const getTiles = (deviceType: DeviceTypeInterface): OptionInterface[] => {
-        const tiles: OptionInterface[] = [];
-
-        if (typeof deviceType !== "undefined") {
-            if (deviceType.hasFirmware1) {
-                tiles.push({
-                    id: "1",
-                    representation: deviceType.nameFirmware1 ?? "",
-                });
-            }
-            if (deviceType.hasFirmware2) {
-                tiles.push({
-                    id: "2",
-                    representation: deviceType.nameFirmware2 ?? "",
-                });
-            }
-            if (deviceType.hasFirmware3) {
-                tiles.push({
-                    id: "3",
-                    representation: deviceType.nameFirmware3 ?? "",
-                });
-            }
+    React.useEffect(() => {
+        if (typeof deviceType === "undefined") {
+            setTiles(undefined);
+            return;
         }
 
-        return tiles;
-    };
+        const tiles: OptionInterface[] = [];
 
-    const load = () => {
-        showLoader();
-
-        const axiosSource = axios.CancelToken.source();
-
-        axios
-            .request({ url: "/options/devicetype/" + deviceTypeId, cancelToken: axiosSource.token })
-            .then((response) => {
-                const deviceType: DeviceTypeInterface = response.data;
-                const tiles = getTiles(deviceType);
-                if (tiles.length === 1) {
-                    navigate("/firmware/create/" + deviceTypeId + "/" + tiles[0].id, { replace: true });
-                    return;
-                }
-
-                setDeviceType(deviceType);
-                setTiles(tiles);
-                hideLoader();
-            })
-            .catch((error) => {
-                hideLoader();
-                handleCatch(error);
+        if (deviceType.hasFirmware1) {
+            tiles.push({
+                id: "1",
+                representation: deviceType.nameFirmware1 ?? "",
             });
+        }
+        if (deviceType.hasFirmware2) {
+            tiles.push({
+                id: "2",
+                representation: deviceType.nameFirmware2 ?? "",
+            });
+        }
+        if (deviceType.hasFirmware3) {
+            tiles.push({
+                id: "3",
+                representation: deviceType.nameFirmware3 ?? "",
+            });
+        }
 
-        return () => {
-            axiosSource.cancel(AXIOS_CANCELLED_UNMOUNTED);
-        };
-    };
+        if (tiles.length === 1) {
+            navigate("/firmware/create/" + deviceTypeId + "/" + tiles[0].id, { replace: true });
+            return;
+        }
+
+        setTiles(tiles);
+    }, [deviceTypeId, loading]);
 
     const titleProps: SurfaceTitleProps = {
         title: "route.title.firmware",
@@ -93,7 +68,7 @@ const FirmwareCreateSelectFeature = () => {
         icon: <MemoryOutlined />,
     };
 
-    if (deviceType?.name) {
+    if (typeof tiles !== "undefined") {
         titleProps.hint = "route.hint.selectFeature";
         titleProps.hintVariables = { deviceType: deviceType?.name };
     }

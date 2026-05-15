@@ -16,15 +16,14 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\AuditLogChange;
-use App\Security\SecurityHelperTrait;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
 use Carve\ApiBundle\Model\ListQuerySortingInterface;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/auditlogchange')]
 #[Api\Resource(
@@ -40,12 +39,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
         'deny',
     ]
 )]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class AuditLogChangeController extends AbstractApiController
 {
     use ApiListTrait;
-    use SecurityHelperTrait;
 
     protected function modifySorting(ListQuerySortingInterface $sorting, QueryBuilder $queryBuilder, string $alias): bool
     {

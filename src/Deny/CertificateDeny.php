@@ -68,7 +68,7 @@ class CertificateDeny extends AbstractApiObjectDeny implements CertificateDenyIn
             return 'accessDenied';
         }
 
-        // Specific TECHNICIAN_VPN role SmartEMS limitations
+        // Specific TECHNICIAN_VPN role device management permissions limitations
         if (CertificateCategory::TECHNICIAN_VPN == $object->getCertificateType()->getCertificateCategory()) {
             if ($object->getUser() && $object->getUser()->getRoleSmartems() && !$object->getUser()->getRoleVpn()) {
                 return 'roleNotSupported';
@@ -96,7 +96,7 @@ class CertificateDeny extends AbstractApiObjectDeny implements CertificateDenyIn
             return 'accessDenied';
         }
 
-        // Specific TECHNICIAN_VPN role SmartEMS limitations
+        // Specific TECHNICIAN_VPN role device management permissions limitations
         if (CertificateCategory::TECHNICIAN_VPN == $object->getCertificateType()->getCertificateCategory()) {
             if ($object->getUser() && $object->getUser()->getRoleSmartems() && !$object->getUser()->getRoleVpn()) {
                 return 'roleNotSupported';

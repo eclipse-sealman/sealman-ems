@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ConfigurationVpnSubnet extends Constraint
 {
-    public $messageInvalidList = 'validation.invalidSubnetList';
-    public $messageInvalidOverlap = 'validation.invalidSubnetsOverlap';
-    public $messageInvalidRangesOverlap = 'validation.invalidRangesOverlap';
-    public $messageInvalidRangeOutsideSubnet = 'validation.invalidRangeOutsideSubnet';
-    public $messageInvalidRangeCannotBeRemoved = 'validation.invalidRangeCannotBeRemoved';
-    public $messageInvalidSubnetCannotBeRemoved = 'validation.invalidSubnetsCannotBeRemoved';
+    public string $messageInvalidList = 'validation.invalidSubnetList';
+    public string $messageInvalidOverlap = 'validation.invalidSubnetsOverlap';
+    public string $messageInvalidRangesOverlap = 'validation.invalidRangesOverlap';
+    public string $messageInvalidRangeOutsideSubnet = 'validation.invalidRangeOutsideSubnet';
+    public string $messageInvalidRangeCannotBeRemoved = 'validation.invalidRangeCannotBeRemoved';
+    public string $messageInvalidSubnetCannotBeRemoved = 'validation.invalidSubnetsCannotBeRemoved';
 
     public function getTargets(): string|array
     {

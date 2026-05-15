@@ -20,7 +20,6 @@ use App\Entity\DeviceType;
 use App\Enum\CertificateEntity;
 use App\Service\PkiProviderFactory;
 use App\Service\VpnProviderFactory;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\DataFixtures as TestFixtures;
 use Tests\Utilities\Abstract\AbstractTestCase;
@@ -41,8 +40,8 @@ use Tests\Utilities\Mock\VpnProvider\MockVpnProvider;
  * 4. Create enabled Device 2 with AT1 and AT2
  * 5. Create enabled Device 3 with AT2 and ED3 with AT3
  * 6. Create disabled Device 4 with no access tags
- * 7. Create VPN Security Suite user 1 with AT1 (VSS1)
- * 8. Create VPN Security Suite user 2 with AT2 (VSS2)
+ * 7. Create user 1 user with VPN permissions with AT1 (VSS1)
+ * 8. Create user 2 user with VPN permissions with AT2 (VSS2)
  * 9. Login as VSS1
  * 10. Verify lists (device, endpoint device)
  * 11. Update VPN connection status
@@ -65,7 +64,7 @@ use Tests\Utilities\Mock\VpnProvider\MockVpnProvider;
  */
 #[Group('full')]
 #[Group('smoke')]
-#[AllowMockObjectsWithoutExpectations]
+#[Group('Scenario')] // To be used in CI parallel tests
 class Scenario3Test extends AbstractTestCase
 {
     public static function getFixtureGroups(): array
@@ -80,9 +79,8 @@ class Scenario3Test extends AbstractTestCase
 
     public function mock(): void
     {
-        $mock = $this->createMock(VpnProviderFactory::class);
+        $mock = $this->createStub(VpnProviderFactory::class);
         $mock
-            ->expects(self::any())
             ->method('getProvider')
             ->willReturnCallback(function () {
                 return new MockVpnProvider();
@@ -90,9 +88,8 @@ class Scenario3Test extends AbstractTestCase
         ;
         static::getContainer()->set(VpnProviderFactory::class, $mock);
 
-        $mock = $this->createMock(PkiProviderFactory::class);
+        $mock = $this->createStub(PkiProviderFactory::class);
         $mock
-            ->expects(self::any())
             ->method('getProvider')
             ->willReturnCallback(function (Certificate $certificate) {
                 $certificateType = $certificate->getCertificateType();
@@ -224,7 +221,7 @@ class Scenario3Test extends AbstractTestCase
         );
         $deviceIds['device4'] = $this->getResponseValue('id');
 
-        // 7. Create VPN Security Suite user 1 with AT1 (VSS1)
+        // 7. Create user 1 user with VPN permissions with AT1 (VSS1)
         $this->getApiClient()->request(
             uri: '/web/api/user/create',
             parameters: fn () => [
@@ -240,7 +237,7 @@ class Scenario3Test extends AbstractTestCase
         );
         $userIds['vss1'] = $this->getResponseValue('id');
 
-        // 8. Create VPN Security Suite user 2 with AT2 (VSS2)
+        // 8. Create user 2 user with VPN permissions with AT2 (VSS2)
         $this->getApiClient()->request(
             uri: '/web/api/user/create',
             parameters: fn () => [

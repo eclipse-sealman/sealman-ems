@@ -20,7 +20,7 @@ use App\Entity\DeviceType;
 use App\Enum\CommunicationProcedure;
 use App\Model\DownloadFirmwareUrlModel;
 use App\Service\Helper\EntityManagerTrait;
-use App\Service\Helper\RouterInterfaceTrait;
+use App\Service\Helper\RouterTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouteCollection;
@@ -29,7 +29,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 class DeviceCommunicationFactory
 {
     use EntityManagerTrait;
-    use RouterInterfaceTrait;
+    use RouterTrait;
 
     /**
      * @var ContainerInterface
@@ -164,7 +164,7 @@ class DeviceCommunicationFactory
 
     public function getRequestedDeviceType(Request $request): ?DeviceType
     {
-        $matchedRoute = $this->routerInterface->matchRequest($request);
+        $matchedRoute = $this->router->matchRequest($request);
         if (!$matchedRoute || !isset($matchedRoute['_route'])) {
             return null;
         }
@@ -194,7 +194,7 @@ class DeviceCommunicationFactory
 
     public function getRequestedDevice(Request $request): ?Device
     {
-        $matchedRoute = $this->routerInterface->matchRequest($request);
+        $matchedRoute = $this->router->matchRequest($request);
         if (!$matchedRoute || !isset($matchedRoute['_route'])) {
             return null;
         }

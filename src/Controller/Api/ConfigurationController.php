@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\Configuration;
 use App\Enum\MicrosoftOidcCredential;
 use App\Form\ConfigurationDocumentationType;
@@ -36,7 +37,6 @@ use Carve\ApiBundle\Controller\AbstractApiController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Rest\Route('/configuration')]
 #[Rest\View(serializerGroups: ['public'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 #[OA\Tag('Configuration')]
 class ConfigurationController extends AbstractApiController
@@ -140,7 +140,7 @@ class ConfigurationController extends AbstractApiController
     #[Rest\View(serializerGroups: ['configuration:vpn'])]
     #[Api\Summary('Get VPN configuration')]
     #[Api\Response200Groups(description: 'Returns VPN configuration', content: new NA\Model(type: Configuration::class))]
-    #[Security("is_granted('ROLE_ADMIN_VPN')")]
+    #[IsGrantedOr('ROLE_ADMIN_VPN')]
     #[Areas(['admin:vpnsecuritysuite'])]
     public function getVpnAction()
     {
@@ -153,7 +153,7 @@ class ConfigurationController extends AbstractApiController
     #[Api\RequestBody(content: new NA\Model(type: ConfigurationVpnType::class))]
     #[Api\Response200Groups(description: 'Returns edited VPN configuration', content: new NA\Model(type: Configuration::class))]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN_VPN')")]
+    #[IsGrantedOr('ROLE_ADMIN_VPN')]
     #[Areas(['admin:vpnsecuritysuite'])]
     public function setVpnAction(Request $request)
     {
@@ -383,7 +383,7 @@ class ConfigurationController extends AbstractApiController
         }
 
         // SCEP Server allows common name to be maximum of 53 characters, lets keep the same constraint here.
-        $commonName = substr(Urlizer::urlize('selfSigned_sealman_'.$configuration->getCompanyName()), 0, 53);
+        $commonName = substr(Urlizer::urlize('selfSigned_sealman'), 0, 53);
         $dns = [
             'commonName' => $commonName,
         ];

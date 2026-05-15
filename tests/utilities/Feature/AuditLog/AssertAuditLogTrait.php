@@ -146,13 +146,13 @@ trait AssertAuditLogTrait
         return $change;
     }
 
-    protected function findChange(string $entity, int $entityId): AuditLogChange
+    protected function findChange(string $entity, int $entityId, ?string $message = null): AuditLogChange
     {
         $change = $this->getLastChange($entity, [
             'entityId' => $entityId,
         ]);
 
-        $this->assertInstanceOf(AuditLogChange::class, $change);
+        $this->assertInstanceOf(AuditLogChange::class, $change, $message ?? "AuditLogChange for entity '{$entity}' with id '{$entityId}' does not exist");
 
         return $change;
     }
@@ -176,5 +176,21 @@ trait AssertAuditLogTrait
         }
 
         return $changes;
+    }
+
+    protected function assertChangeCount(int $expectedCount, ?string $entity = null): void
+    {
+        if (null === $entity) {
+            $count = $this->getRepository(AuditLogChange::class)->count([]);
+        } else {
+            $reflection = new \ReflectionClass($entity);
+            $entityName = $reflection->getShortName();
+
+            $count = $this->getRepository(AuditLogChange::class)->count([
+                'entityName' => $entityName,
+            ]);
+        }
+
+        $this->assertSame($expectedCount, $count, 'Expected AuditLogChange count is not the same');
     }
 }

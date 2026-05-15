@@ -17,6 +17,7 @@ namespace App\Enum;
 
 enum CommunicationProcedureRequirement: string
 {
+    case HAS_HARDWARES = 'hasHardwares';
     case HAS_FIRMWARE1 = 'hasFirmware1';
     case HAS_FIRMWARE2 = 'hasFirmware2';
     case HAS_FIRMWARE3 = 'hasFirmware3';
@@ -37,4 +38,5 @@ enum CommunicationProcedureRequirement: string
     case HAS_DEVICE_COMMANDS = 'hasDeviceCommands';
     case HAS_VARIABLES = 'hasVariables';
     case HAS_DEVICE_TO_NETWORK_CONNECTION = 'hasDeviceToNetworkConnection';
+    case HAS_CUSTOM_DATA = 'hasCustomData';
 }

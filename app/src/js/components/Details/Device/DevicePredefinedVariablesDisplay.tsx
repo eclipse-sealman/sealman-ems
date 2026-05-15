@@ -15,7 +15,11 @@ import { Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { DeviceInterface } from "~app/entities/Device/definitions";
 import DisplayVariables from "~app/components/Display/DisplayVariables";
-import VariableInterface from "~app/definitions/VariableInterface";
+
+interface VariableValueInterface {
+    name: string;
+    variableValue?: string;
+}
 
 interface DevicePredefinedVariablesDisplayProps {
     device: DeviceInterface;
@@ -24,7 +28,7 @@ interface DevicePredefinedVariablesDisplayProps {
 const DevicePredefinedVariablesDisplay = ({ device }: DevicePredefinedVariablesDisplayProps) => {
     const handleCatch = useHandleCatch();
 
-    const [variables, setVariables] = React.useState<VariableInterface[]>([]);
+    const [variables, setVariables] = React.useState<VariableValueInterface[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => load(), []);
@@ -68,4 +72,4 @@ const DevicePredefinedVariablesDisplay = ({ device }: DevicePredefinedVariablesD
 };
 
 export default DevicePredefinedVariablesDisplay;
-export { DevicePredefinedVariablesDisplayProps };
+export { DevicePredefinedVariablesDisplayProps, VariableValueInterface };

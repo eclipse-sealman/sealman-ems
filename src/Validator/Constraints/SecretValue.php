@@ -17,14 +17,14 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-#[\Attribute(\Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class SecretValue extends Constraint
 {
-    public $messageSecretValueMinimumLengthRequirementFailed = 'validation.secretValue.minimumLengthRequirementFailed';
-    public $messageSecretValueDigitRequirementFailed = 'validation.secretValue.digitRequirementFailed';
-    public $messageSecretValueUppercaseRequirementFailed = 'validation.secretValue.uppercaseRequirementFailed';
-    public $messageSecretValueLowercaseRequirementFailed = 'validation.secretValue.lowercaseRequirementFailed';
-    public $messageSecretValueSpecialCharRequirementFailed = 'validation.secretValue.specialCharRequirementFailed';
+    public string $messageSecretValueMinimumLengthRequirementFailed = 'validation.secretValue.minimumLengthRequirementFailed';
+    public string $messageSecretValueDigitRequirementFailed = 'validation.secretValue.digitRequirementFailed';
+    public string $messageSecretValueUppercaseRequirementFailed = 'validation.secretValue.uppercaseRequirementFailed';
+    public string $messageSecretValueLowercaseRequirementFailed = 'validation.secretValue.lowercaseRequirementFailed';
+    public string $messageSecretValueSpecialCharRequirementFailed = 'validation.secretValue.specialCharRequirementFailed';
 
     public function getTargets(): string|array
     {

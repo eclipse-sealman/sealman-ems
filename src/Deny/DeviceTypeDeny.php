@@ -16,15 +16,21 @@ declare(strict_types=1);
 namespace App\Deny;
 
 use App\Entity\DeviceType;
+use App\Entity\FirmwareHardwareFile;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
+use App\Service\Helper\EntityManagerTrait;
 
 class DeviceTypeDeny extends AbstractApiDuplicateObjectDeny
 {
     use DeviceCommunicationFactoryTrait;
+    use EntityManagerTrait;
 
     public const LIMITED_EDIT = 'limitedEdit';
     public const ENABLE = 'enable';
     public const DISABLE = 'disable';
+    public const HAS_HARDWARES = 'hasHardwares';
+    public const HAS_CUSTOM_DATA = 'hasCustomData';
+    public const COPY_DEFAULT_CUSTOM_DATA_MAPPINGS = 'copyDefaultCustomDataMappings';
 
     public function enableDeny(DeviceType $deviceType): ?string
     {
@@ -51,6 +57,10 @@ class DeviceTypeDeny extends AbstractApiDuplicateObjectDeny
 
     public function deleteDeny(DeviceType $deviceType): ?string
     {
+        if ($this->isHardwareUsed($deviceType)) {
+            return 'delete.usedByFirmwareHardwareFile';
+        }
+
         return $this->getUsedDeny($deviceType) ? 'delete.'.$this->getUsedDeny($deviceType) : null;
     }
 
@@ -62,6 +72,29 @@ class DeviceTypeDeny extends AbstractApiDuplicateObjectDeny
     public function limitedEditDeny(DeviceType $deviceType): ?string
     {
         return $this->getUsedDeny($deviceType) ? null : 'limitedEdit';
+    }
+
+    public function hasHardwaresDeny(DeviceType $deviceType): ?string
+    {
+        return $deviceType->getHasHardwares() ? null : 'accessDenied';
+    }
+
+    public function hasCustomDataDeny(DeviceType $deviceType): ?string
+    {
+        return $deviceType->getHasCustomData() ? null : 'accessDenied';
+    }
+
+    public function copyDefaultCustomDataMappingsDeny(DeviceType $deviceType): ?string
+    {
+        if (!$deviceType->getHasCustomData()) {
+            return 'customDataDisabled';
+        }
+
+        if ($deviceType->getDeviceTypeCustomDataMappings()->count() > 0) {
+            return 'customDataMappingsAlreadyExist';
+        }
+
+        return null;
     }
 
     public function getUsedDeny(DeviceType $deviceType): ?string
@@ -91,5 +124,18 @@ class DeviceTypeDeny extends AbstractApiDuplicateObjectDeny
         }
 
         return null;
+    }
+
+    protected function isHardwareUsed(DeviceType $deviceType): bool
+    {
+        $queryBuilder = $this->getRepository(FirmwareHardwareFile::class)->createQueryBuilder('fhf');
+        $queryBuilder->select('COUNT(fhf.id)');
+        $queryBuilder->leftJoin('fhf.hardware', 'h');
+        $queryBuilder->andWhere('h.deviceType = :deviceType');
+        $queryBuilder->setParameter('deviceType', $deviceType);
+
+        $count = $queryBuilder->getQuery()->getSingleScalarResult();
+
+        return $count > 0;
     }
 }

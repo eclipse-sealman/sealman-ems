@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\VpnLog;
 use App\Security\SecurityHelperTrait;
 use Carve\ApiBundle\Attribute\AddRoleBasedSerializerGroups;
@@ -28,7 +29,6 @@ use Carve\ApiBundle\Trait\ApiExportExcelTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/vpnlog')]
 #[Api\Resource(
@@ -38,7 +38,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 )]
 #[Rest\View(serializerGroups: ['identification', 'vpnLog:public', 'deviceType:identification', 'logLevel', 'createdAt', 'blameable', 'deny'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN_SCEP', ['vpnLog:admin'])]
-#[Security("is_granted('ROLE_ADMIN_SCEP') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN_SCEP', 'ROLE_VPN'])]
 #[Areas(['admin:scep', 'vpnsecuritysuite'])]
 class VpnLogController extends AbstractApiController
 {

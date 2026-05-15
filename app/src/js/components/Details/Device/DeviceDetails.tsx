@@ -26,6 +26,8 @@ import { useUser } from "~app/contexts/User";
 import TableDeviceCommands from "~app/components/Details/Device/TableDeviceCommands";
 import DeviceCertificateDetails from "~app/components/Details/Device/DeviceCertificateDetails";
 import TableDeviceSecrets from "~app/components/Details/Device/TableDeviceSecrets";
+import DeviceCustomDataValuesDisplay from "~app/components/Details/Device/DeviceCustomDataValuesDisplay";
+import DeviceCustomDataVariablesDisplay from "~app/components/Details/Device/DeviceCustomDataVariablesDisplay";
 
 interface DeviceDetailsProps {
     device: DeviceInterface;
@@ -38,6 +40,7 @@ const DeviceDetails = ({ device }: DeviceDetailsProps) => {
 
     const hasVariables = isAccessGranted({ admin: true, smartems: true }) && deviceType.hasVariables;
     const hasConfig = deviceType.hasConfig1 || deviceType.hasConfig2 || deviceType.hasConfig3;
+    const hasCustomData = isAccessGranted({ admin: true, smartems: true }) && deviceType.hasCustomData;
 
     return (
         <>
@@ -55,13 +58,32 @@ const DeviceDetails = ({ device }: DeviceDetailsProps) => {
                     },
                 }}
             >
-                <DisplaySurface
+                <Box
                     {...{
-                        title: "deviceDetails.details",
+                        sx: {
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: { xs: 2, lg: 4 },
+                        },
                     }}
                 >
-                    <DeviceDetailsDisplay {...{ device }} />
-                </DisplaySurface>
+                    <DisplaySurface
+                        {...{
+                            title: "deviceDetails.details",
+                        }}
+                    >
+                        <DeviceDetailsDisplay {...{ device }} />
+                    </DisplaySurface>
+                    {hasCustomData && (
+                        <DisplaySurface
+                            {...{
+                                title: "deviceDetails.definedCustomData",
+                            }}
+                        >
+                            <DeviceCustomDataValuesDisplay {...{ device }} />
+                        </DisplaySurface>
+                    )}
+                </Box>
                 {hasVariables && (
                     <Box
                         {...{
@@ -86,6 +108,15 @@ const DeviceDetails = ({ device }: DeviceDetailsProps) => {
                         >
                             <DevicePredefinedVariablesDisplay {...{ device }} />
                         </DisplaySurface>
+                        {hasCustomData && (
+                            <DisplaySurface
+                                {...{
+                                    title: "deviceDetails.customDataVariables",
+                                }}
+                            >
+                                <DeviceCustomDataVariablesDisplay {...{ device }} />
+                            </DisplaySurface>
+                        )}
                     </Box>
                 )}
             </Box>

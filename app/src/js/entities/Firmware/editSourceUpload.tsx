@@ -10,11 +10,36 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import { Text, getFields } from "@arteneo/forge";
+import { FieldsInterface, SelectApi, Text, getFields } from "@arteneo/forge";
+import { getFirmwareSchema } from "~app/entities/Firmware/utilities";
+import { DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/definitions";
+import { FeatureType } from "~app/enums/Feature";
 
-const fields = {
-    name: <Text {...{ required: true }} />,
-    version: <Text {...{ disabled: true }} />,
+const composeGetFields = (
+    deviceType: DeviceConfigurationTypeInterface,
+    feature: FeatureType,
+    allowEditRequiredFirmware: boolean,
+    firmwareId: number
+) => {
+    const firmwareSchema = getFirmwareSchema(deviceType, feature);
+    const isFirmwareSchemaAny = firmwareSchema === "anySchema";
+
+    const fields: FieldsInterface = {
+        name: <Text {...{ required: true }} />,
+        version: <Text {...{ disabled: true }} />,
+        requiredFirmware: (
+            <SelectApi
+                {...{
+                    endpoint: "/firmware/required/firmware/options/" + firmwareId,
+                    disabled: !allowEditRequiredFirmware && !isFirmwareSchemaAny,
+                    hidden: isFirmwareSchemaAny,
+                    help: !allowEditRequiredFirmware ? "help.requiredFirmwareEditDisabled" : undefined,
+                }}
+            />
+        ),
+    };
+
+    return getFields(fields);
 };
 
-export default getFields(fields);
+export default composeGetFields;

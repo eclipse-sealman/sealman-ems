@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class Config extends Constraint
 {
-    public $messageRequired = 'validation.required';
-    public $messageFeatureInvalid = 'validation.config.featureInvalid';
-    public $messageNameNotUnique = 'validation.config.nameNotUnique';
-    public $messageConfigGeneratorPhpDisabled = 'validation.config.configGeneratorPhpDisabled';
-    public $messageConfigGeneratorTwigDisabled = 'validation.config.configGeneratorTwigDisabled';
-    public $messageTwigInvalid = 'validation.config.twigInvalid';
+    public string $messageRequired = 'validation.required';
+    public string $messageFeatureInvalid = 'validation.config.featureInvalid';
+    public string $messageNameNotUnique = 'validation.config.nameNotUnique';
+    public string $messageConfigGeneratorPhpDisabled = 'validation.config.configGeneratorPhpDisabled';
+    public string $messageConfigGeneratorTwigDisabled = 'validation.config.configGeneratorTwigDisabled';
+    public string $messageTwigInvalid = 'validation.config.twigInvalid';
 
     public function getTargets(): string|array
     {

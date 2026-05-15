@@ -29,7 +29,7 @@ use App\Service\Helper\CertificateManagerTrait;
 use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\EncryptionManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
-use App\Service\Helper\RouterInterfaceTrait;
+use App\Service\Helper\RouterTrait;
 use Carve\ApiBundle\Exception\RequestExecutionException;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Encoding\ChainedFormatter;
@@ -54,7 +54,7 @@ class MicrosoftOidcManager
     use EntityManagerTrait;
     use EncryptionManagerTrait;
     use ConfigurationManagerTrait;
-    use RouterInterfaceTrait;
+    use RouterTrait;
     use CertificateManagerTrait;
 
     public const OAUTH_AUTHORITY = 'https://login.microsoftonline.com/';
@@ -480,7 +480,7 @@ class MicrosoftOidcManager
         $configuration = $this->getConfiguration();
 
         if (null === $redirectUri) {
-            $redirectUri = $this->routerInterface->generate('app_app_app', [], RouterInterface::ABSOLUTE_URL);
+            $redirectUri = $this->router->generate('app_app_app', [], RouterInterface::ABSOLUTE_URL);
             // Frontend application route that will perform SSO login using data coming from Microsoft (code and state)
             // app/src/js/routes/SsoMicrosoftOidcLogin.tsx
             $redirectUri .= 'authentication/sso/microsoftoidc/login';

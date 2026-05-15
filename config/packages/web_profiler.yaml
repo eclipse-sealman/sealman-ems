@@ -15,11 +15,15 @@ when@dev:
         intercept_redirects: false
 
     framework:
-        profiler: { only_exceptions: false }
+        profiler:
+          collect_serializer_data: true
+          only_exceptions: false
 
 when@test:
     web_profiler:
         toolbar: "%kernel.debug%"
+
     framework:
         profiler:
             enabled: "%kernel.debug%"
+            collect_serializer_data: true

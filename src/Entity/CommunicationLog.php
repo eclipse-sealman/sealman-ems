@@ -79,8 +79,14 @@ class CommunicationLog implements DenyInterface, CreatedAtEntityInterface, LogLe
     #[ORM\OneToMany(mappedBy: 'communicationLog', targetEntity: ConfigLog::class)]
     private Collection $configLogs;
 
+    /**
+     * Custom data values extracted from this communication log payload.
+     */
+    #[ORM\OneToMany(mappedBy: 'communicationLog', targetEntity: CommunicationLogCustomData::class, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['id' => 'DESC'])]
+    private Collection $communicationLogCustomData;
+
     #[ORM\OneToOne(targetEntity: CommunicationLogContent::class, mappedBy: 'communicationLog')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?CommunicationLogContent $communicationLogContent = null;
 
     /**
@@ -111,10 +117,28 @@ class CommunicationLog implements DenyInterface, CreatedAtEntityInterface, LogLe
         }
     }
 
+    public function addCommunicationLogCustomData(CommunicationLogCustomData $communicationLogCustomData)
+    {
+        if (!$this->communicationLogCustomData->contains($communicationLogCustomData)) {
+            $this->communicationLogCustomData->add($communicationLogCustomData);
+            $communicationLogCustomData->setCommunicationLog($this);
+        }
+    }
+
+    public function removeCommunicationLogCustomData(CommunicationLogCustomData $communicationLogCustomData)
+    {
+        if ($this->communicationLogCustomData->removeElement($communicationLogCustomData)) {
+            if ($communicationLogCustomData->getCommunicationLog() === $this) {
+                $communicationLogCustomData->setCommunicationLog(null);
+            }
+        }
+    }
+
     public function __construct()
     {
         $this->configLogs = new ArrayCollection();
         $this->accessTags = new ArrayCollection();
+        $this->communicationLogCustomData = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -125,16 +149,6 @@ class CommunicationLog implements DenyInterface, CreatedAtEntityInterface, LogLe
     public function setId(?int $id)
     {
         $this->id = $id;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     public function getMessage(): ?string
@@ -205,5 +219,15 @@ class CommunicationLog implements DenyInterface, CreatedAtEntityInterface, LogLe
     public function setCommunicationLogContent(?CommunicationLogContent $communicationLogContent)
     {
         $this->communicationLogContent = $communicationLogContent;
+    }
+
+    public function getCommunicationLogCustomData(): Collection
+    {
+        return $this->communicationLogCustomData;
+    }
+
+    public function setCommunicationLogCustomData(Collection $communicationLogCustomData)
+    {
+        $this->communicationLogCustomData = $communicationLogCustomData;
     }
 }

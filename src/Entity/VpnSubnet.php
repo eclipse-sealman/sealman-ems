@@ -18,6 +18,7 @@ namespace App\Entity;
 use App\Enum\VpnSubnetType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
@@ -38,6 +39,7 @@ class VpnSubnet
     private ?string $ip = null;
 
     #[Groups(['vpnSubnet:public'])]
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT)]
     private ?int $ipLong = null;
 
@@ -45,6 +47,7 @@ class VpnSubnet
      * Cidr in short format as in /8, /24.
      */
     #[Groups(['vpnSubnet:public'])]
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT)]
     private ?int $cidr = null;
 
@@ -52,6 +55,7 @@ class VpnSubnet
      * Amount of addreses in this subnet.
      */
     #[Groups(['vpnSubnet:public'])]
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT)]
     private ?int $size = null;
 

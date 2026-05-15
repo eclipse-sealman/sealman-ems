@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Utilities\ApiClient\Requests;
 
 use App\Entity\Device;
+use App\Enum\VariableType;
 use Tests\Utilities\ApiClient\ApiClientAssert as Assert;
 use Tests\Utilities\ApiClient\ApiClientRequest;
 
@@ -235,6 +236,7 @@ trait DeviceRequests
             method: 'POST',
             parameters: [
                 'name' => 'variable{counter}',
+                'variableType' => VariableType::STRING,
                 'variableValue' => '{uuid}',
             ],
             asserts: [

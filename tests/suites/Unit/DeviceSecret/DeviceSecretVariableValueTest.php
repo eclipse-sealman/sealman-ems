@@ -35,6 +35,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class DeviceSecretVariableValueTest extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\DeviceTypeSecretDeny;
 use App\Entity\DeviceSecret;
 use App\Entity\DeviceTypeSecret;
@@ -30,7 +31,6 @@ use Carve\ApiBundle\Trait\ApiDeleteTrait;
 use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
     denyClass: DeviceTypeSecretDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'deviceTypeSecret:public', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class DeviceTypeSecretController extends AbstractApiController
 {

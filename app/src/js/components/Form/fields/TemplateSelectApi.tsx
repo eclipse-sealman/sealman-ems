@@ -153,6 +153,7 @@ const TemplateSelectApi = ({ deviceType, ...selectApiProps }: TemplateSelectApiP
                 "variables",
                 templateVersion.variables?.map((variable) => ({
                     name: variable.name,
+                    variableType: variable.variableType,
                     variableValue: variable.variableValue,
                 })) ?? []
             );

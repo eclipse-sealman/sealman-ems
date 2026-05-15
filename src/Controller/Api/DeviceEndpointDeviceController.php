@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\DeviceEndpointDeviceDeny;
 use App\Entity\DeviceEndpointDevice;
 use App\Form\DeviceEndpointDeviceType;
@@ -34,7 +35,6 @@ use Carve\ApiBundle\Trait\ApiGetTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,7 +58,7 @@ use Symfony\Component\HttpFoundation\Request;
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN_VPN', ['device:admin', 'device:adminVpn', 'deviceEndpointDevice:admin'])]
 #[AddRoleBasedSerializerGroups('ROLE_VPN', ['device:vpn', 'deviceEndpointDevice:vpn'])]
 #[AddRoleBasedSerializerGroups('ROLE_VPN_ENDPOINTDEVICES', ['deviceEndpointDevice:vpnEndpointDevices'])]
-#[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
 #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
 class DeviceEndpointDeviceController extends AbstractApiController
 {

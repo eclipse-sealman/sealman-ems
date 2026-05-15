@@ -16,17 +16,20 @@ declare(strict_types=1);
 namespace App\DeviceCommunication;
 
 use App\DeviceCommunication\Trait\Abstract\AbstractDeviceCommunicationSecurityTrait;
-use App\Entity\Certificate;
 use App\Entity\CertificateType;
 use App\Entity\CommunicationLog;
+use App\Entity\CommunicationLogCustomData;
 use App\Entity\Device;
 use App\Entity\DeviceCommand;
+use App\Entity\DeviceCustomData;
 use App\Entity\DeviceSecret;
 use App\Entity\DeviceType;
 use App\Entity\DeviceTypeCertificateType;
+use App\Entity\DeviceTypeHardware;
 use App\Entity\DeviceTypeSecret;
 use App\Entity\DeviceVariable;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\TemplateVersion;
 use App\Entity\Traits\CommunicationEntityInterface;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
@@ -38,11 +41,13 @@ use App\Enum\ConfigGenerator;
 use App\Enum\DeviceCommandStatus;
 use App\Enum\Feature;
 use App\Enum\FieldRequirement;
+use App\Enum\FirmwareVersionSchema;
 use App\Enum\LogLevel;
 use App\Enum\SecretValueBehaviour;
 use App\Enum\SourceType;
 use App\Exception\LogsException;
 use App\Model\ConfigDevice;
+use App\Model\CustomDataModel;
 use App\Model\FieldRequirementsModel;
 use App\Model\ResponseModel;
 use App\Model\VariableInterface;
@@ -54,11 +59,15 @@ use App\Service\Helper\ConnectionAggregationManagerTrait;
 use App\Service\Helper\DeviceSecretManagerTrait;
 use App\Service\Helper\EncryptionManagerTrait;
 use App\Service\Helper\EntityManagerTrait;
-use App\Service\Helper\RouterInterfaceTrait;
+use App\Service\Helper\FirmwareVersionSchemaManagerTrait;
+use App\Service\Helper\RouterTrait;
 use App\Service\Helper\TemplateManagerTrait;
+use App\Service\Helper\VariableManagerTrait;
 use App\Service\Helper\ViewHandlerTrait;
 use App\Service\Helper\VpnAddressManagerTrait;
 use App\Service\Trait\CertificateTypeHelperTrait;
+use App\Tool\TypeCaster;
+use Carve\ApiBundle\Helper\Arr;
 use ReflectionClass;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +78,7 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
 {
     use AbstractDeviceCommunicationSecurityTrait;
 
-    use RouterInterfaceTrait;
+    use RouterTrait;
     use EntityManagerTrait;
     use ConnectionAggregationManagerTrait;
     use CommunicationLogManagerTrait;
@@ -85,6 +94,8 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     use VpnAddressManagerTrait;
     use CertificateTypeHelperTrait;
     use DeviceSecretManagerTrait;
+    use VariableManagerTrait;
+    use FirmwareVersionSchemaManagerTrait;
 
     /**
      * @var ?DeviceType
@@ -192,6 +203,14 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     }
 
     /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Provides extra log data for communication logs translation as '{{ data }}'.
      */
     public function getLogData(): string
@@ -258,6 +277,18 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     public function getCommunicationProcedureFieldsRequirements(): FieldRequirementsModel
     {
         return new FieldRequirementsModel();
+    }
+
+    /**
+     * Returns array of default custom data mapping objects for this communication procedure.
+     * Each mapping defines a JSON path in the communication payload and the corresponding variable name.
+     * Returned objects are not persisted to database - objects should be used as a template - copied to new object and saved in database.
+     *
+     * @return array<DeviceTypeCustomDataMapping>
+     */
+    public function getDefaultCustomDataMappings(): array
+    {
+        return [];
     }
 
     /**
@@ -432,7 +463,7 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     /**
      * Communication procedure should reinstall firmware - prepare proper response.
      */
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
     }
 
@@ -775,53 +806,48 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
      * Method checks if firmware could and should be reinstalled
      * It uses handleReinstallFirmware method.
      */
-    protected function processReinstallFirmware(Feature $feature, bool $overrideMinRsrp = false, bool $createLogs = true): bool
+    protected function processReinstallFirmware(Feature $feature, ?string $receivedFirmwareVersion = null, ?string $receivedDeviceHardwareVersion = null, bool $overrideMinRsrp = false, bool $createLogs = true): bool
     {
         $getReinstallFirmware = 'getReinstallFirmware'.$feature->value;
         $getHasFirmware = 'getHasFirmware'.$feature->value;
+        $getFirmwareSchema = 'getFirmwareSchema'.$feature->value;
         $getFirmware = 'getFirmware'.$feature->value;
+        $getAllowDowngradeFirmware = 'getAllowDowngradeFirmware'.$feature->value;
 
-        if (!$this->getDevice() || !$this->getDeviceType() || !$this->getDeviceType()->$getHasFirmware()) {
+        if (!$this->getDevice() || !$this->getDeviceType() || !$this->getDeviceType()->$getHasFirmware() || !$this->getDeviceType()->$getFirmwareSchema()) {
             return false;
         }
 
         if ($this->getDevice()->$getReinstallFirmware()) {
             if (!$this->getDeviceTemplate()) {
-                if ($createLogs) {
-                    // Comment added for easier messages lookup
-                    // 'log.deviceInstallFirmware1NoTemplate'
-                    // 'log.deviceInstallFirmware2NoTemplate'
-                    // 'log.deviceInstallFirmware3NoTemplate'
-                    $this->communicationLogManager->createLogInfo('log.deviceInstallFirmware'.$feature->value.'NoTemplate');
-                }
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareNoTemplate',
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
             } elseif (!$this->getDeviceTemplate()->$getFirmware()) {
-                if ($createLogs) {
-                    // Comment added for easier messages lookup
-                    // 'log.deviceInstallFirmware1NoFirmware'
-                    // 'log.deviceInstallFirmware2NoFirmware'
-                    // 'log.deviceInstallFirmware3NoFirmware'
-                    $this->communicationLogManager->createLogInfo('log.deviceInstallFirmware'.$feature->value.'NoFirmware');
-                }
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareNoFirmware',
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
             } else {
                 if (!$overrideMinRsrp && $this->getDeviceType()->getEnableFirmwareMinRsrp() && !$this->isRsrpValid($this->getDeviceType()->getFirmwareMinRsrp())) {
-                    if ($createLogs) {
-                        // Comment added for easier messages lookup
-                        // 'log.deviceRsrpInvalidFirmware1'
-                        // 'log.deviceRsrpInvalidFirmware2'
-                        // 'log.deviceRsrpInvalidFirmware3'
-                        $this->communicationLogManager->createLogWarning('log.deviceRsrpInvalidFirmware'.$feature->value);
-                    }
+                    $this->communicationLogManager->createLogWarning(
+                        feature: $feature,
+                        message: 'log.deviceRsrpInvalidFirmware',
+                        createLog: $createLogs, // If createLogs is false, no log will be created
+                    );
                 } else {
-                    if ($createLogs) {
-                        // Comment added for easier messages lookup
-                        // 'log.deviceReinstallingFirmware1'
-                        // 'log.deviceReinstallingFirmware2'
-                        // 'log.deviceReinstallingFirmware3'
-                        $this->communicationLogManager->createLogInfo('log.deviceReinstallingFirmware'.$feature->value);
-                    }
-                    $this->handleReinstallFirmware($feature, $this->getDeviceTemplate()->$getFirmware());
-
-                    return true;
+                    return $this->processFirmwareUpdatePath(
+                        feature: $feature,
+                        firmware: $this->getDeviceTemplate()->$getFirmware(),
+                        firmwareSchema: $this->getDeviceType()->$getFirmwareSchema(),
+                        receivedFirmwareVersion: $receivedFirmwareVersion,
+                        allowDowngradeFirmware: $this->getDeviceType()->$getAllowDowngradeFirmware(),
+                        receivedDeviceHardwareVersion: $receivedDeviceHardwareVersion,
+                        createLogs: $createLogs
+                    );
                 }
             }
         }
@@ -830,10 +856,216 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     }
 
     /**
+     * Method processes firmware update path, chooses proper firmware and then executes handleReinstallFirmware.
+     * It uses handleReinstallFirmware method.
+     */
+    protected function processFirmwareUpdatePath(Feature $feature, Firmware $firmware, FirmwareVersionSchema $firmwareSchema, ?string $receivedFirmwareVersion = null, bool $allowDowngradeFirmware = false, ?string $receivedDeviceHardwareVersion = null, bool $createLogs = true): bool
+    {
+        if (FirmwareVersionSchema::ANY_SCHEMA === $firmwareSchema) {
+            if (null !== $firmware->getRequiredFirmware()) {
+                $this->communicationLogManager->createLogCritical(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareRequiredFirmwareNotSupported',
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+
+            return $this->executeHandleReinstallFirmware($feature, $firmware, $receivedDeviceHardwareVersion, $createLogs);
+        }
+
+        if (!$allowDowngradeFirmware) {
+            // Downgrade firmware handling
+            // Checking if firmware version was provided by device
+            if (null === $receivedFirmwareVersion) {
+                $this->communicationLogManager->createLogCritical(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareFirmwareVersionRequired',
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+
+            // Checking if received firmware version matches schema - if not, error will be generated
+            if (!$this->validateFirmwareVersion($receivedFirmwareVersion, $firmwareSchema, $feature, $createLogs)) {
+                return false;
+            }
+
+            // Checking if firmware version matches schema - if not, error will be generated
+            if (!$this->validateFirmwareVersion($firmware->getVersion(), $firmwareSchema, $feature, $createLogs)) {
+                return false;
+            }
+
+            // Testing if $receivedFirmwareVersion is higher than $firmware->getVersion() - meaning it cannot be downgraded - warning should be generated
+            if (!$this->firmwareVersionSchemaManager->isVersion1HigherThanVersion2(
+                $firmware->getVersion(),
+                $receivedFirmwareVersion,
+                $firmwareSchema)
+            ) {
+                $this->communicationLogManager->createLogWarning(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareFirmwareCannotBeDowngraded',
+                    messageVariables: ['receivedVersion' => $receivedFirmwareVersion, 'firmwareVersion' => $firmware->getVersion()],
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+        }
+
+        // No need to check update path if no required firmware is set
+        // Adding outside while loop to add specific log message
+        if (null === $firmware->getRequiredFirmware()) {
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmwareRequiredFirmwareNotSet',
+                createLog: $createLogs, // If createLogs is false, no log will be created
+            );
+
+            return $this->executeHandleReinstallFirmware($feature, $firmware, $receivedDeviceHardwareVersion, $createLogs);
+        }
+
+        // Checking if firmware version was provided by device - again in case of downgrade firmware allowed
+        if (null === $receivedFirmwareVersion) {
+            $this->communicationLogManager->createLogCritical(
+                feature: $feature,
+                message: 'log.deviceInstallFirmwareFirmwareVersionRequired',
+                createLog: $createLogs, // If createLogs is false, no log will be created
+            );
+
+            return false;
+        }
+
+        // Checking if received firmware version matches schema - if not, error will be generated
+        if (!$this->validateFirmwareVersion($receivedFirmwareVersion, $firmwareSchema, $feature, $createLogs)) {
+            return false;
+        }
+
+        $currentFirmware = $firmware;
+        $currentFirmwareVersion = $currentFirmware->getVersion();
+        while ($currentFirmware->getRequiredFirmware()) {
+            $requiredFirmware = $currentFirmware->getRequiredFirmware();
+            $requiredFirmwareVersion = $requiredFirmware->getVersion();
+
+            // Checking if required firmware device type matches current device type
+            if ($requiredFirmware->getDeviceType() !== $this->getDeviceType()) {
+                $this->communicationLogManager->createLogCritical(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareFirmwareDeviceTypeMismatch',
+                    messageVariables: ['version' => $requiredFirmwareVersion],
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+
+            // Checking if required firmware feature matches current feature
+            if ($requiredFirmware->getFeature() !== $firmware->getFeature()) {
+                $this->communicationLogManager->createLogCritical(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareFirmwareFeatureMismatch',
+                    messageVariables: ['version' => $requiredFirmwareVersion],
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+
+            // Checking if firmware update path has versions are valid (according to schema)
+            if (!$this->validateFirmwareVersion($requiredFirmwareVersion, $firmwareSchema, $feature, $createLogs)) {
+                return false;
+            }
+
+            // Checking if firmware update path has versions are in descending order
+            // Testing if $currentFirmwareVersion is higher than $requiredFirmwareVersion - if not, add violation
+            if (!$this->firmwareVersionSchemaManager->isVersion1HigherThanVersion2(
+                $currentFirmwareVersion,
+                $requiredFirmwareVersion,
+                $firmwareSchema)
+            ) {
+                $this->communicationLogManager->createLogCritical(
+                    feature: $feature,
+                    message: 'log.deviceInstallFirmwareFirmwareVersionNotInOrder',
+                    messageVariables: ['version' => $requiredFirmwareVersion],
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                return false;
+            }
+
+            // Firmware version are valid and in descending order - checking if received firmware version is greater or equal than required firmware version
+            // No need for try since version validity was already checked above
+            if ($this->firmwareVersionSchemaManager->isVersion1HigherThanOrEqualToVersion2(
+                $receivedFirmwareVersion,
+                $requiredFirmwareVersion,
+                $firmwareSchema)
+            ) {
+                // Found proper firmware to install - breaking the loop
+
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceReinstallingFirmwareRequiredFirmwareAlreadyInstalled',
+                    messageVariables: ['version' => $receivedFirmwareVersion, 'requiredVersion' => $requiredFirmwareVersion],
+                    createLog: $createLogs, // If createLogs is false, no log will be created
+                );
+
+                break;
+            }
+
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmwareRequiredFirmwareNotInstalled',
+                messageVariables: ['version' => $requiredFirmwareVersion],
+                createLog: $createLogs, // If createLogs is false, no log will be created
+            );
+
+            $currentFirmware = $requiredFirmware;
+            $currentFirmwareVersion = $currentFirmware->getVersion();
+        }
+
+        // Adding specific log message if last firmware in update path is reached
+        if (null === $currentFirmware->getRequiredFirmware()) {
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmwareFirstFirmwareInUpdatePath',
+                messageVariables: ['version' => $currentFirmwareVersion],
+                createLog: $createLogs, // If createLogs is false, no log will be created
+            );
+        } else {
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmwareInUpdatePath',
+                messageVariables: ['version' => $currentFirmwareVersion],
+                createLog: $createLogs
+            );
+        }
+
+        return $this->executeHandleReinstallFirmware($feature, $currentFirmware, $receivedDeviceHardwareVersion, $createLogs);
+    }
+
+    protected function validateFirmwareVersion(string $version, FirmwareVersionSchema $schema, Feature $feature, bool $createLogs = true): bool
+    {
+        if (!$this->firmwareVersionSchemaManager->isVersionValid($version, $schema)) {
+            $this->communicationLogManager->createLogError(
+                feature: $feature,
+                message: 'log.deviceInstallFirmwareFirmwareVersionInvalid',
+                messageVariables: ['version' => $version],
+                createLog: $createLogs, // If createLogs is false, no log will be created
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Method checks if received firmware version is different than required by template.
      * If firmware or template is not available it returns false (as in same firmware versions), because it cannot be reinstalled anyway.
      */
-    protected function processFirmware(Feature $feature, string $receivedFirmwareVersion, bool $createLogs = true): bool
+    protected function processFirmware(Feature $feature, string $receivedFirmwareVersion, ?string $receivedDeviceHardwareVersion = null, bool $createLogs = true): bool
     {
         $getHasFirmware = 'getHasFirmware'.$feature->value;
         $getFirmware = 'getFirmware'.$feature->value;
@@ -843,37 +1075,177 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
         }
 
         if (!$this->getDeviceTemplate()) {
-            // Comment added for easier messages lookup
-            // 'log.deviceFirmware1NoTemplate'
-            // 'log.deviceFirmware2NoTemplate'
-            // 'log.deviceFirmware3NoTemplate'
-            $this->communicationLogManager->createLogInfo('log.deviceFirmware'.$feature->value.'NoTemplate');
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceFirmwareNoTemplate'
+            );
         } elseif (!$this->getDeviceTemplate()->$getFirmware()) {
-            // Comment added for easier messages lookup
-            // 'log.deviceFirmware1NoFirmware'
-            // 'log.deviceFirmware2NoFirmware'
-            // 'log.deviceFirmware3NoFirmware'
-            $this->communicationLogManager->createLogInfo('log.deviceFirmware'.$feature->value.'NoFirmware');
-        } elseif ($this->getDeviceTemplate()->$getFirmware()->getVersion() !== $receivedFirmwareVersion) {
-            // Comment added for easier messages lookup
-            // 'log.deviceFirmware1NeedsUpdate'
-            // 'log.deviceFirmware2NeedsUpdate'
-            // 'log.deviceFirmware3NeedsUpdate'
-            $this->communicationLogManager->createLogInfo('log.deviceFirmware'.$feature->value.'NeedsUpdate', [
-                'currentVersion' => $receivedFirmwareVersion,
-                'requiredVersion' => $this->getDeviceTemplate()->$getFirmware()->getVersion(),
-            ]);
-
-            return true;
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceFirmwareNoFirmware'
+            );
         } else {
-            // Comment added for easier messages lookup
-            // 'log.deviceFirmware1UpToDate'
-            // 'log.deviceFirmware2UpToDate'
-            // 'log.deviceFirmware3UpToDate'
-            $this->communicationLogManager->createLogInfo('log.deviceFirmware'.$feature->value.'UpToDate');
+            // Make sure that there is firmware to be send. Check if model of the device matches the firmware hardware file
+            if ($this->getDeviceTemplate()->$getFirmware()->getEnableHardwareFiles()) {
+                if (!$this->getDeviceType()->getHasHardwares()) {
+                    $this->communicationLogManager->createLogError('log.deviceFirmwareDeviceTypeHasHardwaresDisabled');
+
+                    return false;
+                }
+
+                if (null === $receivedDeviceHardwareVersion) {
+                    $this->communicationLogManager->createLogError('log.deviceFirmwareReceivedDeviceHardwareVersionNull');
+
+                    return false;
+                }
+
+                $foundDeviceTypeHardware = null;
+                foreach ($this->getDeviceType()->getDeviceTypeHardwares() as $deviceTypeHardware) {
+                    if ($deviceTypeHardware->getHardwareVersion() === $receivedDeviceHardwareVersion) {
+                        $foundDeviceTypeHardware = $deviceTypeHardware;
+                        break;
+                    }
+                }
+                if (null === $foundDeviceTypeHardware) {
+                    $this->communicationLogManager->createLogError(
+                        'log.deviceFirmwareDeviceTypeHardwareVersionNotFound',
+                        ['deviceHardwareVersion' => $receivedDeviceHardwareVersion]
+                    );
+
+                    return false;
+                }
+
+                $foundFirmwareHardwareFile = $this->getFirmwareHardwareFile($this->getDeviceTemplate()->$getFirmware(), $foundDeviceTypeHardware);
+
+                if (null === $foundFirmwareHardwareFile) {
+                    $this->communicationLogManager->createLogError(
+                        feature: $feature,
+                        message: 'log.deviceFirmwareHardwareFileNotFound',
+                        messageVariables: [
+                            'deviceHardwareVersion' => $receivedDeviceHardwareVersion,
+                            'firmwareVersion' => $this->getDeviceTemplate()->$getFirmware()->getVersion(),
+                            'firmwareName' => $this->getDeviceTemplate()->$getFirmware()->getName(),
+                        ]
+                    );
+
+                    return false;
+                }
+            }
+
+            if ($this->getDeviceTemplate()->$getFirmware()->getVersion() !== $receivedFirmwareVersion) {
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceFirmwareNeedsUpdate',
+                    messageVariables: [
+                        'currentVersion' => $receivedFirmwareVersion,
+                        'requiredVersion' => $this->getDeviceTemplate()->$getFirmware()->getVersion(),
+                    ],
+                );
+
+                return true;
+            } else {
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceFirmwareUpToDate'
+                );
+            }
         }
 
         return false;
+    }
+
+    protected function executeHandleReinstallFirmware(Feature $feature, Firmware $firmware, ?string $receivedDeviceHardwareVersion = null, bool $createLogs = true): bool
+    {
+        // Make sure that there is firmware to be send. Check if model of the device matches the firmware hardware file
+        $foundDeviceTypeHardware = null;
+        $hardwareFirmwareFile = null;
+        if ($firmware->getEnableHardwareFiles()) {
+            if (!$this->getDeviceType()->getHasHardwares()) {
+                $this->communicationLogManager->createLogError(
+                    message: 'log.deviceFirmwareDeviceTypeHasHardwaresDisabled',
+                    createLog: $createLogs
+                );
+
+                return false;
+            }
+
+            if (null === $receivedDeviceHardwareVersion) {
+                $this->communicationLogManager->createLogError(
+                    message: 'log.deviceFirmwareReceivedDeviceHardwareVersionNull',
+                    createLog: $createLogs
+                );
+
+                return false;
+            }
+
+            foreach ($this->getDeviceType()->getDeviceTypeHardwares() as $deviceTypeHardware) {
+                if ($deviceTypeHardware->getHardwareVersion() === $receivedDeviceHardwareVersion) {
+                    $foundDeviceTypeHardware = $deviceTypeHardware;
+                    break;
+                }
+            }
+            if (null === $foundDeviceTypeHardware) {
+                $this->communicationLogManager->createLogError(
+                    message: 'log.deviceFirmwareDeviceTypeHardwareVersionNotFound',
+                    messageVariables: ['deviceHardwareVersion' => $receivedDeviceHardwareVersion],
+                    createLog: $createLogs
+                );
+
+                return false;
+            }
+
+            $hardwareFirmwareFile = $this->getFirmwareHardwareFile($firmware, $foundDeviceTypeHardware);
+
+            if (null === $hardwareFirmwareFile) {
+                $this->communicationLogManager->createLogError(
+                    feature: $feature,
+                    message: 'log.deviceFirmwareHardwareFileNotFound',
+                    messageVariables: [
+                            'deviceHardwareVersion' => $receivedDeviceHardwareVersion,
+                            'firmwareVersion' => $firmware->getVersion(),
+                            'firmwareName' => $firmware->getName(),
+                        ],
+                    createLog: $createLogs
+                );
+
+                return false;
+            }
+        }
+
+        // using hardware firmware file functionality
+        if (null !== $hardwareFirmwareFile) {
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmwareWithHardwareFile',
+                messageVariables: ['hardwareFile' => $foundDeviceTypeHardware->getName()],
+                createLog: $createLogs
+            );
+        } else {
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingFirmware',
+                createLog: $createLogs
+            );
+        }
+
+        $this->handleReinstallFirmware($feature, $firmware, $hardwareFirmwareFile);
+
+        return true;
+    }
+
+    protected function getFirmwareHardwareFile(Firmware $firmware, ?DeviceTypeHardware $deviceTypeHardware = null): ?FirmwareHardwareFile
+    {
+        if (null === $deviceTypeHardware) {
+            return null;
+        }
+
+        foreach ($firmware->getHardwareFiles() as $firmwareHardwareFile) {
+            if ($firmwareHardwareFile->getHardware() === $deviceTypeHardware) {
+                return $firmwareHardwareFile;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -905,50 +1277,40 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
 
         if ($this->getDeviceType()->$getHasAlwaysReinstallConfig() || $this->getDevice()->$getReinstallConfig() || $expectedReinstallConfigFlag) {
             if (!$this->getDeviceTemplate()) {
-                if ($createLogs) {
-                    // Comment added for easier messages lookup
-                    // 'log.deviceInstallConfig1NoTemplate'
-                    // 'log.deviceInstallConfig2NoTemplate'
-                    // 'log.deviceInstallConfig3NoTemplate'
-                    $this->communicationLogManager->createLogInfo('log.deviceInstallConfig'.$feature->value.'NoTemplate');
-                }
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceInstallConfigNoTemplate',
+                    createLog: $createLogs
+                );
             } elseif (!$this->getDeviceTemplate()->$getConfig()) {
-                if ($createLogs) {
-                    // Comment added for easier messages lookup
-                    // 'log.deviceInstallConfig1NoConfig'
-                    // 'log.deviceInstallConfig2NoConfig'
-                    // 'log.deviceInstallConfig3NoConfig'
-                    $this->communicationLogManager->createLogInfo('log.deviceInstallConfig'.$feature->value.'NoConfig');
-                }
+                $this->communicationLogManager->createLogInfo(
+                    feature: $feature,
+                    message: 'log.deviceInstallConfigNoConfig',
+                    createLog: $createLogs
+                );
             } else {
                 if (!$overrideMinRsrp && $this->getDeviceType()->getEnableConfigMinRsrp() && !$this->isRsrpValid($this->getDeviceType()->getConfigMinRsrp())) {
-                    if ($createLogs) {
-                        // Comment added for easier messages lookup
-                        // 'log.deviceRsrpInvalidConfig1'
-                        // 'log.deviceRsrpInvalidConfig2'
-                        // 'log.deviceRsrpInvalidConfig3'
-                        $this->communicationLogManager->createLogWarning('log.deviceRsrpInvalidConfig'.$feature->value);
-                    }
+                    $this->communicationLogManager->createLogWarning(
+                        feature: $feature,
+                        message: 'log.deviceRsrpInvalidConfig',
+                        createLog: $createLogs
+                    );
                 } else {
-                    if ($createLogs) {
-                        // Comment added for easier messages lookup
-                        // 'log.deviceReinstallingConfig1'
-                        // 'log.deviceReinstallingConfig2'
-                        // 'log.deviceReinstallingConfig3'
-                        $this->communicationLogManager->createLogInfo('log.deviceReinstallingConfig'.$feature->value);
-                    }
+                    $this->communicationLogManager->createLogInfo(
+                        feature: $feature,
+                        message: 'log.deviceReinstallingConfig',
+                        createLog: $createLogs
+                    );
 
                     return true;
                 }
             }
         } else {
-            if ($createLogs) {
-                // Comment added for easier messages lookup
-                // 'log.deviceReinstallingConfig1NoNeed'
-                // 'log.deviceReinstallingConfig2NoNeed'
-                // 'log.deviceReinstallingConfig3NoNeed'
-                $this->communicationLogManager->createLogInfo('log.deviceReinstallingConfig'.$feature->value.'NoNeed');
-            }
+            $this->communicationLogManager->createLogInfo(
+                feature: $feature,
+                message: 'log.deviceReinstallingConfigNoNeed',
+                createLog: $createLogs
+            );
         }
 
         return false;
@@ -966,9 +1328,11 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
 
         if ($this->getDevice()->getRequestDiagnoseData()) {
             $this->getDevice()->setRequestDiagnoseData(false);
-            if ($createLogs) {
-                $this->communicationLogManager->createLogInfo('log.deviceSendDiagnoseDataRequest');
-            }
+
+            $this->communicationLogManager->createLogInfo(
+                message: 'log.deviceSendDiagnoseDataRequest',
+                createLog: $createLogs
+            );
 
             $this->handleRequestDiagnoseData();
 
@@ -990,9 +1354,11 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
 
         if ($this->getDevice()->getRequestConfigData()) {
             $this->getDevice()->setRequestConfigData(false);
-            if ($createLogs) {
-                $this->communicationLogManager->createLogInfo('log.deviceSendConfigDataRequest');
-            }
+
+            $this->communicationLogManager->createLogInfo(
+                message: 'log.deviceSendConfigDataRequest',
+                createLog: $createLogs
+            );
 
             $this->handleRequestConfigData();
 
@@ -1130,34 +1496,36 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     /**
      * Method prepares firmware download URL based on current configuration.
      */
-    protected function getFirmwareUrl(Feature $feature, Firmware $firmware): string
+    protected function getFirmwareUrl(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): string
     {
         $getHasFirmware = 'getHasFirmware'.$feature->value;
         $getCustomUrlFirmware = 'getCustomUrlFirmware'.$feature->value;
 
-        if (!$this->getDevice() || !$this->getDeviceType() || !$this->getDeviceType()->$getHasFirmware() && !$firmware->getDownloadUrl()) {
+        $firmwareFile = null !== $firmwareHardwareFile ? $firmwareHardwareFile : $firmware;
+
+        if (!$this->getDevice() || !$this->getDeviceType() || !$this->getDeviceType()->$getHasFirmware() && !$firmwareFile->getDownloadUrl()) {
             throw new \Exception('Unsupported state while generating firmware url.');
         }
 
         // This cannot return null due to condition performed above !$firmware->getDownloadUrl()
-        if (SourceType::EXTERNAL_URL === $firmware->getSourceType()) {
-            return $firmware->getExternalUrl();
+        if (SourceType::EXTERNAL_URL === $firmwareFile->getSourceType()) {
+            return $firmwareFile->getExternalUrl();
         }
 
-        if (SourceType::UPLOAD !== $firmware->getSourceType()) {
-            throw new \Exception('Unsupported firmware sourceType: '.$firmware->getSourceType());
+        if (SourceType::UPLOAD !== $firmwareFile->getSourceType()) {
+            throw new \Exception('Unsupported firmware sourceType: '.$firmwareFile->getSourceType());
         }
 
-        $host = $this->routerInterface->getContext()->getScheme().'://'.$this->routerInterface->getContext()->getHost();
-        if ('http' == $this->routerInterface->getContext()->getScheme()) {
-            if (80 != $this->routerInterface->getContext()->getHttpPort()) {
-                $host .= ':'.$this->routerInterface->getContext()->getHttpPort();
+        $host = $this->router->getContext()->getScheme().'://'.$this->router->getContext()->getHost();
+        if ('http' == $this->router->getContext()->getScheme()) {
+            if (80 != $this->router->getContext()->getHttpPort()) {
+                $host .= ':'.$this->router->getContext()->getHttpPort();
             }
         }
 
-        if ('https' == $this->routerInterface->getContext()->getScheme()) {
-            if (443 != $this->routerInterface->getContext()->getHttpsPort()) {
-                $host .= ':'.$this->routerInterface->getContext()->getHttpsPort();
+        if ('https' == $this->router->getContext()->getScheme()) {
+            if (443 != $this->router->getContext()->getHttpsPort()) {
+                $host .= ':'.$this->router->getContext()->getHttpsPort();
             }
         }
 
@@ -1171,9 +1539,95 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
         // 6 chars = 1 073 741 824 ~ 2^30
         // 14 chars = 1,18 x 10^21
 
-        $url = '/df/'.$this->getDevice()->getHashIdentifier().'/'.$firmware->getSecret().'/'.$firmware->getUploadDirPart().'/'.$firmware->getFilename();
+        $url = '/df/'.$this->getDevice()->getHashIdentifier().'/'.$firmware->getSecret().'/'.$firmwareFile->getUploadDirPart().'/'.$firmwareFile->getFilename();
 
         return $host.$url;
+    }
+
+    /**
+     * Method extracts custom data from provided array (from requested from post data).
+     *
+     * @return array<CustomDataModel>
+     */
+    protected function extractCustomData(array $data): array
+    {
+        $customDataArray = [];
+
+        if (!$this->getDeviceType()->getHasCustomData()) {
+            return $customDataArray;
+        }
+
+        foreach ($this->getDeviceType()->getDeviceTypeCustomDataMappings() as $customDataMapping) {
+            if (!Arr::has($data, $customDataMapping->getPath())) {
+                continue;
+            }
+
+            $value = Arr::get($data, $customDataMapping->getPath());
+            $customData = new CustomDataModel();
+            $customData->setName($customDataMapping->getName());
+            $customData->setVariableEnabled($customDataMapping->getVariableEnabled());
+            $customData->setType($customDataMapping->getType());
+            $customData->setVariableName($customDataMapping->getVariableName());
+
+            $variableString = TypeCaster::mixedToString($value);
+            $customData->setValue($variableString);
+
+            $customDataArray[] = $customData;
+        }
+
+        return $customDataArray;
+    }
+
+    protected function updateCustomData(array $data): void
+    {
+        if (!$this->getDevice()) {
+            return;
+        }
+
+        foreach ($this->getDevice()->getDeviceCustomData() as $deviceCustomData) {
+            $this->entityManager->remove($deviceCustomData);
+        }
+
+        $this->getDevice()->getDeviceCustomData()->clear();
+
+        $customDataArray = $this->extractCustomData($data);
+
+        if (0 === count($customDataArray)) {
+            return;
+        }
+
+        // No need to check device type has custom data, because extractCustomData will return empty array if it is not set
+
+        $log = $this->communicationLogManager->createLogInfo(
+            message: 'log.deviceCustomDataUpdated',
+        );
+
+        foreach ($customDataArray as $customDataModel) {
+            $deviceCustomData = new DeviceCustomData();
+            $deviceCustomData->setDevice($this->getDevice());
+            $deviceCustomData->setName($customDataModel->getName());
+            $deviceCustomData->setValue($customDataModel->getValue());
+            $deviceCustomData->setVariableEnabled($customDataModel->getVariableEnabled());
+            $deviceCustomData->setType($customDataModel->getType());
+            $deviceCustomData->setVariableName($customDataModel->getVariableName());
+
+            $this->entityManager->persist($deviceCustomData);
+            $this->getDevice()->addDeviceCustomData($deviceCustomData);
+
+            $logCustomData = new CommunicationLogCustomData();
+            $logCustomData->setCommunicationLog($log);
+            $logCustomData->setName($customDataModel->getName());
+            $logCustomData->setValue($customDataModel->getValue());
+            $logCustomData->setVariableEnabled($customDataModel->getVariableEnabled());
+            $logCustomData->setType($customDataModel->getType());
+            $logCustomData->setVariableName($customDataModel->getVariableName());
+
+            $this->entityManager->persist($logCustomData);
+            $log->addCommunicationLogCustomData($logCustomData);
+        }
+
+        $this->entityManager->persist($this->getDevice());
+        $this->entityManager->persist($log);
     }
 
     /**
@@ -1185,13 +1639,14 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     }
 
     /**
-     * Method provides list of device variables (defined and predefined).
+     * Method provides list of device variables (defined, predefined, secret, custom data).
      */
     public function getDeviceVariables(bool $decryptSecretValues = false, bool $createLogs = true): array
     {
         $variables = $this->getPredefinedDeviceVariables($createLogs);
         $variables = array_merge($this->getDeviceSecretVariables($decryptSecretValues, $createLogs), $variables);
         $variables = array_merge($this->getDefinedDeviceVariables($createLogs), $variables);
+        $variables = array_merge($this->getCustomDataDeviceVariables(), $variables);
 
         if ($this->getDeviceVariablesExcludeEmpty()) {
             $variables = array_filter($variables);
@@ -1211,7 +1666,7 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
 
         $variablesHydrated = $this->getRepository(DeviceVariable::class)
         ->createQueryBuilder('var')
-        ->select('var.name, var.variableValue')
+        ->select('var.name, var.variableValue, var.variableType')
         ->andWhere('var.device = :device')
         ->setParameter('device', $this->getDevice())
         ->getQuery()
@@ -1220,7 +1675,7 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
         $variables = [];
 
         foreach ($variablesHydrated as $variableData) {
-            $variables[$variableData['name']] = $variableData['variableValue'];
+            $variables[$variableData['name']] = $this->variableManager->getTypedVariableValue($variableData['variableType'], $variableData['variableValue']);
         }
 
         return $variables;
@@ -1412,6 +1867,36 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
         }
 
         return $this->processPredefinedDeviceVariables($variables, $createLogs);
+    }
+
+    /**
+     * Method provides list of device custom data variables.
+     */
+    public function getCustomDataDeviceVariables(): array
+    {
+        $variables = [];
+        if (!$this->getDevice()) {
+            return $variables;
+        }
+
+        if (!$this->getDeviceType()) {
+            return $variables;
+        }
+
+        if (!$this->getDeviceType()->getHasCustomData()) {
+            return $variables;
+        }
+
+        foreach ($this->getDevice()->getDeviceCustomData() as $deviceCustomData) {
+            if (!$deviceCustomData->getVariableName()) {
+                continue;
+            }
+
+            $typedValue = $this->variableManager->getTypedVariableValue($deviceCustomData->getType(), $deviceCustomData->getValue());
+            $variables[$deviceCustomData->getVariableName()] = $typedValue;
+        }
+
+        return $variables;
     }
 
     /**
@@ -1788,11 +2273,16 @@ abstract class AbstractDeviceCommunication implements DeviceCommunicationInterfa
     }
 
     /**
-     * Method increments device connection count.
+     * Method increments device connection count when device is enabled.
+     * Execute when valid device has connected. (e.g. no device type mismatch).
      */
     protected function incrementDeviceConnections(): void
     {
         if (!$this->getDevice()) {
+            return;
+        }
+
+        if (!$this->getDevice()->getEnabled()) {
             return;
         }
 

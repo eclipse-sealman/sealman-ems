@@ -18,11 +18,11 @@ namespace App\Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 
 // Using class to have access to DeviceTypeSecret object
-#[\Attribute(\Attribute::TARGET_CLASS)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class SecretVariablePrefix extends Constraint
 {
-    public $messageVariablePrefixUsedInPredefinedVariabled = 'validation.secretVariablePrefix.variablePrefixUsedInPredefinedVariables';
-    public $messageVariablePrefixUsedInDeviceTypeSecret = 'validation.secretVariablePrefix.variablePrefixUsedInDeviceTypeSecret';
+    public string $messageVariablePrefixUsedInPredefinedVariabled = 'validation.secretVariablePrefix.variablePrefixUsedInPredefinedVariables';
+    public string $messageVariablePrefixUsedInDeviceTypeSecret = 'validation.secretVariablePrefix.variablePrefixUsedInDeviceTypeSecret';
 
     public function getTargets(): string|array
     {

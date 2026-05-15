@@ -20,10 +20,10 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ConfigurationMicrosoftOidcRoleMapping extends Constraint
 {
-    public $messageAccessTagsNotSupported = 'validation.configurationMicrosoftOidcRoleMapping.accessTagsNotSupported';
-    public $messageOneAccessTagRequired = 'validation.configurationMicrosoftOidcRoleMapping.oneAccessTagRequired';
-    public $messageRoleVpnEndpointDevicesNotSupported = 'validation.configurationMicrosoftOidcRoleMapping.roleVpnEndpointDevicesNotSupported';
-    public $messageRoleNameNotUnique = 'validation.configurationMicrosoftOidcRoleMapping.roleNameNotUnique';
+    public string $messageAccessTagsNotSupported = 'validation.configurationMicrosoftOidcRoleMapping.accessTagsNotSupported';
+    public string $messageOneAccessTagRequired = 'validation.configurationMicrosoftOidcRoleMapping.oneAccessTagRequired';
+    public string $messageRoleVpnEndpointDevicesNotSupported = 'validation.configurationMicrosoftOidcRoleMapping.roleVpnEndpointDevicesNotSupported';
+    public string $messageRoleNameNotUnique = 'validation.configurationMicrosoftOidcRoleMapping.roleNameNotUnique';
 
     public function getTargets(): string|array
     {

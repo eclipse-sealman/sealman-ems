@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\ConfigDeny;
 use App\Entity\Config;
 use App\Entity\Device;
@@ -39,7 +40,6 @@ use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -52,7 +52,7 @@ use Symfony\Component\Uid\Uuid;
     listFormFilterByAppend: ['featureName']
 )]
 #[Rest\View(serializerGroups: ['identification', 'config:public', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
 #[Areas(['admin', 'smartems'])]
 class ConfigController extends AbstractApiController
 {
@@ -143,7 +143,7 @@ class ConfigController extends AbstractApiController
 
                 $statement = $connection->prepare($sql);
                 $statement->bindValue('configId', $object->getId());
-                $statement->execute();
+                $statement->executeStatement();
 
                 $connection->commit();
             } catch (\Exception $e) {

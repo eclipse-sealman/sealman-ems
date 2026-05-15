@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\TemplateDenyHelperTrait;
 use App\Deny\TemplateVersionDeny;
 use App\Entity\Device;
@@ -41,7 +42,6 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -54,7 +54,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 #[Rest\View(serializerGroups: ['identification', 'templateVersion:public', 'timestampable', 'blameable', 'deny'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN', ['templateVersion:admin'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN_VPN', ['templateVersion:adminVpn'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
 #[Areas(['admin', 'smartems'])]
 class TemplateVersionController extends AbstractApiController
 {

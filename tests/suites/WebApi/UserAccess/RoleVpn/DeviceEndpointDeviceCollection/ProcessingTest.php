@@ -66,6 +66,7 @@ use Tests\Utilities\WebApi\UserAccess\ProcessingTestCase;
  * Note! Elements 1,3,5 should have a test with both UNCHANGED and UPDATE action. UNCHANGED action could pass the test due to invalid data being sent (UNCHANGED would send access tags that are invalid from VPN user perspective and trigger 400 solely based on that and not due to access denied).
  */
 #[Group('full')]
+#[Group('WebApiRoleVpn')] // To be used in CI parallel tests
 class ProcessingTest extends AbstractTestCase
 {
     use AssertAuditLogTrait;

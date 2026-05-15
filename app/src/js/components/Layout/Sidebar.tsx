@@ -161,6 +161,13 @@ const Sidebar = () => {
         },
         {
             admin: true,
+            label: "sidebar.deviceMTlsAuthentication",
+            to: "/devicemtlsauthentication/list",
+            active: "/devicemtlsauthentication",
+            icon: <KeyOutlined />,
+        },
+        {
+            admin: true,
             label: "sidebar.accessTag",
             to: "/accesstag/list",
             active: "/accesstag",

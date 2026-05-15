@@ -17,6 +17,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -34,6 +35,7 @@ class DeviceConnectionAggregation
     /**
      * How many times device connected in specified timeframe.
      */
+    #[OA\Property(type: 'integer')]
     #[ORM\Column(type: Types::BIGINT)]
     private ?int $connectionAmount = 0;
 
@@ -56,7 +58,7 @@ class DeviceConnectionAggregation
     #[Groups(['representation', 'identification'])]
     public function getRepresentation(): string
     {
-        return (string) ('Device connection aggregation');
+        return (string) 'Device connection aggregation';
     }
 
     public function __construct()

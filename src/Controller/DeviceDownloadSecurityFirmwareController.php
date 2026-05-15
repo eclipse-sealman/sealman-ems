@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use App\Service\Helper\EntityManagerTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,8 +55,6 @@ class DeviceDownloadSecurityFirmwareController extends AbstractController
         $queryBuilder->setParameter('uuid', $downloadFirmwareUrlModel->getFirmwareUuid());
         $queryBuilder->andWhere('f.secret = :secret');
         $queryBuilder->setParameter('secret', $downloadFirmwareUrlModel->getFirmwareSecret());
-        $queryBuilder->andWhere('f.filename = :filename');
-        $queryBuilder->setParameter('filename', $downloadFirmwareUrlModel->getFirmwareFilename());
         $queryBuilder->andWhere('f.deviceType = :deviceType');
         $queryBuilder->setParameter('deviceType', $deviceType);
         $queryBuilder->setMaxResults(1);
@@ -66,9 +65,33 @@ class DeviceDownloadSecurityFirmwareController extends AbstractController
             return $this->unauthorized();
         }
 
+        if ($firmware->getEnableHardwareFiles()) {
+            $queryBuilder = $this->getRepository(FirmwareHardwareFile::class)->createQueryBuilder('fhf');
+            $queryBuilder->andWhere('fhf.firmware = :firmware');
+            $queryBuilder->setParameter('firmware', $firmware);
+            $queryBuilder->andWhere('fhf.filename = :filename');
+            $queryBuilder->setParameter('filename', $downloadFirmwareUrlModel->getFirmwareFilename());
+            $queryBuilder->setMaxResults(1);
+
+            $firmwareHardwareFile = $queryBuilder->getQuery()->getOneOrNullResult();
+
+            if (!$firmwareHardwareFile) {
+                return $this->unauthorized();
+            }
+
+            $firmwareFileEntity = $firmwareHardwareFile;
+            $firmwareFolder = 'firmwarehardwarefile';
+        } else {
+            if ($firmware->getFilename() !== $downloadFirmwareUrlModel->getFirmwareFilename()) {
+                return $this->unauthorized();
+            }
+            $firmwareFileEntity = $firmware;
+            $firmwareFolder = 'firmware';
+        }
+
         // Using legacy uuid as folder name if exists (meaning firmware was created before v3.3.0)
         $folderName = $firmware->getLegacyUuid() ? $firmware->getLegacyUuid() : $firmware->getUuid();
-        $firmwareFilepath = $downloadFirmwareUrlModel->getDeviceTypeSlug().'/'.$folderName.'/'.$firmware->getFilename();
+        $firmwareFilepath = $firmwareFolder.'/'.$downloadFirmwareUrlModel->getDeviceTypeSlug().'/'.$folderName.'/'.$firmwareFileEntity->getFilename();
 
         return new Response(null, Response::HTTP_NO_CONTENT, ['FIRMWARE-FILEPATH' => $firmwareFilepath]);
     }

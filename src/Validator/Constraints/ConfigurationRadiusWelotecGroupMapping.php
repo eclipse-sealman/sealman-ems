@@ -20,8 +20,8 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class ConfigurationRadiusWelotecGroupMapping extends Constraint
 {
-    public $messageRoleVpnEndpointDevicesNotSupported = 'validation.configurationRadiusWelotecGroupMapping.roleVpnEndpointDevicesNotSupported';
-    public $messageGroupNameNotUnique = 'validation.configurationRadiusWelotecGroupMapping.groupNameNotUnique';
+    public string $messageRoleVpnEndpointDevicesNotSupported = 'validation.configurationRadiusWelotecGroupMapping.roleVpnEndpointDevicesNotSupported';
+    public string $messageGroupNameNotUnique = 'validation.configurationRadiusWelotecGroupMapping.groupNameNotUnique';
 
     public function getTargets(): string|array
     {

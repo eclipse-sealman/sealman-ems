@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\CertificateDenyInterface;
 use App\Form\CertificateUploadPkcs12Type;
 use App\Model\CertificateUploadPkcs12Model;
@@ -25,7 +26,6 @@ use Carve\ApiBundle\Exception\RequestExecutionException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 trait ApiCertificatesUploadPkcs12Trait
@@ -41,7 +41,7 @@ trait ApiCertificatesUploadPkcs12Trait
     #[Api\Response200SubjectGroups]
     #[Api\Response400]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function uploadPkcs12Action(Request $request, int $id, int $certificateTypeId)
     {

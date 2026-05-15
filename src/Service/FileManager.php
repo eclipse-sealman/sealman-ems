@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Service\Helper\SymfonyDirTrait;
 use App\Tool\Urlizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -22,6 +23,50 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class FileManager
 {
+    use SymfonyDirTrait;
+
+    public function getSysTempDir(): string
+    {
+        return sys_get_temp_dir();
+    }
+
+    public function getTmpFile(string $prefix = 'tmp_file_'): string
+    {
+        $fs = new Filesystem();
+
+        return $fs->tempnam($this->getSysTempDir(), $prefix);
+    }
+
+    public function dumpTmpFile(string $content, string $prefix = 'tmp_file_'): string
+    {
+        $fs = new Filesystem();
+
+        $tmpFile = $this->getTmpFile($prefix);
+        $fs->dumpFile($tmpFile, $content);
+
+        return $tmpFile;
+    }
+
+    public function createTmpDir(?string $prefix = null): string
+    {
+        $fs = new Filesystem();
+        $tmpDir = $fs->tempnam($this->getSysTempDir(), $prefix ?? 'app_');
+
+        // tempnam creates a file, we need a directory
+        $fs->remove($tmpDir);
+        $fs->mkdir($tmpDir, 0700);
+
+        return $tmpDir;
+    }
+
+    public function removeTmpDir(string $tmpDir): void
+    {
+        $fs = new Filesystem();
+        if ($fs->exists($tmpDir)) {
+            $fs->remove($tmpDir);
+        }
+    }
+
     public function move($sourceFile, $desiredFilepath, $copy = false): ?string
     {
         $fs = new Filesystem();
@@ -74,6 +119,16 @@ class FileManager
             $dir = $file->getPath();
             $fs->remove($file);
             $this->safeRemoveDir($dir);
+        } catch (\Exception $ex) {
+        }
+    }
+
+    public function removeFile(string $path): void
+    {
+        $fs = new Filesystem();
+
+        try {
+            $fs->remove($path);
         } catch (\Exception $ex) {
         }
     }

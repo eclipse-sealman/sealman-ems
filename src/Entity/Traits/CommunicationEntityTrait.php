@@ -18,6 +18,7 @@ namespace App\Entity\Traits;
 use App\Model\AuditableInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait CommunicationEntityTrait
@@ -39,6 +40,7 @@ trait CommunicationEntityTrait
     private ?string $uptime = null;
 
     #[Groups(['communication:admin', 'communication:smartems', AuditableInterface::GROUP])]
+    #[OA\Property(type: 'integer', nullable: true)]
     #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $uptimeSeconds = null;
 

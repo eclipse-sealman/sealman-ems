@@ -46,7 +46,7 @@ class CertificateTypeEditType extends AbstractType
         $builder->add('scepTimeout');
         $builder->add('scepRevocationBasicAuthUser');
         $builder->add('scepRevocationBasicAuthPassword');
-        $builder->add('scepKeyLength');
+        $builder->add('scepKeyType');
         $builder->add('scepHashFunction');
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
@@ -60,7 +60,7 @@ class CertificateTypeEditType extends AbstractType
                 $shaper->removeField('scepTimeout');
                 $shaper->removeField('scepRevocationBasicAuthUser');
                 $shaper->removeField('scepRevocationBasicAuthPassword');
-                $shaper->removeField('scepKeyLength');
+                $shaper->removeField('scepKeyType');
                 $shaper->removeField('scepHashFunction');
             }
         });

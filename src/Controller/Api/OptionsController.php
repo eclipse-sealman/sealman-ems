@@ -16,12 +16,14 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Entity\AccessTag;
 use App\Entity\Config;
 use App\Entity\Configuration;
 use App\Entity\Device;
 use App\Entity\DeviceEndpointDevice;
 use App\Entity\DeviceType;
+use App\Entity\DeviceTypeHardware;
 use App\Entity\DeviceTypeSecret;
 use App\Entity\Firmware;
 use App\Entity\Label;
@@ -32,18 +34,18 @@ use App\Enum\CommunicationProcedure;
 use App\Security\SecurityHelperTrait;
 use App\Service\Helper\ConfigurationManagerTrait;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
+use App\Service\Trait\CertificateTypeHelperTrait;
 use Carve\ApiBundle\Attribute as Api;
 use Carve\ApiBundle\Controller\AbstractApiController;
 use Doctrine\Common\Collections\Collection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Rest\Route('/options')]
 #[Rest\View(serializerGroups: ['identification', 'deviceType:identification'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 #[OA\Tag('Options')]
 class OptionsController extends AbstractApiController
@@ -51,13 +53,14 @@ class OptionsController extends AbstractApiController
     use ConfigurationManagerTrait;
     use DeviceCommunicationFactoryTrait;
     use SecurityHelperTrait;
+    use CertificateTypeHelperTrait;
 
     #[Rest\Get('/masquerade/default/subnets')]
     #[Rest\View(serializerGroups: ['options:masqueradeDefaultSubnets'])]
     #[Api\Summary('Get default masquerade subnets')]
     #[Api\Response200Groups(description: 'Default masquerade subnets', content: new NA\Model(type: Configuration::class))]
     // Set to admin because it is required to edit deviceTypes
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGrantedOr('ROLE_ADMIN')]
     #[Areas(['admin'])]
     public function masqueradeDefaultSubnetsAction()
     {
@@ -67,7 +70,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/users')]
     #[Api\Summary('Get users')]
     #[Api\Response200ArraySubjectGroups(User::class)]
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGrantedOr('ROLE_ADMIN')]
     #[Areas(['admin'])]
     public function usersAction()
     {
@@ -138,7 +141,7 @@ class OptionsController extends AbstractApiController
     #[Api\Parameter(name: 'deviceTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of device type')]
     #[Api\Response200ArraySubjectGroups(DeviceTypeSecret::class)]
     // Set to admin because it is required to edit deviceTypes
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGrantedOr('ROLE_ADMIN')]
     #[Areas(['admin'])]
     public function deviceTypeSecretsAction(int $deviceTypeId)
     {
@@ -152,7 +155,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/access/tags')]
     #[Api\Summary('Get access tags')]
     #[Api\Response200ArraySubjectGroups(AccessTag::class)]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN_ENDPOINTDEVICES')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN_ENDPOINTDEVICES'])]
     #[Areas(['admin', 'smartems'])]
     public function accessTagsAction()
     {
@@ -176,7 +179,7 @@ class OptionsController extends AbstractApiController
     #[Api\Parameter(name: 'feature', in: 'path', schema: new OA\Schema(type: 'string'), description: 'Feature')]
     #[Api\Parameter(name: 'deviceTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of device type')]
     #[Api\Response200ArraySubjectGroups(Config::class)]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function configsAction(string $feature, int $deviceTypeId)
     {
@@ -196,7 +199,7 @@ class OptionsController extends AbstractApiController
     #[Api\Parameter(name: 'feature', in: 'path', schema: new OA\Schema(type: 'string'), description: 'Feature')]
     #[Api\Parameter(name: 'deviceTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of device type')]
     #[Api\Response200ArraySubjectGroups(Firmware::class)]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function firmwaresAction(string $feature, int $deviceTypeId)
     {
@@ -211,6 +214,17 @@ class OptionsController extends AbstractApiController
         return $queryBuilder->getQuery()->getResult();
     }
 
+    #[Rest\Get('/hardwares/{deviceTypeId}')]
+    #[Api\Summary('Get hardwares by device type ID')]
+    #[Api\Parameter(name: 'deviceTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of device type')]
+    #[Api\Response200ArraySubjectGroups(DeviceTypeHardware::class)]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
+    #[Areas(['admin', 'smartems'])]
+    public function deviceTypeHardwaresAction(int $deviceTypeId)
+    {
+        return $this->getRepository(DeviceTypeHardware::class)->findBy(['deviceType' => $deviceTypeId]);
+    }
+
     #[Rest\Get('/communication/procedures')]
     #[Api\Summary('Get communication procedures')]
     #[Api\Response200(description: 'Communication procedures', content: new OA\JsonContent(
@@ -220,7 +234,7 @@ class OptionsController extends AbstractApiController
             new OA\Property(property: 'representation', type: 'string'),
         ])),
     )]
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGrantedOr('ROLE_ADMIN')]
     #[Areas(['admin'])]
     public function communicationProceduresAction()
     {
@@ -241,7 +255,7 @@ class OptionsController extends AbstractApiController
     #[Api\ParameterPathId]
     #[Api\Response200Groups(description: 'Available device type extended data', content: new NA\Model(type: DeviceType::class))]
     #[Api\Response404Id('Available device type with specified ID was not found')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     // Method provides extended deviceType information for Device, Config, Firmware, Template creation
     public function getDeviceTypeAction(int $id)
@@ -260,6 +274,15 @@ class OptionsController extends AbstractApiController
     }
 
     // Endpoint provides only available device types for create tile screen
+    #[Rest\Get('/available/mtls/scep/certificate/types')]
+    #[Api\Summary('Get available mTLS SCEP certificate types')]
+    #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types')]
+    public function availableMTlsScepCertificateTypesAction()
+    {
+        return $this->getMTlsScepCertificateTypes();
+    }
+
+    // Endpoint provides only available device types for create tile screen
     #[Rest\Get('/available/device/types')]
     #[Api\Summary('Get available device types')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types')]
@@ -268,11 +291,29 @@ class OptionsController extends AbstractApiController
         return $this->removeDisabledDeviceTypes($this->getRepository(DeviceType::class)->findBy(['enabled' => true]));
     }
 
+    #[Rest\Get('/available/firmwarehardware/device/types')]
+    #[Api\Summary('Get available device types that supports firmware and hardware')]
+    #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types that supports firmware and hardware')]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
+    #[Areas(['admin', 'smartems'])]
+    public function availableHardwareDeviceTypesAction()
+    {
+        $queryBuilder = $this->getRepository(DeviceType::class)->createQueryBuilder('dt');
+        $queryBuilder->andWhere('dt.hasFirmware1 = :hasFirmware OR dt.hasFirmware2 = :hasFirmware OR dt.hasFirmware3 = :hasFirmware');
+        $queryBuilder->setParameter('hasFirmware', true);
+        $queryBuilder->andWhere('dt.enabled = :enabled');
+        $queryBuilder->setParameter('enabled', true);
+        $queryBuilder->andWhere('dt.hasHardwares = :hasHardwares');
+        $queryBuilder->setParameter('hasHardwares', true);
+
+        return $this->removeDisabledDeviceTypes($queryBuilder->getQuery()->getResult());
+    }
+
     // Endpoint provides only available device types for create tile screen
     #[Rest\Get('/available/template/device/types')]
     #[Api\Summary('Get available device types that supports templates')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types that supports templates')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function availableTemplateDeviceTypesAction()
     {
@@ -283,7 +324,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/available/config/device/types')]
     #[Api\Summary('Get available device types that supports config')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types that supports config')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function availableConfigDeviceTypesAction()
     {
@@ -300,7 +341,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/available/firmware/device/types')]
     #[Api\Summary('Get available device types that supports firmware')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of available device types that supports firmware')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function availableFirmwareDeviceTypesAction()
     {
@@ -324,7 +365,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/template/device/types')]
     #[Api\Summary('Get device types that supports templates')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of device types that supports templates')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function templateDeviceTypesAction()
     {
@@ -334,7 +375,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/config/device/types')]
     #[Api\Summary('Get device types that supports configs')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of device types that supports configs')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function configDeviceTypesAction()
     {
@@ -350,7 +391,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/firmware/device/types')]
     #[Api\Summary('Get device types that supports firmwares')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of device types that supports firmwares')]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function firmwareDeviceTypesAction()
     {
@@ -366,7 +407,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/vpn/device/types')]
     #[Api\Summary('Get device types that supports VPN')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of device types that supports VPN')]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function vpnDeviceTypesAction()
     {
@@ -383,7 +424,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/vpn/devices')]
     #[Api\Summary('Get devices that supports VPN')]
     #[Api\Response200ArraySubjectGroups(class: Device::class, description: 'Array of devices that supports VPN')]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function vpnDevicesAction()
     {
@@ -408,7 +449,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/vpn/deviceendpointdevices')]
     #[Api\Summary('Get endpoint devices that supports VPN')]
     #[Api\Response200ArraySubjectGroups(class: DeviceEndpointDevice::class, description: 'Array of endpoint devices that supports VPN')]
-    #[Security("is_granted('ROLE_ADMIN_VPN') or is_granted('ROLE_VPN')")]
+    #[IsGrantedOr(['ROLE_ADMIN_VPN', 'ROLE_VPN'])]
     #[Areas(['admin:vpnsecuritysuite', 'vpnsecuritysuite'])]
     public function vpnDeviceEndpointDevicesAction()
     {
@@ -427,7 +468,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/devicetonetwork/device/types')]
     #[Api\Summary('Get device types that supports device to network connection')]
     #[Api\Response200ArraySubjectGroups(class: DeviceType::class, description: 'Array of device types that supports device to network connection')]
-    #[Security("is_granted('ROLE_ADMIN_VPN')")]
+    #[IsGrantedOr('ROLE_ADMIN_VPN')]
     #[Areas(['admin:vpnsecuritysuite'])]
     public function deviceToNetworkDeviceTypesAction()
     {
@@ -444,7 +485,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/devicetonetwork/devices')]
     #[Api\Summary('Get devices that supports device to network connection')]
     #[Api\Response200ArraySubjectGroups(class: Device::class, description: 'Array of devices that supports device to network connection')]
-    #[Security("is_granted('ROLE_ADMIN_VPN')")]
+    #[IsGrantedOr('ROLE_ADMIN_VPN')]
     #[Areas(['admin:vpnsecuritysuite'])]
     public function deviceToNetworkDevicesAction()
     {
@@ -462,7 +503,7 @@ class OptionsController extends AbstractApiController
     #[Rest\Get('/maintenance/schedules')]
     #[Api\Summary('Get maintenance schedules')]
     #[Api\Response200ArraySubjectGroups(class: MaintenanceSchedule::class)]
-    #[Security("is_granted('ROLE_ADMIN')")]
+    #[IsGrantedOr('ROLE_ADMIN')]
     #[Areas(['admin'])]
     public function maintenanceSchedulesAction()
     {

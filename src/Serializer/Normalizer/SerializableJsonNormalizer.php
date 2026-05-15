@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  *
  * Supported objects contain JSON as a string.
  *
- * This normalizer keeps empty objects perserved as objects. Example:
+ * This normalizer keeps empty objects preserved as objects. Example:
  * ```
  * {
  *    "empty": {}
@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * }
  * ```
  *
- * This normalizer also keeps objects perserved as objects when object keys are "array" like. Example:
+ * This normalizer also keeps objects preserved as objects when object keys are "array" like. Example:
  * ```
  * {
  *   "notArray": {
@@ -58,19 +58,14 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class SerializableJsonNormalizer implements NormalizerInterface
 {
-    /**
-     * Return supresses following deprecation message.
-     *
-     * Method "Symfony\Component\Serializer\Normalizer\NormalizerInterface::normalize()" might add "array|string|int|float|bool|\ArrayObject|null" as a native return type declaration in the future.
-     *
-     * @return mixed
-     */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize(mixed $data, ?string $format = null, array $context = []): \ArrayObject|array|string|int|float|bool|null
     {
         // json_decode with $associative = false returns \stdClass object
-        // Putting \stdClass directly in serialized model i.e. EdgeGatewayResponseModel->config (without passing through this normalizer) does not work (empty objects are not perserved as objects, objects are not perserved as objects when object keys are "array" like)
-        // On the other hand I have no idea why this solution works (maybye normalizers are executed in different order and \stdClass object is serialized correctly). Remember to verify this when changing symfony serializer version
-        return new \ArrayObject(json_decode($object->getJson(), false));
+        // Putting \stdClass directly in serialized model i.e. EdgeGatewayResponseModel->config (without passing through this normalizer) does not work (empty objects are not preserved as objects, objects are not preserved as objects when object keys are "array" like)
+        // On the other hand I have no idea why this solution works (maybe normalizers are executed in different order and \stdClass object is serialized correctly). Remember to verify this when changing symfony serializer version
+        // Deprecation present: ArrayObject::__construct(): Using an object as a backing array for ArrayObject is deprecated, as it allows violating class constraints and invariants
+        // Do not know how to solve it yet
+        return new \ArrayObject(json_decode($data->getJson(), false));
     }
 
     public function supportsNormalization($data, $format = null, array $context = []): bool

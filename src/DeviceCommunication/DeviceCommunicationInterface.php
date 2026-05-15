@@ -45,6 +45,8 @@ interface DeviceCommunicationInterface
 
     public function getPredefinedDeviceVariables(bool $createLogs = true): array;
 
+    public function getCustomDataDeviceVariables(): array;
+
     public function getDeviceSecretVariables(bool $decryptSecretValues = false, bool $createLogs = true): array;
 
     public function getDeviceSecretValueEncodedVariables(DeviceSecret $deviceSecret, null|string $decryptedSecretValue = null, bool $createLogs = true): array;
@@ -59,6 +61,15 @@ interface DeviceCommunicationInterface
 
     public function getCommunicationProcedureFieldsRequirements(): FieldRequirementsModel;
 
+    /**
+     * Returns array of default custom data mapping objects for this communication procedure.
+     * Each mapping defines a JSON path in the communication payload and the corresponding variable name.
+     * Returned objects are not persisted to database - objects should be used as a template - copied to new object and saved in database.
+     *
+     * @return array<DeviceTypeCustomDataMapping>
+     */
+    public function getDefaultCustomDataMappings(): array;
+
     public function getDeviceTypeValidationGroups(DeviceType $deviceType): array;
 
     public function setDefaultFieldRequirements(DeviceType $deviceType): void;
@@ -69,6 +80,11 @@ interface DeviceCommunicationInterface
     // Function generates identifier for device - it will use name, serial, imsi, uuid, or other fields depending on communication procedure specifics
     // It has to be used after filling other fields (check used communication procedure for required fields)
     public function generateIdentifier(Device $device): string;
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string;
 
     // CommunicationLogManager will fill {{ data }} translation variable with this value
     public function getLogData(): string;

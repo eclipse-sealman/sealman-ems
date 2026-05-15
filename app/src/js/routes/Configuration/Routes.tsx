@@ -30,6 +30,9 @@ import RoleChecker from "~app/security/RoleChecker";
 import CertificateType from "~app/routes/Configuration/CertificateType";
 import DeviceTypeSecret from "~app/routes/Configuration/DeviceTypeSecret";
 import DeviceTypeSecretCreate from "~app/routes/Configuration/DeviceTypeSecretCreate";
+import DeviceTypeHardware from "~app/routes/Configuration/DeviceTypeHardware";
+import DeviceTypeHardwareCreate from "~app/routes/Configuration/DeviceTypeHardwareCreate";
+import DeviceTypeCustomDataMapping from "~app/routes/Configuration/DeviceTypeCustomDataMapping";
 
 const Routes = () => {
     return (
@@ -53,11 +56,19 @@ const Routes = () => {
                     element: <DeviceTypeSecret />,
                 }}
             />
+            <Route path="/devicetypehardware/:deviceTypeId/create" element={<DeviceTypeHardwareCreate />} />
+            <Route
+                {...{
+                    path: "/devicetypehardware/:deviceTypeId/*",
+                    element: <DeviceTypeHardware />,
+                }}
+            />
             <Route path="/devicetype/create" element={<DeviceTypeCreateSelectCommunicationProcedure />} />
             <Route path="/devicetype/create/:communicationProcedure" element={<DeviceTypeCreate />} />
             <Route path="/devicetype/edit/:id" element={<DeviceTypeEdit />} />
             <Route path="/devicetype/limitededit/:id" element={<DeviceTypeLimitedEdit />} />
             <Route path="/devicetype/details/:id" element={<DeviceTypeDetails />} />
+            <Route path="/devicetypecustomdatamappings/:deviceTypeId/*" element={<DeviceTypeCustomDataMapping />} />
             <Route
                 {...{
                     path: "/devicetype/*",

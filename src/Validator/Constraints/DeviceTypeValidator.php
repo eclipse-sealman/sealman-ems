@@ -16,13 +16,17 @@ declare(strict_types=1);
 namespace App\Validator\Constraints;
 
 use App\Entity\DeviceType;
+use App\Entity\Firmware;
 use App\Enum\AuthenticationMethod;
 use App\Enum\CertificateEntity;
 use App\Enum\CommunicationProcedureRequirement;
 use App\Enum\CredentialsSource;
+use App\Enum\Feature;
 use App\Enum\FieldRequirement;
+use App\Enum\FirmwareVersionSchema;
 use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use App\Service\Helper\EntityManagerTrait;
+use App\Service\Helper\FirmwareVersionSchemaManagerTrait;
 use App\Service\Trait\CertificateTypeHelperTrait;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -32,6 +36,7 @@ class DeviceTypeValidator extends ConstraintValidator
     use CertificateTypeHelperTrait;
     use DeviceCommunicationFactoryTrait;
     use EntityManagerTrait;
+    use FirmwareVersionSchemaManagerTrait;
 
     public array $reservedRoutePrefixes = [];
 
@@ -128,7 +133,18 @@ class DeviceTypeValidator extends ConstraintValidator
             if ($deviceType->getEnableFirmwareMinRsrp()) {
                 $this->context->buildViolation($constraint->messageFirmwareNotUsedCannotEnableMinRsrp)->atPath('enableFirmwareMinRsrp')->addViolation();
             }
+            if ($deviceType->getHasHardwares()) {
+                $this->context->buildViolation($constraint->messageFirmwareNotUsedCannotEnableHardwares)->atPath('hasHardwares')->addViolation();
+            }
         }
+
+        if (!$deviceType->getHasHardwares()) {
+            if ($this->hasFirmwareHardwares($deviceType)) {
+                $this->context->buildViolation($constraint->messageCannotDisableHardwaresFirmwareHardwareExists)->atPath('hasHardwares')->addViolation();
+            }
+        }
+
+        $this->validateFirmwareSchemas($deviceType, $constraint);
 
         if (!$deviceType->getHasConfig1() && !$deviceType->getHasConfig2() && !$deviceType->getHasConfig3()) {
             if ($deviceType->getEnableConfigMinRsrp()) {
@@ -169,7 +185,7 @@ class DeviceTypeValidator extends ConstraintValidator
         !$deviceType->getDeviceTypeSecretCredential()) {
             $this->context->buildViolation($constraint->messageDeviceTypeSecretCredentialMissing)->atPath('deviceTypeSecretCredential')->addViolation();
         }
-        
+
         if ($deviceType->getDeviceTypeSecretCredential() && $deviceType->getDeviceTypeSecretCredential()->getDeviceType() != $deviceType) {
             $this->context->buildViolation($constraint->messageDeviceTypeSecretCredentialInvalid)->atPath('deviceTypeSecretCredential')->addViolation();
         }
@@ -177,6 +193,7 @@ class DeviceTypeValidator extends ConstraintValidator
         if (AuthenticationMethod::X509 === $deviceType->getAuthenticationMethod() && !$deviceType->getDeviceTypeCertificateTypeCredential()) {
             $this->context->buildViolation($constraint->messageDeviceTypeCertificateTypeCredentialMissing)->atPath('deviceTypeCertificateTypeCredential')->addViolation();
         }
+
         if ($deviceType->getDeviceTypeCertificateTypeCredential()) {
             $found = false;
             foreach ($deviceType->getCertificateTypes() as $deviceTypeCertificateType) {
@@ -193,6 +210,23 @@ class DeviceTypeValidator extends ConstraintValidator
             }
             if (!$found) {
                 $this->context->buildViolation($constraint->messageDeviceTypeCertificateTypeCredentialInvalid)->atPath('deviceTypeCertificateTypeCredential')->addViolation();
+            }
+        }
+
+        if (AuthenticationMethod::MTLS_SCEP === $deviceType->getAuthenticationMethod() && !$deviceType->getDeviceTypeCertificateTypeMTlsScepAuthentication()) {
+            $this->context->buildViolation($constraint->messageDeviceTypeCertificateTypeMTlsScepAuthenticationMissing)->atPath('deviceTypeCertificateTypeMTlsScepAuthentication')->addViolation();
+        }
+
+        if ($deviceType->getDeviceTypeCertificateTypeMTlsScepAuthentication()) {
+            $found = false;
+            foreach ($this->getMTlsScepCertificateTypes() as $certificateType) {
+                if ($certificateType->getId() == $deviceType->getDeviceTypeCertificateTypeMTlsScepAuthentication()->getId()) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $this->context->buildViolation($constraint->messageDeviceTypeCertificateTypeMTlsScepAuthenticationInvalid)->atPath('deviceTypeCertificateTypeMTlsScepAuthentication')->addViolation();
             }
         }
 
@@ -243,5 +277,90 @@ class DeviceTypeValidator extends ConstraintValidator
         }
 
         return $this->hasDeviceTypeDeviceVpnCertificate($deviceType);
+    }
+
+    protected function hasFirmwareHardwares(DeviceType $deviceType): bool
+    {
+        $hardwareFirmwaresAmount = $this->getRepository(Firmware::class)->count(['deviceType' => $deviceType, 'enableHardwareFiles' => true]);
+
+        return $hardwareFirmwaresAmount > 0;
+    }
+
+    protected function validateFirmwareSchemas(DeviceType $deviceType, Constraint $constraint): void
+    {
+        if ($deviceType->getHasFirmware1()) {
+            $this->validateFirmwareSchema(Feature::PRIMARY, $deviceType, $constraint);
+        }
+        if ($deviceType->getHasFirmware2()) {
+            $this->validateFirmwareSchema(Feature::SECONDARY, $deviceType, $constraint);
+        }
+        if ($deviceType->getHasFirmware3()) {
+            $this->validateFirmwareSchema(Feature::TERTIARY, $deviceType, $constraint);
+        }
+    }
+
+    protected function validateFirmwareSchema(Feature $feature, DeviceType $deviceType, Constraint $constraint): void
+    {
+        $getFirmwareSchemaFunctionName = 'getFirmwareSchema'.$feature->value;
+        $firmwareSchema = $deviceType->$getFirmwareSchemaFunctionName();
+
+        if (!$firmwareSchema) {
+            $this->context->buildViolation($constraint->messageFirmwareSchemaMissing)->atPath('firmwareSchema'.$feature->value)->addViolation();
+
+            return;
+        }
+
+        if (!$deviceType->getId()) {
+            // New entity, cannot validate versions yet
+            return;
+        }
+
+        if (FirmwareVersionSchema::ANY_SCHEMA == $firmwareSchema) {
+            $queryBuilder = $this->getRepository(Firmware::class)->createQueryBuilder('f')
+                ->select('COUNT(f.id)')
+                ->where('f.deviceType = :deviceType')
+                ->andWhere('f.feature = :feature')
+                ->andWhere('f.requiredFirmware IS NOT NULL')
+                ->setParameter('deviceType', $deviceType)
+                ->setParameter('feature', $feature);
+
+            $count = $queryBuilder->getQuery()->getSingleScalarResult();
+
+            if ($count > 0) {
+                $this->context->buildViolation($constraint->messageFirmwareSchemaAnyCannotHaveUpdatePath)->atPath('firmwareSchema'.$feature->value)->addViolation();
+            }
+
+            return;
+        }
+
+        // Check if firmware versions matching set schema - using chunked processing to avoid memory issues
+        $queryBuilder = $this->getRepository(Firmware::class)->createQueryBuilder('f')
+            ->select('f.version')
+            ->where('f.deviceType = :deviceType')
+            ->andWhere('f.feature = :feature')
+            ->setParameter('deviceType', $deviceType)
+            ->setParameter('feature', $feature);
+
+        $query = $queryBuilder->getQuery();
+        $chunkSize = 100;
+        $offset = 0;
+
+        do {
+            $versions = $query
+                ->setFirstResult($offset)
+                ->setMaxResults($chunkSize)
+                ->getScalarResult();
+
+            foreach ($versions as $versionRow) {
+                $version = $versionRow['version'];
+                if (!$this->firmwareVersionSchemaManager->isVersionValid($version, $firmwareSchema)) {
+                    $this->context->buildViolation($constraint->messageFirmwareVersionNotMatchingSchema)->setParameter('{{ version }}', $version)->atPath('firmwareSchema'.$feature->value)->addViolation();
+
+                    return;
+                }
+            }
+
+            $offset += $chunkSize;
+        } while (count($versions) === $chunkSize);
     }
 }

@@ -29,5 +29,9 @@ class VariableNameValidator extends ConstraintValidator
         if ('this' == $value) {
             $this->context->buildViolation($constraint->messageVariableNameThisNotAllowed)->addViolation();
         }
+
+        if (str_starts_with($value, 'data_')) {
+            $this->context->buildViolation($constraint->messageVariableNameDataNotAllowed)->addViolation();
+        }
     }
 }

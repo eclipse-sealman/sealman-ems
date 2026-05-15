@@ -1,6 +1,10 @@
 {
     "label": {
+        "enableHardwareFiles": "Supports hardware files",
+        "hardware": "Hardware",
         "ssoRoleVpnCertificateAutoGenerate": "Auto-generate VPN certificate for users with VPN permissions on first login",
+        "variableEnabled": "Use as variable",
+        "variableType": "Variable type",
         "secretValueBehaviour": "Secret value behaviour",
         "secretValueRenewAfterDays": "Secret value renew after days",
         "renewedAt": "Last renewed at",
@@ -91,6 +95,7 @@
         "deleteCertificate": "Delete certificate",
         "revokeCertificate": "Revoke certificate",
         "parseStatus": "Status",
+        "path": "Path",
         "importStatus": "Status",
         "columnName": "Column",
         "rowKey": "Row",
@@ -104,7 +109,15 @@
         "userDeviceTypes": "Permitted device types",
         "userDeviceType": "Permitted device type",
         "hasCertificate": "Has certificate",
+        "certificateCa": "Certificate CA",
         "certificateCaSubject": "Certificate CA Subject",
+        "certificateCaValidTo": "Certificate CA valid to",
+        "certificateCaValidToFrom": "Certificate CA valid from",
+        "certificateCaValidToTo": "Certificate CA valid to",
+        "crlType": "CRL type",
+        "certificateCrl": "CRL certificate",
+        "certificateCrlUrl": "CRL URL",
+        "deviceTypes": "Device types",
         "certificateValidTo": "Certificate valid to",
         "isCertificateExpired": "Is certificate expired",
         "commandRetryCount": "Device commands retry count",
@@ -127,6 +140,7 @@
         "subnet": "Subnet",
         "masqueradeType": "Masquerading",
         "masquerades": "Subnets for masquerading",
+        "mTlsDeviceType": "Permitted device type",
         "connectedSince": "Connected since",
         "validTo": "valid to",
         "target": "Target",
@@ -182,7 +196,7 @@
         "scepRevocationBasicAuthUser": "SCEP user",
         "scepRevocationBasicAuthPassword": "SCEP password",
         "scepHashFunction": "SCEP hash function",
-        "scepKeyLength": "SCEP key length",
+        "scepKeyType": "SCEP PKI key type",
         "scepVerifyServerSslCertificate": "Should SCEP server SSL certificate be verified?",
         "verifyOpnsenseSslCertificate": "Should OPNsense server SSL certificate be verified?",
         "featureName": "Feature name",
@@ -242,6 +256,7 @@
         "destinationDeviceToNetwork": "Destination network",
         "variableValue": "Value",
         "variables": "Variables",
+        "variableName": "Variable name",
         "accessTags": "Access tags",
         "requestConfigData": "Request config data",
         "requestDiagnoseData": "Request diagnose data",
@@ -255,6 +270,7 @@
         "firmware1": "Primary firmware",
         "firmware2": "Secondary firmware",
         "firmware3": "Tertiary firmware",
+        "requiredFirmware": "Required firmware",
         "config1": "Primary config",
         "config2": "Secondary config",
         "config3": "Tertiary config",
@@ -306,9 +322,11 @@
         "firmware": "{{ firmwareName }}",
         "hasMasquerade": "Enable masquerade",
         "hasVariables": "Enable variables",
+        "hasHardwares": "Enable hardware firmwares",
         "hasTemplates": "Enable templates",
         "hasGsm": "Enable GSM",
         "hasDeviceToNetworkConnection": "Enable device-to-network connection",
+        "hasCustomData": "Enable custom data",
         "hasEndpointDevices": "Enable endpoint devices",
         "hasVpn": "Enable VPN",
         "hasScepCertificates": "Enable SCEP certificates",
@@ -322,6 +340,7 @@
         "credentialsSource": "Credentials source",
         "deviceTypeSecretCredential": "Device secret with credentials",
         "deviceTypeCertificateTypeCredential": "Certificate type credential",
+        "deviceTypeCertificateTypeMTlsScepAuthentication": "Certificate type for mTLS SCEP authentication",
         "hasConfig1": "Enable config 1",
         "hasAlwaysReinstallConfig1": "Always try to reinstall config 1",
         "hasAlwaysReinstallConfig2": "Always try to reinstall config 2",
@@ -343,6 +362,12 @@
         "hasFirmware3": "Enable firmware 3",
         "nameFirmware3": "Firmware 3 name",
         "customUrlFirmware3": "Firmware 3 custom url host",
+        "firmwareSchema1": "Firmware 1 version schema",
+        "allowDowngradeFirmware1": "Allow firmware 1 downgrade",
+        "firmwareSchema2": "Firmware 2 version schema",
+        "allowDowngradeFirmware2": "Allow firmware 2 downgrade",
+        "firmwareSchema3": "Firmware 3 version schema",
+        "allowDowngradeFirmware3": "Allow firmware 3 downgrade",
         "certificateEncoding": "Certificate encoding",
         "enableSubjectAltName": "Enable certificate Subject Alt Name",
         "subjectAltNameType": "Subject Alt Name type",
@@ -391,7 +416,6 @@
         "certificateSubject": "Certificate subject",
         "certificate": "Certificate",
         "privateKey": "Private key",
-        "certificateCa": "CA",
         "pkcs12": "PKCS12 file",
         "deleteCa": "Delete CA",
         "deleteKey": "Delete private key",
@@ -412,9 +436,16 @@
         "plainPasswordRepeat": "Repeat password",
         "currentPlainPassword": "Current password",
         "newPlainPassword": "New password",
-        "newPlainPasswordRepeat": "Repeat new password"
+        "newPlainPasswordRepeat": "Repeat new password",
+        "deviceTypeCustomDataMapping": "Custom data mapping",
+        "deviceTypeCustomDataMappingName": "Name",
+        "deviceTypeCustomDataMappingType": "Type",
+        "deviceTypeCustomDataMappingPath": "Path",
+        "deviceTypeCustomDataMappingVariableName": "Variable name"
     },
     "help": {
+        "requiredFirmwareEditDisabled": "This firmware cannot be edited because it is currently in use by a template or required by another firmware. To enable editing, first remove it from any templates or firmware dependencies.",
+        "hardwareVersion": "Hardware version will be used to determine what firmware should be send to a device. It is compared (case sensitive) with a field in payload sent by the device during communication. Field depends on communication procedure. Please refer to communication procedure documentation for more details.",
         "exampleDeviceSecretValue": "Example value: {{ value }}",
         "secretValueBehaviour": "Decide how secret value should behave during device communication.<br/><strong>None</strong> - Device secret value will not be generated or renewed<br/><strong>Auto-generate</strong> - Device secret value will be generated when missing<br/><strong>Auto-renew</strong> - Device secret value will be renewed after specified number of days<br/><strong>Auto-generate and auto-renew</strong> - Device secret value will be generated when missing and renewed after specified number of days",
         "manualEditRenewReminder": "Reminder will be visible on device details screen in device secret section",
@@ -426,8 +457,10 @@
         "credentialsSource": "Device authentication contains credentials shared within all devices in device type. Device secret contain credentials for specific device",
         "deviceTypeSecretCredential": "Choose device secret that will be used as source of credentials",
         "deviceTypeCertificateTypeCredential": "Choose certificate type that will be used as credential",
+        "deviceTypeCertificateTypeMTlsScepAuthentication": "Choose certificate type that will provide CA and CRL for mTLS SCEP authentication",
         "useAsVariable": "Once value is assigned to device secret, device variables with most commonly used secret value encodings will be available",
-        "deviceTypeSecretAccessTags": "Allow users with device management permissions and at least one of choosen access tags to show and edit device secret value",
+        "variableName": "Variable name will be prefixed with \"data_\". When a value is provided, it can be used as a variable in device configurations.",
+        "deviceTypeSecretAccessTags": "Allow users with device management permissions and at least one of chosen access tags to show and edit device secret value",
         "enabledExpireAt": "User will be enabled until selected date. You can leave this field empty to have user enabled for unlimited time",
         "hasAlwaysReinstallConfig1": "Should reinstall config 1 flag always be set to true. Please refer do communication procedure documentation",
         "hasAlwaysReinstallConfig2": "Should reinstall config 2 flag always be set to true. Please refer do communication procedure documentation",
@@ -458,6 +491,10 @@
         "requiredFieldEnableToUse": "to use this functionality",
         "fieldRequirement": "If property is not supported by choosen communication procedure, it will have no effect during device communication. However it still can be used to store information in WebUI and database",
         "fieldRequiredByCommunicationProcedure": "This functionality is required to be enabled by choosen communication procedure",
+        "certificateCa": "CA certificate content in PEM format. This certificate is used to verify the authenticity of device certificates during mTLS authentication.",
+        "certificateCrl": "Certificate Revocation List (CRL) content in PEM format. This list contains certificates that have been revoked and should no longer be trusted for authentication.",
+        "certificateCrlUrl": "URL from which the Certificate Revocation List (CRL) will be downloaded. When using URL type, the CRL will be fetched from this address each time it is needed.",
+        "crlType": "Defines how the Certificate Revocation List is provided. 'None' means no CRL checking will be performed. 'PEM' means a CRL PEM file content has been uploaded and should be updated manually when needed. 'URL' means the CRL will be automatically downloaded from the specified URL each time.",
         "certificateTypeRequired": "This certificate type is required",
         "deviceTypeVirtualSubnetCidr": "Default value of how many IP's from virtual subnet should be assigned to device and it's endpoint devices. Can also be specifically configured on template and device level",
         "deviceTypeMasqueradeType": "Default value of masquerade type should be assigned to device. Can also be specifically configured on template and device level",
@@ -496,14 +533,21 @@
         "scepRevocationUrl": "SCEP revocation URL",
         "scepRevocationBasicAuthUser": "SCEP server basic auth user",
         "scepRevocationBasicAuthPassword": "SCEP server basic auth password",
-        "scepHashFunction": "Choose hash function used for RSA key",
-        "scepKeyLength": "Choose RSA key length",
+        "scepHashFunction": "Choose hash function used for certificate signing request (CSR) generation. Some PKI key types may override this value",
+        "scepKeyType": "Choose PKI key type",
         "autoRemoveBackupsAfter": "Backups will be deleted after specified number of days. Set 0 to disable",
         "deviceCommandExpireDuration": "Device commands will expire after specified duration. Example: '+30 minutes', '+4 hours', '+1 day'. For full description of duration format visit http://php.net/manual/en/datetime.modify.php",
         "authenticationMethod": "Authentication method that device will use",
         "communicationProcedure": "Communication procedure defines communication protocol between device and SEALMAN. Please refer to documentation for more details",
         "routePrefix": "Communication procedure route prefix. This value will differentiate URL to which device should connect in same communication procedure",
         "customUrlFirmware": "By default SEALMAN host is used. You can override it by providing a custom URL. Please provide it without a trailing slash ('/'). Example: https://example.com",
+        "firmwareSchema1": "Define the version schema format that will be required for firmware 1 version value",
+        "allowDowngradeFirmware1": "Allow device to install older firmware 1 version than currently installed",
+        "firmwareSchema2": "Define the version schema format that will be required for firmware 2 version value",
+        "allowDowngradeFirmware2": "Allow device to install older firmware 2 version than currently installed",
+        "firmwareSchema3": "Define the version schema format that will be required for firmware 3 version value",
+        "allowDowngradeFirmware3": "Allow device to install older firmware 3 version than currently installed",
+        "requiredFirmware": "Specify which firmware must be installed before this firmware can be installed. This creates an upgrade path dependency",
         "enableSubjectAltName": "Should Subject Alt Name be added to device's SSL Certificates? After enabling or changing type or value all routers certificates will be revoked and generated when device connects",
         "enableCertificatesAutoRenew": "Should device's certificate be auto-renewed when they are close to expiration?",
         "certificatesAutoRenewDaysBefore": "How many days before certificate expiration date, device's certificate should be auto-renewed?",
@@ -526,6 +570,12 @@
         "failedLoginAttemptsDisablingDuration": "Account will be blocked for specified duration. Example: '+30 minutes', '+4 hours', '+1 day'. For full description of duration format visit http://php.net/manual/en/datetime.modify.php"
     },
     "action": {
+        "copyDefaultCustomDataMappings": "Copy default custom data mappings",
+        "createFirmwareEnabledHardwareFiles": "Create with hardware files",
+        "deviceTypeHardwares": "Hardwares",
+        "deviceTypeCustomDataMappings": "Custom data mappings",
+        "firmwareHardwareFiles": "Hardware files",
+        "showUpdatePath": "Show update path",
         "enableForceRenewal": "Enable force renew",
         "disableForceRenewal": "Disable force renew",
         "clear": "Clear secret value",
@@ -573,7 +623,8 @@
         "edit": "Edit",
         "rename": "Rename",
         "exportCsv": "Export CSV",
-        "exportExcel": "Export Excel"
+        "exportExcel": "Export Excel",
+        "copyDefaultMappings": "Copy default mappings"
     },
     "header": {
         "connection": {
@@ -620,6 +671,7 @@
         "label": "Labels",
         "user": "Users",
         "deviceAuthentication": "Devices authentication",
+        "deviceMTlsAuthentication": "Device mTLS authentication",
         "device": "Devices",
         "template": "Templates",
         "vpnConnection": "Active connections",
@@ -673,6 +725,7 @@
             "label": "Labels",
             "user": "Users",
             "deviceAuthentication": "Devices authentication",
+            "deviceMTlsAuthentication": "Device mTLS authentication",
             "device": "Devices",
             "deviceEndpointDevice": "Endpoint devices",
             "template": "Templates",
@@ -681,6 +734,7 @@
             "vpnPermanentConnection": "Device-to-network connections",
             "config": "Configs",
             "firmware": "Firmwares",
+            "firmwareHardwareFile": "Firmware hardware files",
             "deviceCommand": "Device commands",
             "deviceSecret": "Device secrets",
             "vpnLog": "VPN logs",
@@ -709,7 +763,9 @@
                 "general": "General",
                 "deviceType": "Device types",
                 "certificateType": "Certificate types",
+                "deviceTypeCustomDataMapping": "Custom data mappings",
                 "deviceTypeSecret": "Secrets",
+                "deviceTypeHardware": "Hardwares",
                 "logs": "Logs",
                 "radius": "Radius",
                 "totp": "Two-factor authentication",
@@ -728,7 +784,8 @@
             "changePassword": "Change password",
             "list": "List",
             "detailsRepresentationDeviceType": "{{ representation }} ({{ deviceType }})",
-            "detailsRepresentationDeviceTypeAndFeature": "{{ representation }} ({{ feature }} for {{ deviceType }})"
+            "detailsRepresentationDeviceTypeAndFeature": "{{ representation }} ({{ feature }} for {{ deviceType }})",
+            "editRepresentationDeviceTypeAndFeature": "{{ representation }} ({{ feature }} for {{ deviceType }})"
         },
         "hint": {
             "createTemplateVersion": "Create staging template version",
@@ -742,7 +799,9 @@
             "selectedCommunicationProcedure": "Communication procedure: '{{ communicationProcedure }}'",
             "selectFeature": "Select type for {{ deviceType }}",
             "selectedDeviceType": "{{ deviceType }}",
-            "selectedDeviceTypeAndFeature": "{{ feature }} for {{ deviceType }}"
+            "selectedDeviceTypeAndFeature": "{{ feature }} for {{ deviceType }}",
+            "firmwareCreateEnabledHardwareFiles": "{{ feature }} for {{ deviceType }} with hardware files",
+            "firmwareHardwareFiles": "{{ firmwareName }} ({{ feature }} for {{ deviceType }})"
         }
     },
     "userVpnConnectionDetails": {
@@ -881,6 +940,12 @@
             "displayedRows": "{{ from }}-{{ to }} of {{ count }}"
         }
     },
+    "selectTiles": {
+        "noResults": "No results"
+    },
+    "firmwareCreateEnabledHardwareFilesSelectDeviceType": {
+        "noResults": "There are no device types that support hardware. Enable hardware in at least one device type to use this feature"
+    },
     "importFile": {
         "alert": {
             "information": "First row is skipped and designed to describe column names. Router import file should have following columns: Name, Serial number, IMSI, Device type, Template name, Access tags, Labels and Variables (multiple columns). Access tags and labels should be separated using comma (\",\"). Each variable is represented as a pair of columns. First column is variable name and second is variable value. You can use multiple pairs of columns to import multiple variables for one router.",
@@ -968,6 +1033,7 @@
     },
     "deviceDetails": {
         "details": "Details",
+        "definedCustomData": "Defined custom data",
         "definedVariables": "Defined variables",
         "predefinedVariables": "Predefined variables",
         "deviceSecrets": "Device secrets",
@@ -977,6 +1043,7 @@
         "communicationLogs": "Communication logs",
         "deviceCommands": "Device commands",
         "configLogs": "Config logs",
+        "customDataVariables": "Custom data variables",
         "diagnoseLogs": "Diagnose logs"
     },
     "deviceEndpointDeviceDetails": {
@@ -1098,6 +1165,11 @@
             }
         }
     },
+    "firmwareHardwareFiles": {
+        "tooltip": {
+            "hardwareFilesEnabled": "Firmware supports hardware files"
+        }
+    },
     "exportCsv": {
         "filename": "{{ title }} {{ date }}.csv"
     },
@@ -1169,6 +1241,12 @@
             "title": "Show message"
         }
     },
+    "resultDialogShowCustomDataValues": {
+        "action": "Show custom data values",
+        "dialog": {
+            "title": "Custom data values"
+        }
+    },
     "resultDialogContent": {
         "action": "Show content",
         "dialog": {
@@ -1206,6 +1284,15 @@
         },
         "snackbar": {
             "success": "Device type disabled"
+        }
+    },
+    "resultDeviceTypeCopyDefaultCustomDataMappings": {
+        "dialog": {
+            "title": "Confirmation required",
+            "label": "Are you sure you want to copy default custom data mappings from the communication procedure to {{ deviceTypeRepresentation }}?"
+        },
+        "snackbar": {
+            "success": "Default custom data mappings copied successfully"
         }
     },
     "resultDownload": {
@@ -1616,6 +1703,11 @@
         "valid": "Valid",
         "notAvailable": "Not available"
     },
+    "firmwareUpdatePath": {
+        "dialog": {
+            "title": "Firmware update path"
+        }
+    },
     "certificateUploadFiles": {
         "action": {
             "uploadCertFiles": "Upload separate files"
@@ -1788,7 +1880,21 @@
     },
     "enum": {
         "invalid": "This is not a valid value",
+        "deviceMTlsAuthentication": {
+            "crlType": {
+                "none": "None",
+                "pem": "PEM",
+                "url": "URL"
+            }
+        },
         "common": {
+            "variableType": {
+                "string": "String",
+                "jsonObject": "JSON Object",
+                "boolean": "Boolean",
+                "float": "Float",
+                "integer": "Integer"
+            },
             "certificateCategory": {
                 "custom": "Custom",
                 "deviceVpn": "Device VPN",
@@ -1861,9 +1967,12 @@
                 "SHA384": "SHA-384",
                 "SHA512": "SHA-512"
             },
-            "pkiKeyLength": {
-                "2048": "2048",
-                "4096": "4096"
+            "pkiKeyType": {
+                "RSA2048": "RSA 2048",
+                "RSA4096": "RSA 4096",
+                "EC_P_521": "EC P-521",
+                "ED448": "ED448",
+                "ED25519": "ED25519"
             },
             "pkiType": {
                 "none": "None",
@@ -1998,13 +2107,21 @@
                 "basic": "Basic authentication",
                 "digest": "Digest authentication",
                 "jwt": "JWT",
-                "x509": "X.509"
+                "x509": "X.509",
+                "mTls": "mTLS",
+                "mTlsScep": "mTLS with SCEP"
             },
             "credentialsSource": {
                 "user": "Device authentication",
                 "secret": "Device secret",
                 "both": "Device authentication or device secret",
                 "userIfSecretMissing": "Device secret, device authentication as fallback"
+            },
+            "firmwareVersionSchema": {
+                "anySchema": "Any schema",
+                "egOsSchema": "Edge gateway OS versioning",
+                "semanticVersioning": "Semantic versioning 2.0.0",
+                "vSemanticVersioning": "Semantic versioning 2.0.0 prefixed with 'v' (i.e. v1.0.0)"
             },
             "communicationProcedure": {
                 "none": "None",
@@ -2181,9 +2298,12 @@
         "deviceType": {
             "alreadyEnabled": "Device type is already enabled",
             "alreadyDisabled": "Device type is already disabled",
-            "cannotEnable": "Device type cannot be enabled due to feature limitations.",
+            "cannotEnable": "Device type cannot be enabled due to feature limitations",
+            "customDataDisabled": "Custom data is not enabled for this device type",
+            "customDataMappingsAlreadyExist": "Custom data mappings already exist for this device type",
             "limitedEdit": "Limited edit disabled. Use full edit",
             "delete": {
+                "usedByFirmwareHardwareFile": "Device type hardware is used by at least one firmware hardware file. Please remove it to delete",
                 "usedByDevice": "Device type is used by at least one device. Please remove it from device to delete",
                 "usedByTemplate": "Device type is used by at least one template. Please remove it from template to delete",
                 "usedByConfig": "Device type is used by at least one config. Please remove it from config to delete",
@@ -2195,6 +2315,11 @@
                 "usedByTemplate": "Device type is used by at least one template. Please remove it from template to enable full editing",
                 "usedByConfig": "Device type is used by at least one config. Please remove it from config to enable full editing",
                 "usedByFirmware": "Device type is used by at least one firmware. Please remove it from firmware to enable full editing"
+            }
+        },
+        "deviceTypeHardware": {
+            "delete": {
+                "usedByFirmwareHardwareFile": "Hardware is used by at least one firmware hardware file. Please remove it to delete"
             }
         },
         "template": {
@@ -2246,8 +2371,19 @@
             "accessDeniedDeviceOutsideAccessScope": "Access denied. Firmware is used by device outside your access scope.",
             "accessDeniedUsedByProductionTemplateVersion": "Access denied. Firmware is used by production template version.",
             "usedByTemplate": "Firmware is used by at least one template. Please remove it from template to delete",
+            "usedAsRequiredFirmware": "Firmware is used as required firmware. Please remove firmware that uses it to delete",
             "onlySourceTypeUpload": "You can only edit firmwares with source type upload",
-            "onlySourceTypeExternalUrl": "You can only edit firmwares with source type externalUrl"
+            "onlySourceTypeExternalUrl": "You can only edit firmwares with source type externalUrl",
+            "hardwareFilesDisabled": "Firmware does not support hardware files",
+            "hardwareFilesEnabled": "Firmware supports hardware files"
+        },
+        "firmwareHardwareFile": {
+            "sourceTypeUploadEditNotSupported": "Uploaded firmware hardware files cannot be modified. Delete and upload a new one",
+            "notSourceTypeExternalUrl": "Firmware hardware file source type is not externalUrl",
+            "accessDeniedNotOwned": "Access denied. You do not own connected firmware.",
+            "accessDeniedDeviceOutsideAccessScope": "Access denied. Connected firmware is used by device outside your access scope.",
+            "accessDeniedUsedByProductionTemplateVersion": "Access denied. Connected firmware is used by production template version.",
+            "usedByTemplate": "Connected firmware is used by at least one template. Please remove it from template to delete"
         },
         "config": {
             "accessDeniedNotOwned": "Access denied. You do not own this config.",
@@ -2257,6 +2393,9 @@
         }
     },
     "validation": {
+        "customDataVariablePath": {
+            "invalid": "Each key in the path must be a valid variable name. Keys are separated by dots (e.g., \"custom.imsi_1.rawValue\")"
+        },
         "tusX509": {
             "fileMissing": "Could not find uploaded file",
             "fileEmpty": "Uploaded file is empty",
@@ -2269,6 +2408,24 @@
             "fileMissing": "Could not find uploaded file",
             "fileEmpty": "Uploaded file is empty",
             "invalid": "Uploaded file does not contain a valid private key"
+        },
+        "x509": {
+            "noCaCapability": "Certificate does not have CA capability",
+            "invalidX509": "Invalid X.509 certificate",
+            "expiredX509": "X.509 certificate has expired"
+        },
+        "crl": {
+            "invalidCrl": "Invalid certificate revocation list",
+            "expiredCrl": "Certificate revocation list has expired"
+        },
+        "deviceMTlsAuthentication": {
+            "certificateCrl": {
+                "crlRequiredForPem": "CRL certificate content is required when CRL type is set to PEM",
+                "crlNotMatchingCa": "Certificate revocation list does not match CA certificate"
+            },
+            "certificateCrlUrl": {
+                "crlUrlRequiredForUrl": "CRL URL is required when CRL type is set to URL"
+            }
         },
         "configurationMicrosoftOidcRoleMapping": {
             "roleNameNotUnique": "This value is already used",
@@ -2304,6 +2461,7 @@
             "firmware3Disabled": "Firmware for tertiary feature is disabled for device type selected in the template"
         },
         "variableName": {
+            "dataNotAllowed": "Variable names starting with \"data_\" are not allowed",
             "invalid": "This is not a valid PHP variable name",
             "thisNotAllowed": "Variable named \"this\" is not allowed"
         },
@@ -2311,6 +2469,7 @@
             "subnetNotUnique": "This subnet already exists"
         },
         "variable": {
+            "variableValueInvalidType": "Variable value cannot be casted into specified type",
             "variableNameUsedInPredefinedVariables": "This variable name is used by predefined variables",
             "variableNameNotUnique": "This variable name already exists"
         },
@@ -2370,6 +2529,8 @@
             "firmware1Disabled": "Firmware for primary feature is disabled for device type selected in the device",
             "firmware2Disabled": "Firmware for secondary feature is disabled for device type selected in the device",
             "firmware3Disabled": "Firmware for tertiary feature is disabled for device type selected in the device",
+            "variableValueInvalidType": "Variable value cannot be casted into specified type",
+            "variableTypeInvalid": "Variable type is invalid",
             "variablesDisabled": "Variables are disabled for device type selected in the device",
             "masqueradesDisabled": "Masquerading is disabled for device type selected in the device",
             "masqueradeTypeDisabledMasquaradesMustBeEmpty": "Masquerading is set to disabled. Specifing subnets is not possible",
@@ -2401,7 +2562,11 @@
             "deviceTypeSecretCredentialInvalid": "Device secret is invalid",
             "deviceTypeCertificateTypeCredentialMissing": "Certificate type is required for X509 authentication",
             "deviceTypeCertificateTypeCredentialInvalid": "Certificate type is invalid",
+            "deviceTypeCertificateTypeMTlsScepAuthenticationMissing": "Certificate type is required for mTLS SCEP authentication",
+            "deviceTypeCertificateTypeMTlsScepAuthenticationInvalid": "Certificate type is invalid for mTLS SCEP authentication",
             "firmwareNotUsedCannotEnableMinRsrp": "Cannot enable minimal RSRP if no firmware is used",
+            "firmwareNotUsedCannotEnableHasHardwares": "Cannot enable has hardwares if no firmware is used",
+            "cannotDisableHasHardwaresFirmwareHardwareExists": "Cannot disable has hardwares if firmware hardware exists. Please remove firmware hardware to disable this functionality",
             "configNotUsedCannotEnableMinRsrp": "Cannot enable minimal RSRP if no config is used",
             "alwaysReinstallConfigNotAvailable": "Cannot enable always reinstall config if config is used",
             "hasCertificatesNotAvailable": "Field cannot be enabled because, variables are not enabled",
@@ -2419,7 +2584,10 @@
             "certificateCategoryRequired": "Communication procedure requires valid certificate types",
             "certificateCategoryNotSupported": "Communication procedure does not support this certificate type",
             "propertyRequiredInCommunication": "Communication procedure requires this property to be set as 'Required in device communication' or 'Required in device communication and in WebUI'",
-            "unusedField": "Field is not used by choosen communication procedure. It has to be 'FALSE'"
+            "unusedField": "Field is not used by choosen communication procedure. It has to be 'FALSE'",
+            "firmwareSchemaMissing": "Firmware schema is required when firmware is enabled.",
+            "firmwareSchemaAnyCannotHaveUpdatePath": "Firmware schema 'Any schema' cannot be used when firmware is using update paths ('Required firmware' is selected).",
+            "firmwareVersionNotMatchingSchema": "Firmware version '{{ version }}' does not match the selected firmware schema."
         },
         "deviceTypeSecret": {
             "createNotPossible": "Please enable manual edit or auto-generate behaviour. Current configuration will not allow you to create device secret otherwise"
@@ -2479,7 +2647,18 @@
         },
         "firmware": {
             "nameNotUnique": "Name is not unique for selected device type",
-            "featureInvalid": "Feature is not available for selected device type"
+            "featureInvalid": "Feature is not available for selected device type",
+            "requiredFirmwareMustNull": "Required firmware cannot be selected when firmware schema is 'Any schema'",
+            "firmwareVersionNotMatchingSchema": "Firmware version does not match the selected firmware schema",
+            "requiredFirmwareNotHigherVersion": "Required firmware has to be lower version than current firmware version",
+            "requiredFirmwareInvalid": "Required firmware is invalid",
+            "enabledHardwareFiles": {
+                "deviceTypeInvalid": "Hardware files are not supported for selected device type"
+            }
+        },
+        "firmwareHardwareFile": {
+            "invalidDeviceType": "Device type in firmware is different from the one in hardware",
+            "firmwareHardwareFilesDisabled": "Firmware does not support hardware files"
         },
         "config": {
             "nameNotUnique": "Name is not unique for selected device type",
@@ -2742,7 +2921,11 @@
             "noOpnsenseUrl": "Invalid OPNsense URL"
         },
         "pkiProviders": {
+            "unknownException": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - unknown exception occured. Exception message: '{{ exceptionMessage }}'",
+            "consoleCommandFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - Execution of command '{{ commandString }}' has failed. Exception message: '{{ exceptionMessage }}'",
             "getCrlByUrlFailed": "Could not obtain CRL. Requested URL: {{ url }}",
+            "crlRequestFailed": "PKI - '{{ certificateType }}' certificate - CRL request has failed. Exception message: '{{ exceptionMessage }}'",
+            "caRequestFailed": "PKI - '{{ certificateType }}' certificate - CA request has failed. Exception message: '{{ exceptionMessage }}'",
             "certificateRevocationSuccess": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has been successful",
             "certificateRevocationRequested": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation was requested for '{{ certificateSubject }}'",
             "certificateRevocationFailedNoCertificate": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has failed. No certificate to revoke",
@@ -2752,6 +2935,7 @@
             "certificateInvalid": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - SSL certificate is invalid",
             "caInvalid": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - CA's public key is invalid",
             "certificateRequested": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate was requested for '{{ certificateSubject }}'",
+            "invalidLicense": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - Invalid license. SCEP feature is required",
             "invalidPkiConfiguration": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - Invalid PKI configuration",
             "certificateExists": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate exists",
             "certificateTypeNotSet": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - certificate type not set",
@@ -2761,7 +2945,7 @@
                 "missingScepCrlUrl": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP CRL URL",
                 "missingScepRevocationUrl": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP revocation URL",
                 "missingHashFunction": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP hash function",
-                "missingKeyLength": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP key length"
+                "missingKeyType": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - PKI - '{{ certificateType }}' certificate - Missing SCEP key type"
             }
         },
         "scepPkiProvider": {
@@ -2773,6 +2957,8 @@
                 "certificateRevocationFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate revocation for '{{ certificateSubject }}' has failed. Exception message: '{{ exceptionMessage }}'. Revocation URL: '{{ url }}'"
             },
             "signCsr": {
+                "invalidMessageType": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - invalid message type ('{{ messageType }}') received from SCEP server",
+                "pkiStatusError": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - SCEP server returned error status '{{ pkiStatus }}' with failInfo: '{{ failInfo }}', failInfoText: '{{ failInfoText }}'",
                 "extractionFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - extraction of received message has failed",
                 "verificationFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - verification of received message has failed, common name may already be used",
                 "decryptionFailed": "{{ deviceName }} '{{ identifier }}' ({{ name }}) - SCEP - '{{ certificateType }}' certificate - decryption of received message has failed",
@@ -2866,6 +3052,8 @@
         "communicationProcedureRequireHasTemplates": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable templates",
         "communicationProcedureRequireHasMasquerade": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable masquerade",
         "communicationProcedureRequireHasGsm": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable GSM",
+        "communicationProcedureRequireHasCustomData": "Communication procedure '{{ communicationProcedure }}' requires device type '{{ deviceType }}' to enable custom data",
+        "deviceCustomDataUpdated": "{{ deviceName }} '{{ identifier }}' received custom data. Custom data has been updated.",
         "configSameAsPreviousOne": "Config send by {{ deviceName }} is the same as previous one. Updating date.",
         "configDifferentThanPreviousOne": "Config send by {{ deviceName }} is different than previous one. Saving config to database.",
         "noConfigSent": "No config send by {{ deviceName }}.",
@@ -2889,45 +3077,37 @@
         "deviceConfigGenerationFailed": "Error occured during config generation. Config will not be sent.",
         "deviceConfigSameAsReceived": "Generated config is the same.",
         "deviceNoConfigWillBeSentSameAsReceived": "Generated config is the same. Config will not be sent.",
-        "deviceRsrpInvalidConfig1": "Invalid RSRP. {{ nameConfig1 }} will not be sent.",
-        "deviceRsrpInvalidConfig2": "Invalid RSRP. {{ nameConfig2 }} will not be sent.",
-        "deviceRsrpInvalidConfig3": "Invalid RSRP. {{ nameConfig3 }} will not be sent.",
-        "deviceInstallConfig1NoTemplate": "Trying to send {{ nameConfig1 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallConfig2NoTemplate": "Trying to send {{ nameConfig2 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallConfig3NoTemplate": "Trying to send {{ nameConfig3 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallConfig1NoConfig": "Trying to send {{ nameConfig1 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig1 }}.",
-        "deviceInstallConfig2NoConfig": "Trying to send {{ nameConfig2 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig2 }}.",
-        "deviceInstallConfig3NoConfig": "Trying to send {{ nameConfig3 }}. {{ deviceName }} has a template, but it has no selected {{ nameConfig3 }}.",
-        "deviceReinstallingConfig1": "Decided to send {{ nameConfig1 }}.",
-        "deviceReinstallingConfig2": "Decided to send {{ nameConfig2 }}.",
-        "deviceReinstallingConfig3": "Decided to send {{ nameConfig3 }}.",
-        "deviceReinstallingConfig1NoNeed": "No need to send {{ nameConfig1 }}.",
-        "deviceReinstallingConfig2NoNeed": "No need to send {{ nameConfig2 }}.",
-        "deviceReinstallingConfig3NoNeed": "No need to send {{ nameConfig3 }}.",
-        "deviceRsrpInvalidFirmware1": "Invalid RSRP. {{ nameFirmware1 }} will not be reinstalled.",
-        "deviceRsrpInvalidFirmware2": "Invalid RSRP. {{ nameFirmware2 }} will not be reinstalled.",
-        "deviceRsrpInvalidFirmware3": "Invalid RSRP. {{ nameFirmware3 }} will not be reinstalled.",
-        "deviceInstallFirmware1NoTemplate": "Trying to reinstall {{ nameFirmware1 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallFirmware2NoTemplate": "Trying to reinstall {{ nameFirmware2 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallFirmware3NoTemplate": "Trying to reinstall {{ nameFirmware3 }} but {{ deviceName }} has no selected template.",
-        "deviceInstallFirmware1NoFirmware": "Trying to reinstall {{ nameFirmware1 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware1 }}.",
-        "deviceInstallFirmware2NoFirmware": "Trying to reinstall {{ nameFirmware2 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware2 }}.",
-        "deviceInstallFirmware3NoFirmware": "Trying to reinstall {{ nameFirmware3 }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmware3 }}.",
-        "deviceFirmware1NoTemplate": "Cannot check {{ nameFirmware1 }} version. {{ deviceName }} has no selected template.",
-        "deviceFirmware2NoTemplate": "Cannot check {{ nameFirmware2 }} version. {{ deviceName }} has no selected template.",
-        "deviceFirmware3NoTemplate": "Cannot check {{ nameFirmware3 }} version. {{ deviceName }} has no selected template.",
-        "deviceFirmware1NoFirmware": "Cannot check {{ nameFirmware1 }} version. Template has no selected {{ nameFirmware1 }}.",
-        "deviceFirmware2NoFirmware": "Cannot check {{ nameFirmware2 }} version. Template has no selected {{ nameFirmware2 }}.",
-        "deviceFirmware3NoFirmware": "Cannot check {{ nameFirmware3 }} version. Template has no selected {{ nameFirmware3 }}.",
-        "deviceFirmware1NeedsUpdate": "{{ nameFirmware1 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware1 }} reinstall flag to TRUE.",
-        "deviceFirmware2NeedsUpdate": "{{ nameFirmware2 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware2 }} reinstall flag to TRUE.",
-        "deviceFirmware3NeedsUpdate": "{{ nameFirmware3 }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmware3 }} reinstall flag to TRUE.",
-        "deviceFirmware1UpToDate": "{{ nameFirmware1 }} is up to date.",
-        "deviceFirmware2UpToDate": "{{ nameFirmware2 }} is up to date.",
-        "deviceFirmware3UpToDate": "{{ nameFirmware3 }} is up to date.",
-        "deviceReinstallingFirmware1": "{{ nameFirmware1 }} will be reinstalled.",
-        "deviceReinstallingFirmware2": "{{ nameFirmware2 }} will be reinstalled.",
-        "deviceReinstallingFirmware3": "{{ nameFirmware3 }} will be reinstalled.",
+        "deviceFirmwareDeviceTypeHasHardwaresDisabled": "Device type {{ deviceType }} has hardwares flag is disabled.",
+        "deviceFirmwareReceivedDeviceHardwareVersionNull": "Device hardware version (model) is missing in received communication data.",
+        "deviceFirmwareDeviceTypeHardwareVersionNotFound": "Device hardware version (model) '{{ deviceHardwareVersion }}' is not found in device type {{ deviceType }}.",
+        "deviceFirmwareHardwareFileNotFound": "Trying to install {{ nameFirmwareFeature }} using {{ firmwareName }} (version '{{ firmwareVersion }}'): Hardware file not found for device hardware version '{{ deviceHardwareVersion }}'.",
+        "deviceReinstallingFirmwareWithHardwareFile": "{{ nameFirmwareFeature }} will be reinstalled. With {{ hardwareFile }} firmware hardware file.",
+        "deviceInstallFirmwareNoTemplate": "Trying to install {{ nameFirmwareFeature }} but {{ deviceName }} has no selected template.",
+        "deviceInstallFirmwareNoFirmware": "Trying to install {{ nameFirmwareFeature }}. {{ deviceName }} has a template, but it has no selected {{ nameFirmwareFeature }}.",
+        "deviceRsrpInvalidFirmware": "Invalid RSRP. {{ nameFirmwareFeature }} will not be reinstalled.",
+        "deviceReinstallingFirmware": "{{ nameFirmwareFeature }} will be reinstalled.",
+        "deviceInstallFirmwareRequiredFirmwareNotSupported": "Trying to install {{ nameFirmwareFeature }} failed. Required firmware is not supported for devices with any schema.",
+        "deviceReinstallingFirmwareRequiredFirmwareNotSet": "Reinstalling {{ nameFirmwareFeature }}. No required firmware is set in update path.",
+        "deviceInstallFirmwareFirmwareVersionRequired": "Trying to install {{ nameFirmwareFeature }} failed. Firmware version is required but was not provided.",
+        "deviceInstallFirmwareFirmwareVersionInvalid": "Trying to install {{ nameFirmwareFeature }} failed. Received firmware version '{{ version }}' is invalid for the configured schema.",
+        "deviceInstallFirmwareFirmwareDeviceTypeMismatch": "Trying to install {{ nameFirmwareFeature }} failed. Required firmware version '{{ version }}' device type does not match current device type",
+        "deviceInstallFirmwareFirmwareFeatureMismatch": "Trying to install {{ nameFirmwareFeature }} failed. Required firmware version '{{ version }}' feature does not match current feature",
+        "deviceInstallFirmwareFirmwareVersionNotInOrder": "Trying to install {{ nameFirmwareFeature }} failed. Firmware versions are not in proper descending order, version '{{ version }}' not in order",
+        "deviceInstallFirmwareFirmwareCannotBeDowngraded": "Trying to install {{ nameFirmwareFeature }} failed. {{ nameFirmwareFeature }} is not allowed to be downgraded. Received firmware version '{{ receivedVersion }}' is newer than '{{ firmwareVersion }}'",
+        "deviceReinstallingFirmwareRequiredFirmwareAlreadyInstalled": "{{ nameFirmwareFeature }} reinstall: Required firmware version '{{ version }}' is already installed or newer than '{{ requiredVersion }}'",
+        "deviceReinstallingFirmwareRequiredFirmwareNotInstalled": "{{ nameFirmwareFeature }} reinstall: Required firmware version '{{ version }}' needs to be installed first",
+        "deviceReinstallingFirmwareFirstFirmwareInUpdatePath": "{{ nameFirmwareFeature }} reinstall: Installing version '{{ version }}'. Reached first firmware in update path",
+        "deviceReinstallingFirmwareInUpdatePath": "{{ nameFirmwareFeature }} reinstall: Installing version '{{ version }}'",
+        "deviceInstallConfigNoTemplate": "Trying to send {{ nameConfigFeature }} but {{ deviceName }} has no selected template.",
+        "deviceInstallConfigNoConfig": "Trying to send {{ nameConfigFeature }}. {{ deviceName }} has a template, but it has no selected {{ nameConfigFeature }}.",
+        "deviceRsrpInvalidConfig": "Invalid RSRP. {{ nameConfigFeature }} will not be sent.",
+        "deviceReinstallingConfig": "Decided to send {{ nameConfigFeature }}.",
+        "deviceReinstallingConfigNoNeed": "No need to send {{ nameConfigFeature }}.",
+        "deviceFirmwareNoTemplate": "Cannot check {{ nameFirmwareFeature }} versions. {{ deviceName }} has no selected template.",
+        "deviceFirmwareNoFirmware": "Cannot check {{ nameFirmwareFeature }} versions. Template has no selected {{ nameFirmwareFeature }}.",
+        "deviceFirmwareNeedsUpdate": "{{ nameFirmwareFeature }} needs an update from '{{ currentVersion }}' to '{{ requiredVersion }}'. Setting {{ nameFirmwareFeature }} reinstall flag to TRUE.",
+        "deviceFirmwareUpToDate": "{{ nameFirmwareFeature }} is up to date.",
+
         "deviceReinstallFirmware1AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware1 }} flag already set to true.",
         "deviceReinstallFirmware2AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware2 }} flag already set to true.",
         "deviceReinstallFirmware3AlreadySet": "Processing version difference skipped. {{ deviceName }} device '{{ identifier }}' has reinstall {{ nameFirmware3 }} flag already set to true.",
@@ -2953,6 +3133,7 @@
         "deviceSendDiagnoseDataRequest": "{{ deviceName }} - sending diagnose data request.",
         "deviceSendConfigDataRequest": "{{ deviceName }} - sending config data request.",
         "deviceTypeMismatch": "{{ deviceName }} found, but expected device type does not match. Device of type {{ deviceTypeFound }} found. Expected device type {{ deviceTypeExpected }}",
+        "deviceNotFoundLimitReached": "{{ deviceName }} device '{{ identifier }}' tried to communicate. Device not found. Cannot create device - {{ deviceType }} device type license limit reached.",
         "deviceNotFound": "{{ deviceName }} device '{{ identifier }}' tried to communicate. Device not found. Creating device.",
         "deviceFound": "{{ deviceName }} device '{{ identifier }}' found.",
         "flexEdgeDeviceFileUpdate": "{{ deviceName }} device '{{ identifier }}' updated file '{{ fileId }}' download status to '{{ fileStatus }}'.",
@@ -2974,7 +3155,7 @@
         "requestProcessed": "Request has been processed. Sending response.",
         "incomingRequest": "Incoming request is valid and will be processed.",
         "requestDebug": "Request received from '{{ deviceType }}' {{ deviceName }}.",
-        "requestIsMissing": "Request object is missing. This should not happen, please contact Welotec with details.",
+        "requestIsMissing": "Request object is missing.",
         "responseDebug": "Response sent to '{{ deviceType }}' {{ deviceName }} device '{{ identifier }}'.",
         "noVpnSecuritySuite": "{{ deviceName }} device '{{ identifier }}' tried to get configuration. VPN functionalities are not available.",
         "noVpnSecuritySuiteAvailable": "{{ deviceName }} device '{{ identifier }}' tried to update VPN configuration. VPN functionalities are not available.",

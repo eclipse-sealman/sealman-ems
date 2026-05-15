@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class EndpointDeviceLock extends Constraint
 {
-    public $messageVirtualIpHostPartLocked = 'validation.endpointDevice.virtualIpHostPartLocked';
+    public string $messageVirtualIpHostPartLocked = 'validation.endpointDevice.virtualIpHostPartLocked';
 
     public function getTargets(): string|array
     {

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\TemplateVersionVariable;
+use App\Enum\VariableType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,6 +27,14 @@ class TemplateVersionVariableType extends AbstractType
     {
         $builder->add('name');
         $builder->add('variableValue', null, ['trim' => false]);
+        $builder->add('variableType', null, [
+            'empty_data' => VariableType::STRING->value,
+            // Mark this as not required for OpenAPI documentation
+            'required' => false,
+            'documentation' => [
+                'default' => VariableType::STRING->value,
+            ],
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

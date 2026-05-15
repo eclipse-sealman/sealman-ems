@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\CertificateTypeDeny;
 use App\Entity\CertificateType;
 use App\Enum\CertificateCategory;
@@ -36,7 +37,6 @@ use Carve\ApiBundle\Trait\ApiListTrait;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Rest\Route('/certificatetype')]
@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
     denyClass: CertificateTypeDeny::class
 )]
 #[Rest\View(serializerGroups: ['identification', 'certificateType:public', 'timestampable', 'blameable', 'deny'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class CertificateTypeController extends AbstractApiController
 {

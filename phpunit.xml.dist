@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
@@ -20,18 +19,34 @@
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="test" force="true" />
     </php>
-
     <testsuites>
+        <!-- DeviceCommunication testsuites -->
+        <testsuite name="DeviceCommunication:Authentication">
+            <directory>tests/suites/DeviceCommunication/Authentication</directory>
+        </testsuite>
+        <testsuite name="DeviceCommunication:DeviceSecretsAndCertificates">
+            <directory>tests/suites/DeviceCommunication/DeviceSecretsAndCertificates</directory>
+        </testsuite>
+        <testsuite name="DeviceCommunication:FirmwareUpdatePath">
+            <directory>tests/suites/DeviceCommunication/FirmwareUpdatePath</directory>
+        </testsuite>
         <!-- Feature testsuites -->
         <testsuite name="Feature:AuditLog">
             <directory>tests/suites/Feature/AuditLog</directory>
         </testsuite>
-        
+        <testsuite name="Feature:BatchUpdate">
+            <directory>tests/suites/Feature/BatchUpdate</directory>
+        </testsuite>
+        <testsuite name="Feature:CertificateTypes">
+            <directory>tests/suites/Feature/CertificateTypes</directory>
+        </testsuite>
         <!-- Scenario testsuites -->
         <testsuite name="Scenario:WebApi">
             <directory>tests/suites/Scenario/WebApi</directory>
         </testsuite>
-
+        <testsuite name="Scenario:DeviceCommunication">
+            <directory>tests/suites/Scenario/DeviceCommunication</directory>
+        </testsuite>
         <!-- Unit testsuites -->
         <testsuite name="Unit:ClassMetadataFactory">
             <directory>tests/suites/Unit/ClassMetadataFactory</directory>
@@ -42,11 +57,20 @@
         <testsuite name="Unit:EnvProcessing">
             <directory>tests/suites/Unit/EnvProcessing</directory>
         </testsuite>
+        <testsuite name="Unit:FirmwareUpdatePathManager">
+            <directory>tests/suites/Unit/FirmwareUpdatePathManager</directory>
+        </testsuite>
         <testsuite name="Unit:HttpClient">
             <directory>tests/suites/Unit/HttpClient</directory>
         </testsuite>
+        <testsuite name="Unit:IsGrantedOr">
+            <directory>tests/suites/Unit/IsGrantedOr</directory>
+        </testsuite>
         <testsuite name="Unit:MicrosoftOidcManager">
             <directory>tests/suites/Unit/MicrosoftOidcManager</directory>
+        </testsuite>
+        <testsuite name="Unit:PkiScepEncoding">
+            <directory>tests/suites/Unit/PkiScepEncoding</directory>
         </testsuite>
         <testsuite name="Unit:SerializableJson">
             <directory>tests/suites/Unit/SerializableJson</directory>
@@ -57,27 +81,36 @@
         <testsuite name="Unit:VpnAddressManager">
             <directory>tests/suites/Unit/VpnAddressManager</directory>
         </testsuite>
-       
         <!-- WebApi testsuites -->
         <testsuite name="WebApi:Endpoint">
             <directory>tests/suites/WebApi/Endpoint</directory>
         </testsuite>
+        <testsuite name="WebApi:FirmwareUpdatePath">
+            <directory>tests/suites/WebApi/FirmwareUpdatePath</directory>
+        </testsuite>
         <testsuite name="WebApi:UserAccess">
             <directory>tests/suites/WebApi/UserAccess</directory>
+        </testsuite>
+        <testsuite name="WebApi:VariableType">
+            <directory>tests/suites/WebApi/VariableType</directory>
         </testsuite>
         <testsuite name="WebApi:Documentation">
             <directory>tests/suites/WebApi/Documentation</directory>
         </testsuite>
-
         <!-- Has to be last to allow other tests be loaded before -->
         <testsuite name="Smoke">
             <directory>tests/suites/Smoke</directory>
         </testsuite>
     </testsuites>
-
+    <!-- Read why ignoreIndirectDeprecations="false" in development/tests/Deprecations.md -->
+    <source ignoreIndirectDeprecations="false" restrictNotices="true" restrictWarnings="true">
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
     <extensions>
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
-    </extensions> 
+    </extensions>
     <!-- Run `composer require symfony/panther` before enabling this extension -->
     <!--
     <extensions>

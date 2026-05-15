@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class VariablePredefined extends Constraint
 {
-    public $messageVariableNameUsed = 'validation.variable.variableNameUsedInPredefinedVariables';
+    public string $messageVariableNameUsed = 'validation.variable.variableNameUsedInPredefinedVariables';
 
     public function getTargets(): string|array
     {

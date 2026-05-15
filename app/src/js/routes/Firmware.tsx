@@ -16,6 +16,8 @@ import getColumns from "~app/entities/Firmware/columns";
 import getFilters from "~app/entities/Firmware/filters";
 import Builder from "~app/components/Crud/Builder";
 import { useUser } from "~app/contexts/User";
+import BuilderToolbar from "~app/components/Table/toolbar/BuilderToolbar";
+import CreateEnabledHardwareFiles from "~app/entities/Firmware/toolbar/CreateEnabledHardwareFiles";
 
 const Firmware = () => {
     const { isAccessGranted } = useUser();
@@ -29,6 +31,14 @@ const Firmware = () => {
             fields.splice(nameIndex + 1, 0, {
                 field: "sourceType",
                 label: "label.sourceType",
+            });
+            fields.splice(nameIndex + 2, 0, {
+                field: "enableHardwareFiles",
+                label: "label.enableHardwareFiles",
+            });
+            fields.splice(nameIndex + 3, 0, {
+                field: "hardware",
+                label: "label.hardware",
             });
         }
 
@@ -58,6 +68,18 @@ const Firmware = () => {
                     defaultSorting: {
                         createdAt: "desc",
                     },
+                    toolbar: (
+                        <BuilderToolbar
+                            render={({ createAction, exportCsvAction, exportExcelAction }) => (
+                                <>
+                                    {createAction}
+                                    <CreateEnabledHardwareFiles />
+                                    {exportCsvAction}
+                                    {exportExcelAction}
+                                </>
+                            )}
+                        />
+                    ),
                 },
             }}
         />

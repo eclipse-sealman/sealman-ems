@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace App\Trait;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\CertificateDenyInterface;
 use App\Service\Helper\CertificateManagerTrait;
 use Carve\ApiBundle\Attribute as Api;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 trait ApiCertificatesDeleteTrait
@@ -35,7 +35,7 @@ trait ApiCertificatesDeleteTrait
     #[Api\Parameter(name: 'certificateTypeId', in: 'path', schema: new OA\Schema(type: 'integer'), description: 'ID of certificate type')]
     #[Api\Response204('Uploaded certificate successfully deleted')]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function deleteCertificateAction(Request $request, int $id, int $certificateTypeId)
     {

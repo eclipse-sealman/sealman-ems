@@ -28,6 +28,7 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Unit')] // To be used in CI parallel tests
 class DateTimeSerializeTest extends KernelTestCase
 {
     public static function dateTimeProvider(): array

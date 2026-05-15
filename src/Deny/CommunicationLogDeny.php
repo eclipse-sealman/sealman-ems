@@ -23,7 +23,21 @@ class CommunicationLogDeny extends AbstractApiObjectDeny
 {
     use SecurityHelperTrait;
 
+    public const CUSTOM_DATA_VALUES = 'customDataValues';
     public const SHOW_CONTENT = 'showContent';
+
+    public function customDataValuesDeny(CommunicationLog $object): ?string
+    {
+        if (!$object->getDeviceType()->getHasCustomData()) {
+            return 'accessDenied';
+        }
+
+        if ($object->getCommunicationLogCustomData()->isEmpty()) {
+            return 'accessDenied';
+        }
+
+        return null;
+    }
 
     public function showContentDeny(CommunicationLog $object): ?string
     {

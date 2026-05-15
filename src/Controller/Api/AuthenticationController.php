@@ -307,6 +307,12 @@ class AuthenticationController extends AbstractFOSRestController
         $token = new UsernamePasswordToken($user, 'api', $user->getRoles());
         $this->tokenStorage->setToken($token);
 
+        // lastLoginAt will be flushed by registerLoginAttempt()
+        $user->setLastLoginAt(new \DateTime());
+        // Note: resetLoginAttempts function does not execute entityManager->flush()
+        $this->authenticationManager->resetLoginAttempts($user);
+        $this->authenticationManager->registerLoginAttempt(true, false, $user->getUsername(), $user);
+
         // Prepare response using lexik_jwt_authentication.handler.authentication_success which is also used in default json login form
         return $this->authenticationSuccessHandler->handleAuthenticationSuccess($user);
     }

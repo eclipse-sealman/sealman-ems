@@ -330,8 +330,8 @@ function verifySslCertificateVariables {
             echoDebug "Provided SSL certificate ${sslFileKey} exists"
         fi
 
-        sslFileChainMd5=`openssl x509 -noout -modulus -in "$filestorageDir/$sslFileChain" | openssl md5`
-        sslFileKeyMd5=`openssl rsa -noout -modulus -in "$filestorageDir/$sslFileKey" | openssl md5`
+        sslFileChainMd5=`openssl x509 -noout -pubkey -in "$filestorageDir/$sslFileChain" | openssl md5`
+        sslFileKeyMd5=`openssl pkey -pubout -in "$filestorageDir/$sslFileKey" | openssl md5`
         if [ "$sslFileChainMd5" != "$sslFileKeyMd5" ]; then
             echoError "Provided SSL certificates keys does not match"
             return 0
@@ -725,6 +725,7 @@ mkdir -p $applicationDir/archive/backup
 chown www-data:www-data $applicationDir/archive/backup
 linkFolder "$filestorageDir/public/uploads" "$applicationDir/public/"
 linkFolder "$filestorageDir/private/firmware" "$applicationDir/private/"
+linkFolder "$filestorageDir/private/firmwarehardwarefile" "$applicationDir/private/"
 mkdir -p $filestorageDir/logs/nginx
 mkdir -p $filestorageDir/logs/crontab
 mkdir -p $filestorageDir/logs/supervisor

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\UserDeny;
 use App\Entity\CertificateType;
 use App\Entity\User;
@@ -47,7 +48,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -63,7 +63,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 )]
 #[Rest\View(serializerGroups: ['identification', 'user:public', 'certificate:admin', 'deny'])]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN_VPN', ['user:adminVpn'])]
-#[Security("is_granted('ROLE_ADMIN')")]
+#[IsGrantedOr('ROLE_ADMIN')]
 #[Areas(['admin'])]
 class UserController extends AbstractApiController
 {
@@ -321,7 +321,7 @@ class UserController extends AbstractApiController
     #[Rest\Get('/certificate/types')]
     #[Api\Summary('Get list of available certificate types for {{ subjectPluralLower }}')]
     #[Api\Response200ArraySubjectGroups(CertificateType::class)]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function getCertificateTypesAction()
     {
@@ -355,7 +355,7 @@ class UserController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to generate technician VPN certificate')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function generateTechnicianVpnCertificateAction(Request $request, int $id)
     {
@@ -372,7 +372,7 @@ class UserController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to revoke technician VPN certificate')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function revokeTechnicianVpnCertificateAction(Request $request, int $id)
     {

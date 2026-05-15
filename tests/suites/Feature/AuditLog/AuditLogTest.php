@@ -54,6 +54,7 @@ use Tests\Utilities\Feature\AuditLog\AssertDateTime;
  */
 #[Group('full')]
 #[Group('smoke')]
+#[Group('Feature')] // To be used in CI parallel tests
 class AuditLogTest extends AbstractTestCase
 {
     use AssertAuditLogTrait;
@@ -512,10 +513,12 @@ class AuditLogTest extends AbstractTestCase
         $name = 'Name-testOneToMany';
         $variable1 = [
             'name' => 'var1',
+            'variableType' => 'string',
             'variableValue' => 'Value 1',
         ];
         $variable2 = [
             'name' => 'var2',
+            'variableType' => 'string',
             'variableValue' => 'Value 2',
         ];
 
@@ -549,17 +552,20 @@ class AuditLogTest extends AbstractTestCase
         $this->assertChange($changes[0], AuditLogChangeType::CREATE, null, [
             'device' => $id,
             'name' => $variable2['name'],
+            'variableType' => 'string',
             'variableValue' => $variable2['variableValue'],
         ]);
         $this->assertChange($changes[1], AuditLogChangeType::CREATE, null, [
             'device' => $id,
             'name' => $variable1['name'],
+            'variableType' => 'string',
             'variableValue' => $variable1['variableValue'],
         ]);
 
         // Update - Add variable
         $variable3 = [
             'name' => 'var3',
+            'variableType' => 'string',
             'variableValue' => 'Value 3',
         ];
 
@@ -581,18 +587,21 @@ class AuditLogTest extends AbstractTestCase
         $this->assertChange($changes[0], AuditLogChangeType::CREATE, null, [
             'device' => $id,
             'name' => $variable3['name'],
+            'variableType' => 'string',
             'variableValue' => $variable3['variableValue'],
         ]);
         // Verify that change before adding $variable3 was a creation of $variable2 (nothing else has been logged)
         $this->assertChange($changes[1], AuditLogChangeType::CREATE, null, [
             'device' => $id,
             'name' => $variable2['name'],
+            'variableType' => 'string',
             'variableValue' => $variable2['variableValue'],
         ]);
 
         // Update - Edit variable
         $newVariable2 = [
             'name' => 'newVar2',
+            'variableType' => 'string',
             'variableValue' => 'New value 2',
         ];
         $this->jsonPost('/web/api/device/'.$id, [
@@ -613,16 +622,19 @@ class AuditLogTest extends AbstractTestCase
         $this->assertChange($changes[0], AuditLogChangeType::UPDATE, [
             'device' => $id,
             'name' => $variable2['name'],
+            'variableType' => 'string',
             'variableValue' => $variable2['variableValue'],
         ], [
             'device' => $id,
             'name' => $newVariable2['name'],
+            'variableType' => 'string',
             'variableValue' => $newVariable2['variableValue'],
         ]);
         // Verify that change before updating $variable2 was a creation of $variable3 (nothing else has been logged)
         $this->assertChange($changes[1], AuditLogChangeType::CREATE, null, [
             'device' => $id,
             'name' => $variable3['name'],
+            'variableType' => 'string',
             'variableValue' => $variable3['variableValue'],
         ]);
 
@@ -644,16 +656,19 @@ class AuditLogTest extends AbstractTestCase
         $this->assertChange($changes[0], AuditLogChangeType::DELETE, [
             'device' => $id,
             'name' => $variable3['name'],
+            'variableType' => 'string',
             'variableValue' => $variable3['variableValue'],
         ]);
         // Verify that change before deleting $variable3 was a edit of $variable2
         $this->assertChange($changes[1], AuditLogChangeType::UPDATE, [
             'device' => $id,
             'name' => $variable2['name'],
+            'variableType' => 'string',
             'variableValue' => $variable2['variableValue'],
         ], [
             'device' => $id,
             'name' => $newVariable2['name'],
+            'variableType' => 'string',
             'variableValue' => $newVariable2['variableValue'],
         ]);
 
@@ -676,17 +691,20 @@ class AuditLogTest extends AbstractTestCase
         $this->assertChange($changes[0], AuditLogChangeType::DELETE, [
             'device' => $id,
             'name' => $newVariable2['name'],
+            'variableType' => 'string',
             'variableValue' => $newVariable2['variableValue'],
         ]);
         $this->assertChange($changes[1], AuditLogChangeType::DELETE, [
             'device' => $id,
             'name' => $variable1['name'],
+            'variableType' => 'string',
             'variableValue' => $variable1['variableValue'],
         ]);
         // Verify that change before deleting device was a delete of $variable3
         $this->assertChange($changes[2], AuditLogChangeType::DELETE, [
             'device' => $id,
             'name' => $variable3['name'],
+            'variableType' => 'string',
             'variableValue' => $variable3['variableValue'],
         ]);
     }

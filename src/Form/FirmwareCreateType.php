@@ -30,9 +30,10 @@ class FirmwareCreateType extends AbstractType
     {
         $builder->add('deviceType');
         $builder->add('feature');
-        $builder->add('sourceType');
         $builder->add('name');
+        $builder->add('requiredFirmware');
         $builder->add('version');
+        $builder->add('sourceType');
         $builder->add('filepath');
         $builder->add('externalUrl');
         $builder->add('md5', null, ['required' => false]);

@@ -32,6 +32,7 @@ use Tests\Utilities\Abstract\AbstractTestCase;
  * Tests edit and visibility of access tags by VPN user on a single endpoint device.
  */
 #[Group('full')]
+#[Group('WebApiRoleVpn')] // To be used in CI parallel tests
 class AccessTagsEndpointDeviceSingleTest extends AbstractTestCase
 {
     public const SUCCESS = 'success';

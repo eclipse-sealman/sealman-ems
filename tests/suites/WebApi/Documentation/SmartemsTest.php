@@ -21,6 +21,7 @@ use Tests\Utilities\WebApi\Documentation\AbstractDocumentationTest;
 
 #[Group('full')]
 #[Group('smoke')]
+#[Group('WebApi')] // To be used in CI parallel tests
 class SmartemsTest extends AbstractDocumentationTest
 {
     public static function getFixtureGroups(): array

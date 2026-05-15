@@ -28,6 +28,7 @@ import { DeviceConfigurationTypeInterface } from "~app/entities/DeviceType/defin
 import { isFieldHidden, isFieldRequired } from "~app/enums/FieldRequirement";
 import TemplateSelectApi from "~app/components/Form/fields/TemplateSelectApi";
 import DeviceCertificateAutomaticBehaviorCollection from "~app/components/Form/fields/DeviceCertificateAutomaticBehaviorCollection";
+import { variableType } from "~app/enums/VariableType";
 
 const composeGetFields = (
     deviceType: DeviceConfigurationTypeInterface,
@@ -186,6 +187,7 @@ const composeGetFields = (
                 {...{
                     fields: {
                         name: <Text {...{ required: true }} />,
+                        variableType: <SelectEnum {...{ enum: variableType, required: true }} />,
                         variableValue: <Textarea {...{ required: true, fieldProps: { minRows: 1 } }} />,
                     },
                 }}

@@ -15,28 +15,23 @@ declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
+use Symfony\Component\Validator\Attribute\HasNamedArguments;
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class TusX509CheckPrivateKey extends Constraint
 {
-    public $messageInvalid = 'validation.tusX509CheckPrivateKey.invalid';
-    public $propertyPath;
+    public string $messageInvalid = 'validation.tusX509CheckPrivateKey.invalid';
 
     #[HasNamedArguments]
-    public function __construct(null|array $options = null, null|string $propertyPath = null, null|array $groups = null, $payload = null)
-    {
-        $options = array_filter([
-            'propertyPath' => $propertyPath ?? $this->propertyPath,
-        ]);
+    public function __construct(
+        public string $propertyPath,
+        ?string $messageInvalid = null,
+        ?array $groups = null,
+        mixed $payload = null,
+    ) {
+        parent::__construct(null, $groups, $payload);
 
-        parent::__construct($options, $groups, $payload);
-    }
-
-    public function getRequiredOptions(): array
-    {
-        return [
-            'propertyPath',
-        ];
+        $this->messageInvalid = $messageInvalid ?? $this->messageInvalid;
     }
 }

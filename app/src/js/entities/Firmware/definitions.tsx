@@ -9,13 +9,15 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+import EntityDenyInterface from "~app/definitions/EntityDenyInterface";
 import EntityInterface from "~app/definitions/EntityInterface";
 import { DeviceTypeInterface } from "~app/entities/DeviceType/definitions";
 import { SourceTypeType } from "~app/entities/Firmware/enums";
 import { FeatureType } from "~app/enums/Feature";
 
-interface FirmwareInterface extends EntityInterface {
+interface FirmwareInterface extends EntityDenyInterface {
     name: string;
+    enableHardwareFiles: boolean;
     md5: string;
     filename: string;
     uuid: string;
@@ -27,4 +29,8 @@ interface FirmwareInterface extends EntityInterface {
     externalUrl?: string;
 }
 
-export { FirmwareInterface };
+interface FirmwareOptionsInterface extends EntityInterface {
+    enableHardwareFiles: boolean;
+}
+
+export { FirmwareInterface, FirmwareOptionsInterface };

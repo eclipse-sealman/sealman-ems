@@ -10,10 +10,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { FormikValues } from "formik";
-import { FieldsInterface, filterInitialValues, transformInitialValues } from "@arteneo/forge";
+import { FieldInterface, FieldsInterface, filterInitialValues, transformInitialValues } from "@arteneo/forge";
 import { AxiosResponse } from "axios";
 import { CommunicationProcedureRequirements } from "~app/entities/DeviceType/definitions";
 import _ from "lodash";
+import { FeatureType } from "~app/enums/Feature";
 
 /**
  * DeviceType forms transforms initial data for easier frontend/formik usage and after submit transforms formik data to backend form requirements.
@@ -53,7 +54,9 @@ const communicationProcedureRequirementArray = [
     "hasRequestConfig",
     "hasDeviceCommands",
     "hasVariables",
+    "hasHardwares",
     "hasDeviceToNetworkConnection",
+    "hasCustomData",
 ];
 
 const hasNoneCommunicationProcedure = (communicationProcedureName?: string) => {
@@ -75,6 +78,10 @@ const isCertificateTypeCredentialUsed = (values: FormikValues): boolean => {
     return values?.["authenticationMethod"] === "x509";
 };
 
+const isCertificateTypeMTlsScepAuthenticationUsed = (values: FormikValues): boolean => {
+    return values?.["authenticationMethod"] === "mTlsScep";
+};
+
 const isCredentialsSourceUsed = (values: FormikValues): boolean => {
     return values?.["authenticationMethod"] === "basic" || values?.["authenticationMethod"] === "digest";
 };
@@ -89,6 +96,49 @@ const isDeviceSecretCredentialUsed = (values: FormikValues): boolean => {
     } else {
         return false;
     }
+};
+
+const getHasHardwareProps = (requirements: CommunicationProcedureRequirements): FieldInterface => {
+    const name = "hasHardwares";
+    const fieldNamePrefix = "hasFirmware";
+    if (requirements.communicationProcedureRequirementsRequired.includes(name)) {
+        return {
+            required: true,
+            disabled: true,
+        };
+    }
+    if (requirements.communicationProcedureRequirementsOptional.includes(name)) {
+        return {
+            required: false,
+            disabled: (values: FormikValues) => !getIsEnableFieldValue(values, fieldNamePrefix),
+            hidden: (values: FormikValues) => !getIsEnableFieldValue(values, fieldNamePrefix),
+        };
+    }
+    return {
+        required: false,
+        disabled: true,
+        hidden: true,
+    };
+};
+
+const getIsEnableFieldValue = (values: FormikValues, namePrefix: string): boolean => {
+    for (let i = 1; i <= 3; i++) {
+        if (values[namePrefix + (i + "")] === true) {
+            return true;
+        }
+    }
+    return false;
+};
+
+const hasFirmwareSpecificSchema = (values: FormikValues, feature: FeatureType): boolean => {
+    const firmwareSchemaField = `firmwareSchema${feature}`;
+    const hasFirmwareField = `hasFirmware${feature}`;
+
+    if (!values?.[hasFirmwareField]) {
+        return false;
+    }
+
+    return values?.[firmwareSchemaField] !== "anySchema" && values?.[firmwareSchemaField] !== undefined;
 };
 
 // Method prepares submit values to requirements of backend form (depending on form values)
@@ -116,6 +166,20 @@ const processDeviceTypeSubmitValues = (
                 _values.deviceTypeCertificateTypeCredential = _values.deviceTypeCertificateType.certificateType.id;
             } else {
                 _values.deviceTypeCertificateTypeCredential = _values.deviceTypeCertificateType.certificateType;
+            }
+        }
+    }
+
+    if (!isCertificateTypeMTlsScepAuthenticationUsed(_values)) {
+        delete _values.deviceTypeCertificateTypeMTlsScepAuthentication;
+    } else {
+        if (typeof _values.deviceTypeCertificateTypeMTlsScepAuthentication === "object") {
+            if (typeof _values.deviceTypeCertificateType.certificateType === "object") {
+                _values.deviceTypeCertificateTypeMTlsScepAuthentication =
+                    _values.deviceTypeCertificateType.certificateType.id;
+            } else {
+                _values.deviceTypeCertificateTypeMTlsScepAuthentication =
+                    _values.deviceTypeCertificateType.certificateType;
             }
         }
     }
@@ -188,6 +252,7 @@ const processDeviceTypeSubmitValues = (
 
     if (!_values.hasFirmware1 && !_values.hasFirmware2 && !_values.hasFirmware3) {
         delete _values.enableFirmwareMinRsrp;
+        delete _values.hasHardwares;
     }
 
     if (!_values.hasConfig1 && !_values.hasConfig2 && !_values.hasConfig3) {
@@ -197,16 +262,34 @@ const processDeviceTypeSubmitValues = (
     if (!_values.hasFirmware1) {
         delete _values.nameFirmware1;
         delete _values.customUrlFirmware1;
+        delete _values.firmwareSchema1;
+        delete _values.allowDowngradeFirmware1;
+    }
+
+    if (!hasFirmwareSpecificSchema(_values, "1")) {
+        delete _values.allowDowngradeFirmware1;
     }
 
     if (!_values.hasFirmware2) {
         delete _values.nameFirmware2;
         delete _values.customUrlFirmware2;
+        delete _values.firmwareSchema2;
+        delete _values.allowDowngradeFirmware2;
+    }
+
+    if (!hasFirmwareSpecificSchema(_values, "2")) {
+        delete _values.allowDowngradeFirmware2;
     }
 
     if (!_values.hasFirmware3) {
         delete _values.nameFirmware3;
         delete _values.customUrlFirmware3;
+        delete _values.firmwareSchema3;
+        delete _values.allowDowngradeFirmware3;
+    }
+
+    if (!hasFirmwareSpecificSchema(_values, "3")) {
+        delete _values.allowDowngradeFirmware3;
     }
 
     if (!_values.hasConfig1) {
@@ -264,6 +347,9 @@ const processDeviceTypeLimitedSubmitValues = (
     hasDeviceCommands: boolean,
     hasConfig: boolean,
     hasFirmware: boolean,
+    hasFirmware1: boolean,
+    hasFirmware2: boolean,
+    hasFirmware3: boolean,
     hasNoneCommunicationProcedure: boolean
 ): FormikValues => {
     //Values array is cloned because, if form will return validation errors, some fields might be cleared
@@ -288,6 +374,20 @@ const processDeviceTypeLimitedSubmitValues = (
         }
     }
 
+    if (!isCertificateTypeMTlsScepAuthenticationUsed(_values)) {
+        delete _values.deviceTypeCertificateTypeMTlsScepAuthentication;
+    } else {
+        if (typeof _values.deviceTypeCertificateTypeMTlsScepAuthentication === "object") {
+            if (typeof _values.deviceTypeCertificateType.certificateType === "object") {
+                _values.deviceTypeCertificateTypeMTlsScepAuthentication =
+                    _values.deviceTypeCertificateType.certificateType.id;
+            } else {
+                _values.deviceTypeCertificateTypeMTlsScepAuthentication =
+                    _values.deviceTypeCertificateType.certificateType;
+            }
+        }
+    }
+
     if (!isDeviceSecretCredentialUsed(_values)) {
         delete _values.deviceTypeSecretCredential;
     }
@@ -304,6 +404,34 @@ const processDeviceTypeLimitedSubmitValues = (
 
     if (!hasFirmware) {
         delete _values.enableFirmwareMinRsrp;
+        delete _values.hasHardwares;
+    }
+
+    if (!hasFirmware1) {
+        delete _values.firmwareSchema1;
+        delete _values.allowDowngradeFirmware1;
+    } else {
+        if (values?.firmwareSchema1 === "anySchema" || values?.firmwareSchema1 === undefined) {
+            delete _values.allowDowngradeFirmware1;
+        }
+    }
+
+    if (!hasFirmware2) {
+        delete _values.firmwareSchema2;
+        delete _values.allowDowngradeFirmware2;
+    } else {
+        if (values?.firmwareSchema2 === "anySchema" || values?.firmwareSchema2 === undefined) {
+            delete _values.allowDowngradeFirmware2;
+        }
+    }
+
+    if (!hasFirmware3) {
+        delete _values.firmwareSchema3;
+        delete _values.allowDowngradeFirmware3;
+    } else {
+        if (values?.firmwareSchema3 === "anySchema" || values?.firmwareSchema3 === undefined) {
+            delete _values.allowDowngradeFirmware3;
+        }
     }
 
     if (!hasConfig) {
@@ -435,4 +563,8 @@ export {
     isCredentialsSourceUsed,
     isDeviceSecretCredentialUsed,
     isCertificateTypeCredentialUsed,
+    isCertificateTypeMTlsScepAuthenticationUsed,
+    getHasHardwareProps,
+    getIsEnableFieldValue,
+    hasFirmwareSpecificSchema,
 };

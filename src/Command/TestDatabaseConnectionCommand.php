@@ -35,7 +35,7 @@ class TestDatabaseConnectionCommand extends Command
         $result = Command::FAILURE;
 
         try {
-            $this->entityManager->getConnection()->connect();
+            $this->entityManager->getConnection()->getServerVersion();
             $connected = $this->entityManager->getConnection()->isConnected();
             if ($connected) {
                 $result = Command::SUCCESS;

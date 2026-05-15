@@ -24,8 +24,11 @@ class FirmwareEditUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $allowEditRequiredFirmware = $options['allowEditRequiredFirmware'] ?? false;
+
         $builder->add('name');
         $builder->add('version', null, ['disabled' => true]);
+        $builder->add('requiredFirmware', null, ['disabled' => !$allowEditRequiredFirmware]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -33,10 +36,15 @@ class FirmwareEditUploadType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Firmware::class,
             'csrf_protection' => false,
+            'allowEditRequiredFirmware' => false,
+            'requiredFirmwareId' => null,
             'validation_groups' => [
                 'Default',
                 'firmware:common',
             ],
         ]);
+
+        $resolver->setAllowedTypes('allowEditRequiredFirmware', 'bool');
+        $resolver->setAllowedTypes('requiredFirmwareId', ['null', 'int']);
     }
 }

@@ -17,15 +17,16 @@ namespace App\Security;
 
 use App\Entity\Certificate;
 use App\Entity\DeviceSecret;
+use App\Entity\DeviceType;
 use App\Entity\DeviceTypeSecret;
-use Symfony\Component\HttpFoundation\Request;
 use App\Service\Helper\CertificateManagerTrait;
+use App\Service\Helper\DeviceCommunicationFactoryTrait;
 use App\Service\Helper\DeviceSecretManagerTrait;
 use Carve\ApiBundle\Service\Helper\EntityManagerTrait;
-use App\Service\Helper\DeviceCommunicationFactoryTrait;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 trait DeviceAuthenticatorHelperTrait
 {
@@ -74,6 +75,11 @@ trait DeviceAuthenticatorHelperTrait
     protected function getCredentialsDeviceSecretValue(DeviceSecret $deviceSecret): ?string
     {
         return $this->deviceSecretManager->getDecryptedSecretValue($deviceSecret);
+    }
+
+    protected function getDeviceTypeFromRequest(Request $request): ?DeviceType
+    {
+        return $this->deviceCommunicationFactory->getRequestedDeviceType($request);
     }
 
     protected function getCredentialsDeviceCertificate(Request $request): ?Certificate

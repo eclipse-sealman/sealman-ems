@@ -22,4 +22,6 @@ enum AuthenticationMethod: string
     case DIGEST = 'digest';
     // case JWT = 'jwt';// TODO remove or implement
     case X509 = 'x509';
+    case MTLS = 'mTls';
+    case MTLS_SCEP = 'mTlsScep';
 }

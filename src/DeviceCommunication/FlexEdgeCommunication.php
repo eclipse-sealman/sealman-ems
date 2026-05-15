@@ -18,6 +18,7 @@ namespace App\DeviceCommunication;
 use App\Entity\Device;
 use App\Entity\DeviceType;
 use App\Entity\Firmware;
+use App\Entity\FirmwareHardwareFile;
 use App\Entity\Traits\CommunicationEntityInterface;
 use App\Entity\Traits\FirmwareStatusEntityInterface;
 use App\Enum\CertificateCategory;
@@ -31,6 +32,7 @@ use App\Model\FlexEdgeModel;
 use App\Model\ResponseModel;
 use App\Model\VariableInterface;
 use App\Service\Helper\ConfigurationManagerTrait;
+use App\Service\Helper\FirmwareFileFactoryTrait;
 use App\Service\Helper\TranslatorTrait;
 use App\Service\Helper\VpnManagerTrait;
 use Symfony\Component\Form\FormInterface;
@@ -44,6 +46,7 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
     use ConfigurationManagerTrait;
     use TranslatorTrait;
     use VpnManagerTrait;
+    use FirmwareFileFactoryTrait;
 
     /**
      * @var ?FlexEdgeModel
@@ -229,7 +232,6 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
 
     public function process(DeviceType $deviceType, Request $request, FlexEdgeModel $flexEdgeModel): Response
     {
-        $incrementConnections = false;
         $this->setDeviceType($deviceType);
         $this->setRequest($request);
         $this->setFlexEdgeModel($flexEdgeModel);
@@ -256,8 +258,6 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
 
         $this->communicationLogManager->createLogInfo('log.incomingRequest');
 
-        $incrementConnections = false;
-
         if (!$this->getDevice()) {
             $this->processMissingFlexEdge();
         } else {
@@ -277,16 +277,13 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
 
         $this->processFlexEdge();
 
-        $incrementConnections = true;
-
         $this->communicationLogManager->createLogDebug('log.requestProcessed', [], $this->getResponse()->__toString());
 
         $this->entityManager->flush();
 
-        if ($incrementConnections) {
-            $this->incrementDeviceConnections();
-            $this->entityManager->flush();
-        }
+        // Increment device connections only if device is enabled (and set in class property)
+        $this->incrementDeviceConnections();
+        $this->entityManager->flush();
 
         $this->communicationLogManager->clearRequest();
 
@@ -349,11 +346,15 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
             return;
         }
 
-        if ($this->getFlexEdgeModel()->getVer() && $this->processFirmware(Feature::PRIMARY, $this->getFlexEdgeModel()->getVer())) {
+        if ($this->getFlexEdgeModel()->getVer() && $this->processFirmware(Feature::PRIMARY, $this->getFlexEdgeModel()->getVer(), $this->getReceivedDeviceHardwareVersion())) {
             $this->getDevice()->setReinstallFirmware1(true);
         }
 
-        $reinstallingFirmware = $this->processReinstallFirmware(Feature::PRIMARY);
+        $reinstallingFirmware = $this->processReinstallFirmware(
+            feature: Feature::PRIMARY,
+            receivedFirmwareVersion: $this->getFlexEdgeModel()->getVer(),
+            receivedDeviceHardwareVersion: $this->getReceivedDeviceHardwareVersion()
+        );
 
         if (!$reinstallingFirmware) {
             // Check if config will be sent if certificate or deviceSecret will renew or generate
@@ -393,14 +394,14 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
         $this->getDevice()->setHashIdentifier($this->getDeviceUniqueHashIdentifier());
         $this->getDevice()->setIdentifier($this->generateIdentifier($this->getDevice()));
 
+        $this->updateLastDataInformation();
+
         $this->communicationLogManager->setDevice($this->getDevice());
         $this->communicationLogManager->updateCommunicationLogsWithoutDevice();
 
         $this->communicationLogManager->createLogInfo('log.deviceCreate');
 
         $this->entityManager->persist($this->getDevice());
-
-        $this->incrementDeviceConnections();
     }
 
     protected function getModel(): string
@@ -454,12 +455,18 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
         $this->getResponse()->setContent($responseContent);
     }
 
-    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware): void
+    protected function handleReinstallFirmware(Feature $feature, Firmware $firmware, ?FirmwareHardwareFile $firmwareHardwareFile = null): void
     {
-        $file = $firmware->getUploadDir('file_path').'/'.$firmware->getFilename();
+        if (null !== $firmwareHardwareFile) {
+            $file = $firmwareHardwareFile->getUploadDir('file_path').'/'.$firmwareHardwareFile->getFilename();
+        } else {
+            $file = $firmware->getUploadDir('file_path').'/'.$firmware->getFilename();
+        }
 
-        $contentSize = filesize($file);
-        $contentMd5 = md5_file($file);
+        // Method wrapped in FirmwareFileFactoryTrait to allow mocking in tests
+        $contentSize = $this->firmwareFileFactory->getFileSize($file);
+        // Method wrapped in FirmwareFileFactoryTrait to allow mocking in tests
+        $contentMd5 = $this->firmwareFileFactory->getFileMd5($file);
 
         $fileID = substr(md5(' T '.time()), 0, 24);
 
@@ -501,6 +508,20 @@ class FlexEdgeCommunication extends AbstractDeviceCommunication
         }
 
         return $entity;
+    }
+
+    /**
+     * Provides device model received via device communication. Method should be overriden by communication procedure'.
+     */
+    public function getReceivedDeviceHardwareVersion(): ?string
+    {
+        if ($this->getFlexEdgeModel()) {
+            if ($this->getFlexEdgeModel()->getMn()) {
+                return $this->getFlexEdgeModel()->getMn();
+            }
+        }
+
+        return null;
     }
 
     public function getCustomDeviceVariables(bool $createLogs = true): array

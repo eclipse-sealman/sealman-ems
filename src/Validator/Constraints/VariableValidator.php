@@ -18,11 +18,14 @@ namespace App\Validator\Constraints;
 use App\Entity\DeviceVariable;
 use App\Entity\ImportFileRowVariable;
 use App\Entity\TemplateVersionVariable;
+use App\Service\Helper\VariableManagerTrait;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class VariableValidator extends ConstraintValidator
 {
+    use VariableManagerTrait;
+
     public function validate($protocol, Constraint $constraint): void
     {
         if ($protocol instanceof TemplateVersionVariable) {
@@ -50,6 +53,18 @@ class VariableValidator extends ConstraintValidator
 
         if ($count > 1) {
             $this->context->buildViolation($constraint->messageVariableNameNotUnique)->atPath('name')->addViolation();
+
+            return;
+        }
+
+        $variableValue = $protocol->getVariableValue();
+        $variableType = $protocol->getVariableType();
+        if (null !== $variableValue && null !== $variableType) {
+            if (!$this->variableManager->isValidType($variableType, $variableValue)) {
+                $this->context->buildViolation($constraint->messageVariableValueInvalidType)
+                        ->atPath('variableValue')
+                        ->addViolation();
+            }
         }
     }
 }

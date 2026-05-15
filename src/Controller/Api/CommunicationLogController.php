@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\CommunicationLogDeny;
 use App\Entity\CommunicationLog;
 use App\Security\SecurityHelperTrait;
@@ -29,7 +30,6 @@ use Carve\ApiBundle\Trait\ApiExportExcelTrait;
 use Carve\ApiBundle\Trait\ApiListTrait;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 #[Rest\Route('/communicationlog')]
 #[Api\Resource(
@@ -52,7 +52,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 )]
 #[AddRoleBasedSerializerGroups('ROLE_ADMIN', ['gsm:admin', 'communication:admin'])]
 #[AddRoleBasedSerializerGroups('ROLE_SMARTEMS', ['gsm:smartems', 'communication:smartems'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
 #[Areas(['admin', 'smartems'])]
 class CommunicationLogController extends AbstractApiController
 {
@@ -99,5 +99,18 @@ class CommunicationLogController extends AbstractApiController
         $object->setDecryptedContent($this->deviceSecretManager->getDecryptedCommunicationLogContent($object));
 
         return $object;
+    }
+
+    #[Rest\Get('/{id}/custom/data/values', requirements: ['id' => '\d+'])]
+    #[Api\Summary('Get custom data values for {{ subjectLower }} by ID')]
+    #[Api\ParameterPathId('ID of {{ subjectLower }} to return custom data values')]
+    #[Api\Response200SubjectGroups]
+    #[Api\Response404Id]
+    #[Rest\View(serializerGroups: ['customData:public'])]
+    public function getCustomDataValuesAction(int $id)
+    {
+        $object = $this->find($id, CommunicationLogDeny::CUSTOM_DATA_VALUES);
+
+        return $object->getCommunicationLogCustomData();
     }
 }

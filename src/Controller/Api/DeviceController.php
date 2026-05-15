@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Attribute\Areas;
+use App\Attribute\IsGrantedOr;
 use App\Deny\DeviceDeny;
 use App\Deny\TemplateDenyHelperTrait;
 use App\Entity\CertificateType;
@@ -27,6 +28,7 @@ use App\Entity\DeviceTypeSecret;
 use App\Entity\DeviceVariable;
 use App\Enum\CertificateEntity;
 use App\Enum\Feature;
+use App\Enum\VariableType;
 use App\Exception\LogsException;
 use App\Form\BatchAccessTagsType;
 use App\Form\BatchFlagType;
@@ -70,7 +72,6 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation as NA;
 use OpenApi\Attributes as OA;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -93,7 +94,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
     ['device:vpn', 'certificate:vpn', 'device:vpnDevicePublic', 'device:openVpnPublic', 'device:vpnClientPublic', 'vpnConnection:device']
 )]
 #[AddRoleBasedSerializerGroups('ROLE_VPN_ENDPOINTDEVICES', ['device:vpnEndpointDevices'])]
-#[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS') or is_granted('ROLE_VPN')")]
+#[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS', 'ROLE_VPN'])]
 #[Areas(['admin', 'smartems', 'vpnsecuritysuite'])]
 class DeviceController extends AbstractApiController
 {
@@ -337,13 +338,19 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchVariableAddType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchVariableAddAction(Request $request)
     {
         $process = function (Device $device, FormInterface $form) {
             $name = $form->get('name')->getData();
+            $variableTypeString = $form->get('variableType')->getData();
             $variableValue = $form->get('variableValue')->getData();
+
+            $variableType = VariableType::tryFrom($variableTypeString);
+            if (null === $variableType) {
+                return new BatchResult($device, BatchResultStatus::ERROR, 'validation.device.variableTypeInvalid');
+            }
 
             $queryBuilder = $this->getRepository(DeviceVariable::class)->createQueryBuilder('dv');
             $queryBuilder->andWhere('dv.device = :device');
@@ -362,6 +369,7 @@ class DeviceController extends AbstractApiController
             }
 
             $deviceVariable->setVariableValue($variableValue);
+            $deviceVariable->setVariableType($variableType);
 
             $errors = $this->validator->validate($deviceVariable, null, ['Default', 'device:common']);
             if (0 === count($errors)) {
@@ -387,7 +395,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchVariableDeleteType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchVariableDeleteAction(Request $request)
     {
@@ -417,7 +425,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallConfig1Action(Request $request)
     {
@@ -445,7 +453,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallConfig2Action(Request $request)
     {
@@ -473,7 +481,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallConfig3Action(Request $request)
     {
@@ -501,7 +509,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallFirmware1Action(Request $request)
     {
@@ -526,7 +534,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallFirmware2Action(Request $request)
     {
@@ -551,7 +559,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchReinstallFirmware3Action(Request $request)
     {
@@ -576,7 +584,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchRequestDiagnoseDataAction(Request $request)
     {
@@ -601,7 +609,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchFlagType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchRequestConfigDataAction(Request $request)
     {
@@ -626,7 +634,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchAccessTagsType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchAccessTagsAddAction(Request $request)
     {
@@ -652,7 +660,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchAccessTagsType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchAccessTagsDeleteAction(Request $request)
     {
@@ -690,7 +698,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchLabelsType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchLabelsAddAction(Request $request)
     {
@@ -712,7 +720,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyBatch(content: new NA\Model(type: BatchLabelsType::class))]
     #[Api\Response200BatchResults]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function batchLabelsDeleteAction(Request $request)
     {
@@ -797,7 +805,7 @@ class DeviceController extends AbstractApiController
     #[Api\Response200SubjectGroups]
     #[Api\Response400]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function templateApplyAction(Request $request, int $id)
     {
@@ -866,6 +874,7 @@ class DeviceController extends AbstractApiController
                     }
 
                     $variable->setName($templateVariable->getName());
+                    $variable->setVariableType($templateVariable->getVariableType());
                     $variable->setVariableValue($templateVariable->getVariableValue());
 
                     $this->entityManager->persist($variable);
@@ -1069,7 +1078,7 @@ class DeviceController extends AbstractApiController
         content: new OA\JsonContent(example: '{"variable1": "Example value", "variable2": 1, "variable3": null, "variable4": {"1": "192.168.1.1"}}')
     )]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function getPredefinedVariablesAction(int $id)
     {
@@ -1090,11 +1099,48 @@ class DeviceController extends AbstractApiController
         return $communicationProcedure->getPredefinedDeviceVariables();
     }
 
+    #[Rest\Get('/{id}/custom/data/values', requirements: ['id' => '\d+'])]
+    #[Api\Summary('Get custom data values for {{ subjectLower }} by ID')]
+    #[Api\ParameterPathId('ID of {{ subjectLower }} to return custom data values')]
+    #[Api\Response200SubjectGroups]
+    #[Api\Response404Id]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
+    #[Areas(['admin', 'smartems'])]
+    #[Rest\View(serializerGroups: ['customData:public'])]
+    public function getCustomDataValuesAction(int $id)
+    {
+        $object = $this->find($id, DeviceDeny::CUSTOM_DATA_VALUES);
+
+        return $object->getDeviceCustomData();
+    }
+
+    #[Rest\Get('/{id}/custom/data/variables', requirements: ['id' => '\d+'])]
+    #[Api\Summary('Get custom data variables for {{ subjectLower }} by ID')]
+    #[Api\ParameterPathId('ID of {{ subjectLower }} to return custom data variables')]
+    #[Api\Response200SubjectGroups]
+    #[Api\Response404Id]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
+    #[Areas(['admin', 'smartems'])]
+    #[Rest\View(serializerGroups: ['customData:public'])]
+    public function getCustomDataVariablesAction(int $id)
+    {
+        $object = $this->find($id, DeviceDeny::CUSTOM_DATA_VARIABLES);
+
+        $communicationProcedure = $this->deviceCommunicationFactory->getDeviceCommunicationByDevice($object);
+
+        if (!$communicationProcedure) {
+            // This should never happen
+            return [];
+        }
+
+        return $communicationProcedure->getCustomDataDeviceVariables();
+    }
+
     // Method provides array of available certificate types for all devices (used in batch enable/disable)
     #[Rest\Get('/certificate/types')]
     #[Api\Summary('Get list of available certificate types for {{ subjectPluralLower }}')]
     #[Api\Response200ArraySubjectGroups(CertificateType::class)]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function getCertificateTypesAction()
     {
@@ -1106,7 +1152,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to return generated primary config')]
     #[Api\Response200(description: 'Generated primary config', content: new OA\MediaType(mediaType: 'text/plain', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function generateConfigPrimaryAction(int $id)
     {
@@ -1125,7 +1171,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to return generated secondary config')]
     #[Api\Response200(description: 'Generated secondary config', content: new OA\MediaType(mediaType: 'text/plain', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function generateConfigSecondaryAction(int $id)
     {
@@ -1144,7 +1190,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to return generated tertiary config')]
     #[Api\Response200(description: 'Generated tertiary config', content: new OA\MediaType(mediaType: 'text/plain', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function generateConfigTertiaryAction(int $id)
     {
@@ -1231,7 +1277,7 @@ class DeviceController extends AbstractApiController
     #[Api\RequestBodyCreate]
     #[Api\Response200SubjectGroups('Returns created {{ subjectLower }}')]
     #[Api\Response400]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function createAction(Request $request)
     {
@@ -1332,7 +1378,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to delete uploaded device VPN certificate')]
     #[Api\Response204('Uploaded device VPN certificate successfully deleted')]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function deleteDeviceVpnCertificateAction(Request $request, int $id)
     {
@@ -1349,7 +1395,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to download CA of device VPN certificate')]
     #[Api\Response200(description: 'CA certificate', content: new OA\MediaType(mediaType: 'application/x-x509-ca-cert', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function downloadDeviceVpnCaAction(Request $request, int $id)
     {
@@ -1366,7 +1412,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to download device VPN certificate')]
     #[Api\Response200(description: 'Certificate', content: new OA\MediaType(mediaType: 'application/x-x509-user-cert', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function downloadDeviceVpnCertificateAction(Request $request, int $id)
     {
@@ -1383,7 +1429,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to download device VPN PKCS#12')]
     #[Api\Response200(description: 'PKCS#12', content: new OA\MediaType(mediaType: 'application/x-pkcs12', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function downloadDeviceVpnPkcs12Action(Request $request, int $id)
     {
@@ -1400,7 +1446,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to download device VPN private key')]
     #[Api\Response200(description: 'Private key', content: new OA\MediaType(mediaType: 'application/pkcs8', schema: new OA\Schema(type: 'string')))]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function downloadDeviceVpnPrivateAction(Request $request, int $id)
     {
@@ -1417,7 +1463,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to generate device VPN certificate')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function generateDeviceVpnCertificateAction(Request $request, int $id)
     {
@@ -1434,7 +1480,7 @@ class DeviceController extends AbstractApiController
     #[Api\ParameterPathId('ID of {{ subjectLower }} to revoke device VPN certificate')]
     #[Api\Response200SubjectGroups]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN_SCEP')")]
+    #[IsGrantedOr('ROLE_ADMIN_SCEP')]
     #[Areas(['admin:scep'])]
     public function revokeDeviceVpnCertificateAction(Request $request, int $id)
     {
@@ -1453,7 +1499,7 @@ class DeviceController extends AbstractApiController
     #[Api\Response200SubjectGroups]
     #[Api\Response400]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function uploadDeviceVpnFilesAction(Request $request, int $id)
     {
@@ -1472,7 +1518,7 @@ class DeviceController extends AbstractApiController
     #[Api\Response200SubjectGroups]
     #[Api\Response400]
     #[Api\Response404Id]
-    #[Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_SMARTEMS')")]
+    #[IsGrantedOr(['ROLE_ADMIN', 'ROLE_SMARTEMS'])]
     #[Areas(['admin', 'smartems'])]
     public function uploadDeviceVpnPkcs12Action(Request $request, int $id)
     {

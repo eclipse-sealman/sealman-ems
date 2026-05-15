@@ -49,6 +49,7 @@ enum EndpointDeviceAccessTestCase: string
  * This class is not testing access to specific endpoints based on roles (security).
  */
 #[Group('full')]
+#[Group('WebApiRoleVpn')] // To be used in CI parallel tests
 class EndpointDeviceAccessTest extends AbstractTestCase
 {
     public static function getFixtureGroups(): array

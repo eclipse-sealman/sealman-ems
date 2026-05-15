@@ -18,12 +18,13 @@ namespace App\Entity;
 use App\Entity\Traits\CreatedAtEntityInterface;
 use App\Entity\Traits\CreatedAtEntityTrait;
 use App\Entity\Traits\LogLevelEntityTrait;
+use App\Entity\Traits\LogLevelInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
-class MaintenanceLog implements CreatedAtEntityInterface
+class MaintenanceLog implements CreatedAtEntityInterface, LogLevelInterface
 {
     use LogLevelEntityTrait;
     use CreatedAtEntityTrait;
