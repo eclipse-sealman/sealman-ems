@@ -9,7 +9,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:24-alpine AS frontend
+FROM node:26-alpine AS frontend
 
 COPY . /var/www/application
 
