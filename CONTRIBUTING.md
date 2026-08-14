@@ -21,7 +21,7 @@ This repository is subject to the Terms of Use of the Eclipse Foundation
 Information regarding source code management, builds, coding standards, and
 more.
 
--   https://projects.eclipse.org/projects/technology.dash/developer
+-   https://projects.eclipse.org/projects/technology.sealman/developer
 
 ## Eclipse Development Process
 
