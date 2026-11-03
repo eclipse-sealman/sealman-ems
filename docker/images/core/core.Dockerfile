@@ -9,7 +9,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM php:8.5.12-fpm-alpine3.23
+FROM php:8.5.12-fpm-alpine3.24
 
 RUN apk add --no-cache \ 
     # WWW server
