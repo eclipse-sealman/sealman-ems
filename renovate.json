@@ -1,0 +1,61 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [":disableRateLimiting"],
+    "dependencyDashboard": {
+        "enabled": true
+    },
+    "major": {
+        "enabled": false
+    },
+    "minimumReleaseAge": "2 days",
+    "ignorePaths": ["**/development/**"],
+    "lockFileMaintenance": {
+        "enabled": true,
+        "branchTopic": "{{manager}}-lock-file-maintenance",
+        "commitMessageAction": "{{manager}} lock file maintenance",
+        "schedule": null,
+        "groupName": "{{manager}} lock file maintenance",
+        "labels": ["dependencies", "lockfile"],
+        "automerge": true
+    },
+    "packageRules": [
+        {
+            "description": "Skip dama/doctrine-test-bundle (locked)",
+            "matchPackageNames": "dama/doctrine-test-bundle",
+            "matchManagers": ["composer"],
+            "enabled": false
+        },
+        {
+            "description": "Skip nelmio/api-doc-bundle (locked)",
+            "matchPackageNames": "nelmio/api-doc-bundle",
+            "matchManagers": ["composer"],
+            "enabled": false
+        },
+        {
+            "description": "Group minor dependencies by manager and require manual merge",
+            "groupName": "{{manager}} minor dependencies",
+            "groupSlug": "{{manager}}-minor-dependencies",
+            "matchUpdateTypes": ["minor"],
+            "matchManagers": ["npm", "composer", "dockerfile", "docker-compose"],
+            "automerge": false,
+            "labels": ["dependencies", "minor"]
+        },
+        {
+            "description": "Group patch dependencies by manager and automerge",
+            "groupName": "{{manager}} patch dependencies",
+            "groupSlug": "{{manager}}-patch-dependencies",
+            "matchUpdateTypes": ["patch", "pin", "digest"],
+            "automerge": true,
+            "matchManagers": ["npm", "composer", "dockerfile", "docker-compose"],
+            "labels": ["dependencies", "patch"]
+        },
+        {
+            "description": "Pin digests in dockerfiles",
+            "matchManagers": ["dockerfile"],
+            "pinDigests": true,
+            "labels": ["dependencies", "minor"],
+            "automerge": true
+        }
+    ],
+    "enabledManagers": ["npm", "composer", "dockerfile", "docker-compose"]
+}
